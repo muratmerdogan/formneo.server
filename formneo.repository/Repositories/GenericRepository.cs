@@ -43,7 +43,17 @@ namespace vesa.repository.Repositories
             return _dbSet.AsNoTracking().AsQueryable();
         }
 
+        public async Task<List<T>> GetAllAsync()
+        {
+            return await _dbSet.AsNoTracking().ToListAsync();
+        }
+
         public async Task<T> GetByIdAsync(int id)
+        {
+            return await _dbSet.FindAsync(id);
+        }
+
+        public async Task<T> GetByIdAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }
@@ -52,7 +62,7 @@ namespace vesa.repository.Repositories
         {
             return await _dbSet.FindAsync(id);
 
-           
+
         }
         public async Task<T> GetByIdStringGuidAsync(Guid id)
         {
@@ -84,8 +94,8 @@ namespace vesa.repository.Repositories
             return includes.Aggregate(query, (current, include) => current.Include(include));
         }
 
- 
+
     }
 
-    
+
 }
