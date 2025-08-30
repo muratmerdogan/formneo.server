@@ -2541,6 +2541,7 @@ namespace vesa.api.Controllers
             if (databaseName == "vesa_erp_test")
             {
                 clientSecret = "";
+
             }
             else if (databaseName == "vesa_erp")
             {
