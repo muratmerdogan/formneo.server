@@ -1,0 +1,10 @@
+﻿docker run -it --rm -p 8080:80 vesaserverapp
+
+
+docker tag vesa vesa/serverapp
+
+docker login -u “murat.merdogan@vesacons.com” -p “ExpoExpo2024++” docker.io
+
+
+
+cf push serverapp --docker-image vesaduser/vesaserverapp:tagname

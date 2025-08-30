@@ -1,0 +1,263 @@
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using vesa.core.DTOs.UserTenants;
+using vesa.core.Models;
+using vesa.core.Repositories;
+using vesa.core.Services;
+using vesa.core.UnitOfWorks;
+
+namespace vesa.service.Services
+{
+    public class UserTenantService : IUserTenantService
+    {
+        private readonly IUserTenantRepository _repository;
+        private readonly IGenericRepository<UserTenant> _genericRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+
+        public UserTenantService(IUserTenantRepository repository, IGenericRepository<UserTenant> genericRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        {
+            _repository = repository;
+            _genericRepository = genericRepository;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
+
+        public async Task<UserTenantListDto> AddAsync(UserTenantInsertDto dto)
+        {
+            var entity = _mapper.Map<UserTenant>(dto);
+            // Ensure defaults are respected; properties come from dto
+            await _genericRepository.AddAsync(entity);
+            await _unitOfWork.CommitAsync();
+            return _mapper.Map<UserTenantListDto>(entity);
+        }
+
+        public async Task<UserTenantListDto> UpdateAsync(UserTenantUpdateDto dto)
+        {
+            var exists = await _genericRepository.GetByIdStringGuidAsync(dto.Id);
+            exists.IsActive = dto.IsActive;
+            // Map tenant-scoped fields
+            exists.HasTicketPermission = dto.HasTicketPermission;
+            exists.HasDepartmentPermission = dto.HasDepartmentPermission;
+            exists.HasOtherCompanyPermission = dto.HasOtherCompanyPermission;
+            exists.HasOtherDeptCalendarPerm = dto.HasOtherDeptCalendarPerm;
+            exists.canEditTicket = dto.canEditTicket;
+            exists.DontApplyDefaultFilters = dto.DontApplyDefaultFilters;
+            exists.mainManagerUserAppId = dto.mainManagerUserAppId;
+            exists.PCname = dto.PCname;
+            exists.manager1 = dto.manager1;
+            exists.manager2 = dto.manager2;
+            _genericRepository.Update(exists);
+            await _unitOfWork.CommitAsync();
+            return _mapper.Map<UserTenantListDto>(exists);
+        }
+
+        public async Task<UserTenantListDto> GetByUserAndTenantAsync(string userId, Guid tenantId)
+        {
+            var entity = await _repository.GetByUserAndTenantAsync(userId, tenantId);
+            return _mapper.Map<UserTenantListDto>(entity);
+        }
+
+        public async Task<IEnumerable<UserTenantFullDto>> GetByUserAsync(string userId)
+        {
+            // kullanıcıya ait tüm tenantları, tenant ismiyle birlikte getirmek için include'lu listeyi kullan
+            var all = await _repository.GetAllWithIncludesAsync();
+            var filtered = all.Where(x => x.UserId == userId).ToList();
+            var result = filtered.Select(x => new UserTenantFullDto
+            {
+                Id = x.Id,
+                UserId = x.UserId,
+                TenantId = x.TenantId,
+                IsActive = x.IsActive,
+                UserFullName = ((x.User?.FirstName ?? "").Trim() + " " + (x.User?.LastName ?? "").Trim()).Trim(),
+                UserEmail = x.User?.Email ?? string.Empty,
+                TenantName = x.Tenant?.Name ?? string.Empty,
+                TenantSlug = x.Tenant?.Slug ?? string.Empty
+            }).ToList();
+            return result;
+        }
+
+        public async Task<IEnumerable<UserTenantListDto>> GetByTenantAsync(Guid tenantId)
+        {
+            var query = _genericRepository.Where(x => x.TenantId == tenantId);
+            var list = await query.ToListAsync();
+            return _mapper.Map<IEnumerable<UserTenantListDto>>(list);
+        }
+
+        public async Task<IEnumerable<UserTenantByTenantDto>> GetUsersByTenantAsync(Guid tenantId)
+        {
+            var list = await _repository.GetByTenantWithIncludesAsync(tenantId);
+
+            var result = list.Select(x => new UserTenantByTenantDto
+            {
+                UserId = x.UserId,
+                UserFullName = ((x.User?.FirstName ?? "").Trim() + " " + (x.User?.LastName ?? "").Trim()).Trim(),
+                TenantName = x.Tenant?.Name ?? string.Empty
+            });
+
+            return result;
+        }
+
+        public async Task<IEnumerable<UserTenantFullDto>> GetAllFullAsync()
+        {
+            var list = await _repository.GetAllWithIncludesAsync();
+            // Map manually to include composite fields
+            var result = list.Select(x => new UserTenantFullDto
+            {
+                Id = x.Id,
+                UserId = x.UserId,
+                TenantId = x.TenantId,
+                IsActive = x.IsActive,
+                UserFullName = ((x.User?.FirstName ?? "").Trim() + " " + (x.User?.LastName ?? "").Trim()).Trim(),
+                UserEmail = x.User?.Email ?? string.Empty,
+                TenantName = x.Tenant?.Name ?? string.Empty,
+                TenantSlug = x.Tenant?.Slug ?? string.Empty
+            });
+            return result;
+        }
+
+
+
+        public async Task BulkAssignUsersAsync(UserTenantBulkAssignUsersDto dto)
+        {
+            _unitOfWork.BeginTransaction();
+            try
+            {
+                // Tenant'a ait mevcut kayıtları temizle
+                var existing = await _genericRepository.Where(x => x.TenantId == dto.TenantId).ToListAsync();
+                if (existing.Any())
+                {
+                    _genericRepository.RemoveRange(existing);
+                }
+
+                // Gelen kullanıcı id listesiyle yeni kayıtları hazırla
+                var newEntities = dto.UserIds.Distinct().Select(userId => new UserTenant
+                {
+                    UserId = userId,
+                    TenantId = dto.TenantId,
+                    IsActive = dto.IsActive
+                }).ToList();
+
+                if (newEntities.Any())
+                {
+                    await _genericRepository.AddRangeAsync(newEntities);
+                }
+
+                await _unitOfWork.CommitAsync();
+            }
+            catch
+            {
+                _unitOfWork.Rollback();
+                throw;
+            }
+        }
+
+        // IServiceWithDto methods
+        public async Task<vesa.core.DTOs.CustomResponseDto<UserTenantListDto>> GetByIdAsync(string id)
+        {
+            var entity = await _genericRepository.GetByIdStringAsync(id);
+            var dto = _mapper.Map<UserTenantListDto>(entity);
+            return vesa.core.DTOs.CustomResponseDto<UserTenantListDto>.Success(200, dto);
+        }
+
+        public async Task<vesa.core.DTOs.CustomResponseDto<UserTenantListDto>> GetByIdGuidAsync(Guid id)
+        {
+            var entity = await _genericRepository.GetByIdStringGuidAsync(id);
+            var dto = _mapper.Map<UserTenantListDto>(entity);
+            return vesa.core.DTOs.CustomResponseDto<UserTenantListDto>.Success(200, dto);
+        }
+
+        public async Task<vesa.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>> GetAllAsync()
+        {
+            var list = await _genericRepository.GetAll().ToListAsync();
+            var dtos = _mapper.Map<IEnumerable<UserTenantListDto>>(list);
+            return vesa.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>.Success(200, dtos);
+        }
+
+        public async Task<vesa.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>> Where(System.Linq.Expressions.Expression<Func<UserTenant, bool>> expression)
+        {
+            var list = await _genericRepository.Where(expression).ToListAsync();
+            var dtos = _mapper.Map<IEnumerable<UserTenantListDto>>(list);
+            return vesa.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>.Success(200, dtos);
+        }
+
+        public async Task<vesa.core.DTOs.CustomResponseDto<bool>> AnyAsync(System.Linq.Expressions.Expression<Func<UserTenant, bool>> expression)
+        {
+            var exists = await _genericRepository.AnyAsync(expression);
+            return vesa.core.DTOs.CustomResponseDto<bool>.Success(200, exists);
+        }
+
+        public async Task<vesa.core.DTOs.CustomResponseDto<UserTenantListDto>> AddAsync(UserTenantListDto dto)
+        {
+            var entity = _mapper.Map<UserTenant>(dto);
+            await _genericRepository.AddAsync(entity);
+            await _unitOfWork.CommitAsync();
+            var newDto = _mapper.Map<UserTenantListDto>(entity);
+            return vesa.core.DTOs.CustomResponseDto<UserTenantListDto>.Success(201, newDto);
+        }
+
+        public async Task<vesa.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>> AddRangeAsync(IEnumerable<UserTenantListDto> dtos)
+        {
+            var entities = _mapper.Map<IEnumerable<UserTenant>>(dtos);
+            await _genericRepository.AddRangeAsync(entities);
+            await _unitOfWork.CommitAsync();
+            var newDtos = _mapper.Map<IEnumerable<UserTenantListDto>>(entities);
+            return vesa.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>.Success(201, newDtos);
+        }
+
+        public async Task<vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>> UpdateAsync(UserTenantListDto dto)
+        {
+            var entity = _mapper.Map<UserTenant>(dto);
+            _genericRepository.Update(entity);
+            await _unitOfWork.CommitAsync();
+            return vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>.Success(204);
+        }
+
+        public async Task<vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>> RemoveAsync(string id)
+        {
+            var entity = await _genericRepository.GetByIdStringAsync(id);
+            _genericRepository.Remove(entity);
+            await _unitOfWork.CommitAsync();
+            return vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>.Success(204);
+        }
+
+        public async Task<vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>> RemoveAsyncByGuid(Guid id)
+        {
+            var entity = await _genericRepository.GetByIdStringGuidAsync(id);
+            _genericRepository.Remove(entity);
+            await _unitOfWork.CommitAsync();
+            return vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>.Success(204);
+        }
+
+        public Task<vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>> RemoveRangeAsync(IEnumerable<int> ids)
+        {
+            return Task.FromResult(vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>.Success(204));
+        }
+
+        public async Task<vesa.core.DTOs.CustomResponseDto<UserTenantListDto>> Find(System.Linq.Expressions.Expression<Func<UserTenant, bool>> expression)
+        {
+            var entity = await _genericRepository.Where(expression).FirstOrDefaultAsync();
+            var dto = _mapper.Map<UserTenantListDto>(entity);
+            return vesa.core.DTOs.CustomResponseDto<UserTenantListDto>.Success(200, dto);
+        }
+
+        public Task<IQueryable<UserTenant>> Include()
+        {
+            return Task.FromResult(_genericRepository.GetAll());
+        }
+
+        public async Task<vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>> SoftDeleteAsync(Guid id)
+        {
+            var entity = await _genericRepository.GetByIdStringGuidAsync(id);
+            entity.IsDelete = true;
+            await _unitOfWork.CommitAsync();
+            return vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>.Success(204);
+        }
+    }
+}
+
+

@@ -1,0 +1,6 @@
+﻿applications:
+  - name: api
+    random-route: true
+    buildpack: https://github.com/cloudfoundry/dotnet-core-buildpack.git
+    env:
+      CACHE_NUGET_PACKAGES: false

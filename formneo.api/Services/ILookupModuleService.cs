@@ -1,0 +1,18 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using vesa.core.DTOs.Lookup;
+
+namespace vesa.core.Services
+{
+    public interface ILookupModuleService
+    {
+        Task<List<LookupModuleDto>> GetAllAsync();
+        Task<LookupModuleDto?> GetByIdAsync(Guid id);
+        Task<LookupModuleDto> CreateAsync(LookupModuleDto dto);
+        Task<LookupModuleDto?> UpdateAsync(Guid id, LookupModuleDto dto);
+        Task<bool> DeleteAsync(Guid id);
+    }
+}
+
+

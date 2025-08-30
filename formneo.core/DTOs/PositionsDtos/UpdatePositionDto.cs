@@ -1,0 +1,10 @@
+﻿namespace vesa.core.DTOs.PositionsDtos
+{
+    public class UpdatePositionDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string? Description { get; set; } = null;
+        public Guid? CustomerRefId { get; set; } = null;
+    }
+}

@@ -1,0 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using vesa.core.Models;
+
+namespace vesa.core.Repositories
+{
+	public interface IUserTenantRoleRepository : IGenericRepository<UserTenantRole>
+	{
+		Task<List<UserTenantRole>> GetByUserAndTenantAsync(string userId, Guid tenantId);
+	}
+}
+
+

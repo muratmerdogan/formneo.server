@@ -1,0 +1,23 @@
+﻿# Ignore Visual Studio temporary files, build results, and
+# user-specific files
+vesa.ronesans.server/.vscode/
+src/.vs/
+vesa.ronesans.server/.vs/*
+.vscode/*
+.vs/*
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files
+Generated\
+
+# Build directories
+bin/
+bin/*
+obj/
+obj/*

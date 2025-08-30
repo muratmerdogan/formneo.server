@@ -1,0 +1,1 @@
+﻿ docker exec -it formneo-ollama ollama pull mistral:7b-instruct-q4_K_M
