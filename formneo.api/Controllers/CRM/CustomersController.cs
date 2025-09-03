@@ -33,7 +33,16 @@ namespace vesa.api.Controllers.CRM
 			return Ok(data);
 		}
 
-		[HttpPost]
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById2(Guid id)
+        {
+            var data = await _customerService.GetByIdAsync(id);
+            if (data == null) return NotFound();
+            return Ok(data);
+        }
+
+        [HttpPost]
 		public async Task<IActionResult> Create([FromBody] CustomerInsertDto dto)
 		{
 			var created = await _customerService.CreateAsync(dto);
