@@ -54,7 +54,7 @@ jobs:
             # Compose içindeki ${TAG} için; belirli sürümü çekelim
             export TAG=prod-${GITHUB_SHA::7}
             # Sadece backend'i çekip güncelle (diğer servisler etkilenmesin)
-            sudo  docker compose pull backend || docker compose pull backend
-            sudo docker compose up -d backend || docker compose up -d backend
+            docker compose pull backend || docker compose pull backend
+            docker compose up -d backend || docker compose up -d backend
             # Eski dangling image'ları temizle
             sudo docker image prune -f
