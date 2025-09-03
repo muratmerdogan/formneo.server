@@ -50,11 +50,11 @@ jobs:
             set -e
             cd /opt/apps/formneoserver
             # GHCR login
-            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+            sudo docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
             # Compose içindeki ${TAG} için; belirli sürümü çekelim
             export TAG=prod-${GITHUB_SHA::7}
             # Sadece backend'i çekip güncelle (diğer servisler etkilenmesin)
-            docker compose pull backend || docker compose pull backend
-            docker compose up -d backend || docker compose up -d backend
+            sudo  docker compose pull backend || docker compose pull backend
+            sudo docker compose up -d backend || docker compose up -d backend
             # Eski dangling image'ları temizle
-            docker image prune -f
+            sudo docker image prune -f
