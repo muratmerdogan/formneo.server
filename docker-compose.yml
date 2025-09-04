@@ -54,6 +54,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__PostgreSqlConnection=Host=postgres;Port=5432;Database=${PG_DB};Username=${PG_USER};Password=${PG_PASSWORD};Timeout=120;
     ports:
       - "8080:8080"
     volumes:
