@@ -264,13 +264,14 @@ namespace vesa.repository
             modelBuilder.Entity<Quote>()
                 .Property(p => p.Status).HasConversion<int>();
 
-            // Global tenant query filter for all BaseEntity (exclude GlobalBaseEntity)
+            // Global tenant query filter for all BaseEntity (exclude GlobalBaseEntity and some specific types)
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 var clrType = entityType.ClrType;
                 if (clrType == null) continue;
                 if (typeof(GlobalBaseEntity).IsAssignableFrom(clrType)) continue;
                 if (!typeof(BaseEntity).IsAssignableFrom(clrType)) continue;
+                // UserTenant artık GlobalBaseEntity'den türediği için zaten filtre dışında
 
                 var parameter = System.Linq.Expressions.Expression.Parameter(clrType, "e");
                 var isDeleteProp = System.Linq.Expressions.Expression.Property(parameter, nameof(BaseEntity.IsDelete));

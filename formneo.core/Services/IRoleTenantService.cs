@@ -9,7 +9,7 @@ using vesa.core.DTOs.RoleTenants;
 
 namespace vesa.core.Services
 {
-	public interface IRoleTenantService : IServiceWithDto<RoleTenant, RoleTenantListDto>
+	public interface IRoleTenantService : IGlobalServiceWithDto<RoleTenant, RoleTenantListDto>
 	{
 		Task<RoleTenantListDto> AddAsync(RoleTenantInsertDto dto);
 		Task<RoleTenantListDto> UpdateAsync(RoleTenantUpdateDto dto);

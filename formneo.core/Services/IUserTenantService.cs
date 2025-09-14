@@ -7,7 +7,7 @@ using NLayer.Core.Services;
 
 namespace vesa.core.Services
 {
-    public interface IUserTenantService : IServiceWithDto<UserTenant, UserTenantListDto>
+    public interface IUserTenantService : IGlobalServiceWithDto<UserTenant, UserTenantListDto>
     {
         Task<UserTenantListDto> AddAsync(UserTenantInsertDto dto);
         Task<UserTenantListDto> UpdateAsync(UserTenantUpdateDto dto);

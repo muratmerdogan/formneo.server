@@ -13,7 +13,7 @@ using NLayer.Service.Services;
 
 namespace vesa.service.Services
 {
-    public class RoleTenantMenuService : ServiceWithDto<AspNetRolesTenantMenu, RoleTenantMenuListDto>, IRoleTenantMenuService
+    public class RoleTenantMenuService : GlobalServiceWithDto<AspNetRolesTenantMenu, RoleTenantMenuListDto>, IRoleTenantMenuService
     {
         private readonly IGenericRepository<AspNetRolesTenantMenu> _repo;
         private readonly IGenericRepository<AspNetRolesMenu> _roleMenuRepo;

@@ -17,7 +17,7 @@ using NLayer.Service.Services;
 
 namespace vesa.service.Services
 {
-	public class RoleTenantService : ServiceWithDto<RoleTenant, RoleTenantListDto>, IRoleTenantService
+	public class RoleTenantService : GlobalServiceWithDto<RoleTenant, RoleTenantListDto>, IRoleTenantService
 	{
 		private readonly IRoleTenantRepository _repository;
 		private readonly IGenericRepository<RoleTenant> _genericRepository;

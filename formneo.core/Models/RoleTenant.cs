@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
  namespace vesa.core.Models
  {
- 	public class RoleTenant : BaseEntity
+ 	public class RoleTenant : GlobalBaseEntity
 	{
 		[ForeignKey(nameof(Role))]
 		public string RoleId { get; set; }

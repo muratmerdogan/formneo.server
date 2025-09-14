@@ -741,11 +741,38 @@ namespace vesa.api.Seed
                     await context.SaveChangesAsync();
                 }
             }
-            // CRM: Seed 250 customers if none exist
-            if (!await context.Customers.AnyAsync())
+            // CRM: Idempotent seed - mevcut kodları dikkate alarak 250 müşteri ekle
             {
+                var hasAny = await context.Customers.IgnoreQueryFilters().AnyAsync();
                 var random = new Random();
                 var customers = new List<core.Models.CRM.Customer>();
+
+                // Mevcut en yüksek CUST#### kodunu bul
+                int startIndex = 0;
+                if (hasAny)
+                {
+                    var maxCode = await context.Customers
+                        .IgnoreQueryFilters()
+                        .Where(c => c.Code.StartsWith("CUST"))
+                        .Select(c => c.Code)
+                        .ToListAsync();
+                    if (maxCode.Any())
+                    {
+                        // CUST#### biçiminden sayıyı çek
+                        var maxNum = maxCode
+                            .Select(code =>
+                            {
+                                if (code?.Length >= 8 && code.StartsWith("CUST"))
+                                {
+                                    var numPart = code.Substring(4);
+                                    return int.TryParse(numPart, out var n) ? n : 0;
+                                }
+                                return 0;
+                            })
+                            .Max();
+                        startIndex = maxNum;
+                    }
+                }
 
                 // Şehirler, sektörler ve firma türleri
                 var cities = new[] { "İstanbul", "Ankara", "İzmir", "Bursa", "Antalya", "Adana", "Konya", "Gaziantep", "Kayseri", "Eskişehir" };
@@ -786,11 +813,22 @@ namespace vesa.api.Seed
                     var customerCompanyName = $"{GetRandomCompanyName(random)} {companyType}";
                     var legalName = customerCompanyName.Replace(companyType, $"Sanayi ve Ticaret {companyType}");
 
+                    startIndex++;
+                    var code = $"CUST{startIndex:0000}";
+                    // Güvenlik: aynı kod var mı kontrol et (yarış durumlarına karşı)
+                    var exists = await context.Customers.IgnoreQueryFilters().AnyAsync(c => c.Code == code);
+                    if (exists)
+                    {
+                        // varsa bir sonraki indexe geç
+                        i--;
+                        continue;
+                    }
+
                     var cust = new core.Models.CRM.Customer
                     {
                         Name = customerCompanyName,
                         LegalName = legalName,
-                        Code = $"CUST{i:0000}",
+                        Code = code,
                         // Demo: CustomerTypeId lookup bağlantısı
                         CustomerTypeId = customerTypeItemIds.Count == 0
                             ? (Guid?)null
@@ -916,8 +954,11 @@ namespace vesa.api.Seed
                     customers.Add(cust);
                 }
 
-                await context.Customers.AddRangeAsync(customers);
-                await context.SaveChangesAsync();
+                if (customers.Count > 0)
+                {
+                    await context.Customers.AddRangeAsync(customers);
+                    await context.SaveChangesAsync();
+                }
             }
         }
 

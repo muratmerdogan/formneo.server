@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace vesa.core.Models
 {
     [Index(nameof(TenantId), nameof(MenuId), nameof(RoleId), IsUnique = true)]
-    public class AspNetRolesTenantMenu : BaseEntity
+    public class AspNetRolesTenantMenu : GlobalBaseEntity
     {
         [ForeignKey("Menus")]
         public Guid MenuId { get; set; }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace vesa.core.Models
 {
-	public class UserTenantRole : BaseEntity
+	public class UserTenantRole : GlobalBaseEntity
 	{
 		[ForeignKey(nameof(User))]
 		public string UserId { get; set; }
