@@ -34,9 +34,7 @@ namespace vesa.service.Services
 			entity.SecondaryEmails = _mapper.Map<List<CustomerEmail>>(dto.Emails ?? new List<CustomerEmailDto>());
 			entity.Phones = _mapper.Map<List<CustomerPhone>>(dto.Phones ?? new List<CustomerPhoneDto>());
 			entity.Notes = _mapper.Map<List<CustomerNote>>(dto.Notes ?? new List<CustomerNoteDto>());
-			entity.Tags = _mapper.Map<List<CustomerTag>>(dto.Tags ?? new List<string>());
-			entity.Documents = _mapper.Map<List<CustomerDocument>>(dto.Documents ?? new List<string>());
-			entity.Sectors = _mapper.Map<List<CustomerSector>>(dto.Sectors ?? new List<string>());
+			entity.Documents = _mapper.Map<List<CustomerDocument>>(dto.Documents ?? new List<CustomerDocument>());
 			entity.CustomFields = _mapper.Map<List<CustomerCustomField>>(dto.CustomFields ?? new List<CustomFieldDto>());
 			entity.Addresses = _mapper.Map<List<CustomerAddress>>(dto.Addresses ?? new List<CustomerAddressDto>());
 			entity.Officials = _mapper.Map<List<CustomerOfficial>>(dto.Officials ?? new List<CustomerOfficialDto>());
@@ -81,13 +79,7 @@ namespace vesa.service.Services
 			_mapper.Map(dto, entity);
 
 			// collections: replace with mapped collections
-			entity.SecondaryEmails = _mapper.Map<List<CustomerEmail>>(dto.Emails ?? new List<CustomerEmailDto>());
-			entity.Phones = _mapper.Map<List<CustomerPhone>>(dto.Phones ?? new List<CustomerPhoneDto>());
-			entity.Notes = _mapper.Map<List<CustomerNote>>(dto.Notes ?? new List<CustomerNoteDto>());
-			entity.Tags = _mapper.Map<List<CustomerTag>>(dto.Tags ?? new List<string>());
-			entity.Documents = _mapper.Map<List<CustomerDocument>>(dto.Documents ?? new List<string>());
-			entity.Sectors = _mapper.Map<List<CustomerSector>>(dto.Sectors ?? new List<string>());
-			entity.CustomFields = _mapper.Map<List<CustomerCustomField>>(dto.CustomFields ?? new List<CustomFieldDto>());
+	
 
 			_customerRepository.Update(entity);
 			await _unitOfWork.CommitAsync();

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace vesa.core.Models.Lookup
 {
-	public class LookupModule : vesa.core.Models.BaseEntity
+	public class LookupModule : vesa.core.Models.GlobalBaseEntity
 	{
 		[Required]
 		[StringLength(128)]

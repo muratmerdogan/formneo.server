@@ -3,10 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace vesa.core.Models.Lookup
 {
-	public class LookupItem : vesa.core.Models.BaseEntity
+	public class LookupItem : vesa.core.Models.GlobalBaseEntity
 	{
 		public Guid CategoryId { get; set; }
 		public LookupCategory Category { get; set; }
+
+		public Guid? TenantId { get; set; }
 
 		[StringLength(64)]
 		public string Code { get; set; }

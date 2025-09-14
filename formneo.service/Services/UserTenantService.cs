@@ -127,15 +127,44 @@ namespace vesa.service.Services
             _unitOfWork.BeginTransaction();
             try
             {
-                // Tenant'a ait mevcut kayıtları temizle
-                var existing = await _genericRepository.Where(x => x.TenantId == dto.TenantId).ToListAsync();
+                // Tenant'a ait mevcut kayıtları filtreleri yok sayarak temizle (duplicate'i önle)
+                var existing = await _genericRepository.GetAll().IgnoreQueryFilters().Where(x => x.TenantId == dto.TenantId).ToListAsync();
                 if (existing.Any())
                 {
                     _genericRepository.RemoveRange(existing);
                 }
 
-                // Gelen kullanıcı id listesiyle yeni kayıtları hazırla
-                var newEntities = dto.UserIds.Distinct().Select(userId => new UserTenant
+                // Sadece mevcut (AspNetUsers) kullanıcılarını al
+                var distinctUserIds = dto.UserIds.Distinct().ToList();
+                // DbContext'e erişim için repository'nin context'ini kullan
+                // IGenericRepository üzerinden Users setine doğrudan erişim yok; bu yüzden EF sorgusu yerine FK ihlalini önlemek için
+                // var olan UserId'leri doğrulayan hafif bir kontrol yapacağız.
+                // GenericRepository, AppDbContext'e sahip olduğundan, oradan doğrulama yapmak en sağlıklısı olur; ancak
+                // mevcut mimaride doğrudan erişim yoksa, ekleme sırasında başarısız olacak kayıtları filtreleyebilmek için
+                // UserTenantRepository'de Include ile okuma yapılabildiği varsayımıyla _repository üzerinden context'e erişiyoruz.
+
+                // Context'e erişim: _repository as vesa.repository.Repositories.UserTenantRepository
+                var concreteRepo = _repository as vesa.repository.Repositories.UserTenantRepository;
+                var ctx = concreteRepo != null ? concreteRepo.GetType().GetField("_context", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(concreteRepo) as vesa.repository.AppDbContext : null;
+
+                List<string> validUserIds = distinctUserIds;
+                if (ctx != null)
+                {
+                    validUserIds = await ctx.Users
+                        .Where(u => distinctUserIds.Contains(u.Id))
+                        .Select(u => u.Id)
+                        .ToListAsync();
+                }
+
+                var invalidUserIds = distinctUserIds.Except(validUserIds).ToList();
+                if (invalidUserIds.Any())
+                {
+                    // Geçersiz kullanıcı ID'leri varsa 400 fırlat
+                    throw new InvalidOperationException($"Geçersiz kullanıcı Id'leri: {string.Join(", ", invalidUserIds)}");
+                }
+
+                // Geçerli kullanıcı id listesiyle yeni kayıtları hazırla
+                var newEntities = validUserIds.Select(userId => new UserTenant
                 {
                     UserId = userId,
                     TenantId = dto.TenantId,

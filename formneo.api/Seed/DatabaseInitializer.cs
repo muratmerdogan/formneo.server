@@ -4,9 +4,11 @@ using vesa.core.Models;
 using vesa.repository;
 using vesa.core.Models.CRM;
 using vesa.core.Models.Lookup;
+using Microsoft.Extensions.Configuration;
 using DocumentFormat.OpenXml.Wordprocessing;
 using FluentValidation;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using vesa.core.EnumExtensions;
 
 namespace vesa.api.Seed
 {
@@ -18,8 +20,81 @@ namespace vesa.api.Seed
 
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserApp>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
             await context.Database.EnsureCreatedAsync();
+
+            // Multi-tenancy default IDs from configuration
+            Guid defaultTenantId = Guid.Empty;
+            Guid defaultCompanyId = Guid.Empty;
+            Guid defaultPlantId = Guid.Empty;
+
+            Guid.TryParse(configuration["MultiTenancy:DefaultMainClientId"], out defaultTenantId);
+            Guid.TryParse(configuration["MultiTenancy:DefaultCompanyId"], out defaultCompanyId);
+            Guid.TryParse(configuration["MultiTenancy:DefaultPlantId"], out defaultPlantId);
+
+            // Seed MainClient (Tenant): Danube Yazılım
+            if (defaultTenantId != Guid.Empty)
+            {
+                var existingTenant = await context.MainClients.AsNoTracking().FirstOrDefaultAsync(x => x.Id == defaultTenantId);
+                if (existingTenant == null)
+                {
+                    var tenant = new MainClient
+                    {
+                        Id = defaultTenantId,
+                        Name = "Danube Yazılım",
+                        Slug = "danube-yazilim",
+                        Email = "info@danubeyazilim.com",
+                        PhoneNumber = "+90 212 000 0000",
+                        Status = MainClientStatus.Active,
+                        Plan = MainClientPlan.Free,
+                        Timezone = "Europe/Istanbul",
+                        FeatureFlags = "{}",
+                        Quotas = "{}",
+                        CreatedDate = DateTime.UtcNow,
+                        IsActive = true
+                    };
+                    context.MainClients.Add(tenant);
+                    await context.SaveChangesAsync();
+                }
+            }
+
+            // Seed Company under tenant
+            if (defaultTenantId != Guid.Empty && defaultCompanyId != Guid.Empty)
+            {
+                var existingCompany = await context.Companies.AsNoTracking().FirstOrDefaultAsync(x => x.Id == defaultCompanyId);
+                if (existingCompany == null)
+                {
+                    var company = new Company
+                    {
+                        Id = defaultCompanyId,
+                        Name = "Default Company",
+                        ClientId = defaultTenantId,
+                        CreatedDate = DateTime.UtcNow
+                    };
+                    context.Companies.Add(company);
+                    await context.SaveChangesAsync();
+                }
+            }
+
+            // Seed Plant under company
+            if (defaultCompanyId != Guid.Empty && defaultPlantId != Guid.Empty)
+            {
+                var existingPlant = await context.Plant.AsNoTracking().FirstOrDefaultAsync(x => x.Id == defaultPlantId);
+                if (existingPlant == null)
+                {
+                    var plant = new Plant
+                    {
+                        Id = defaultPlantId,
+                        Name = "Default Plant",
+                        CompanyId = defaultCompanyId,
+                        CreatedDate = DateTime.UtcNow
+                    };
+                    context.Plant.Add(plant);
+                    await context.SaveChangesAsync();
+                }
+            }
             // Lookup seed: Modules + CRM kategorileri ve örnek itemlar
             if (!await context.LookupModules.AnyAsync())
             {
@@ -352,6 +427,181 @@ namespace vesa.api.Seed
                 }
             }
 
+            // Seed: 50 adet tenant ve her birine tenant-bazlı lookup kopyaları (hibrit model)
+            // Idempotent: slug'a göre kontrol ederek oluşturur
+            var existingTenantSlugs = await context.MainClients.Select(t => t.Slug).ToListAsync();
+            var tenantList = new List<MainClient>();
+            string[] tenantNames = new[]
+            {
+                "Anka Teknoloji","Zirve Yazılım","Atlas Bilişim","Nova Sistem","Pera Dijital",
+                "Eksen Data","Mavi Bulut","Kanyon Yazılım","Delta Çözümleri","Vizyon Tech",
+                "Akıncı Sistem","Ufuk Yazılım","Sinerji Bilişim","Orion Teknoloji","Lale Dijital",
+                "Ayazağa Sistem","Çınar Yazılım","Kule Bilişim","Safir Teknoloji","Alfa Dijital",
+                "Beta Sistem","Gamma Yazılım","Sigma Bilişim","Kuzey Teknoloji","Güney Yazılım",
+                "Doğu Sistem","Batı Bilişim","Deniz Teknoloji","Dağ Yazılım","Güneş Dijital",
+                "Ay Bilişim","Yıldız Sistem","Bulut Yazılım","Perge Teknoloji","Göktürk Dijital",
+                "Ege Yazılım","Marmara Sistem","Akdeniz Bilişim","Karadeniz Tech","İç Anadolu Yazılım",
+                "Doğu Anadolu Sistem","Güneydoğu Bilişim","Pamir Teknoloji","Fırat Yazılım","Dicle Sistem",
+                "Aras Bilişim","Nemrut Dijital","Kapadokya Yazılım","Göbeklitepe Teknoloji","Truva Bilişim"
+            };
+            foreach (var name in tenantNames)
+            {
+                var slug = Slugify(name);
+                if (existingTenantSlugs.Contains(slug)) continue;
+                var t = new MainClient
+                {
+                    Id = Guid.NewGuid(),
+                    Name = name,
+                    Slug = slug,
+                    Email = $"admin@{slug}.local",
+                    PhoneNumber = "+90 212 000 0000",
+                    Status = MainClientStatus.Active,
+                    Plan = MainClientPlan.Free,
+                    Timezone = "Europe/Istanbul",
+                    FeatureFlags = "{}",
+                    Quotas = "{}",
+                    CreatedDate = DateTime.UtcNow,
+                    IsActive = true
+                };
+                tenantList.Add(t);
+            }
+            if (tenantList.Count > 0)
+            {
+                await context.MainClients.AddRangeAsync(tenantList);
+                await context.SaveChangesAsync();
+            }
+
+            // Global kategorileri ve item'ları çek
+            var globalCategories = await context.LookupCategories
+                .AsNoTracking()
+                .Where(c => c.TenantId == null)
+                .ToListAsync();
+            var globalCategoryIds = globalCategories.Select(c => c.Id).ToList();
+            var globalItems = await context.LookupItems
+                .AsNoTracking()
+                .Where(i => globalCategoryIds.Contains(i.CategoryId))
+                .ToListAsync();
+
+            // Tüm tenantlar (yeni eklenen + mevcut default) için tenant-bazlı kopyalar oluştur
+            var allTenants = await context.MainClients.AsNoTracking().ToListAsync();
+            foreach (var tenant in allTenants)
+            {
+                // Her kategori için tenant'a özel kopya var mı?
+                var tenantCatKeys = await context.LookupCategories
+                    .AsNoTracking()
+                    .Where(c => c.TenantId == tenant.Id)
+                    .Select(c => c.Key)
+                    .ToListAsync();
+
+                var newTenantCategories = new List<LookupCategory>();
+                foreach (var gcat in globalCategories)
+                {
+                    if (tenantCatKeys.Contains(gcat.Key)) continue; // zaten var
+                    var tcat = new LookupCategory
+                    {
+                        Id = Guid.NewGuid(),
+                        Key = gcat.Key,
+                        Description = gcat.Description,
+                        IsTenantScoped = true,
+                        IsReadOnly = false,
+                        ModuleId = gcat.ModuleId,
+                        TenantId = tenant.Id
+                    };
+                    newTenantCategories.Add(tcat);
+                }
+                if (newTenantCategories.Count > 0)
+                {
+                    await context.LookupCategories.AddRangeAsync(newTenantCategories);
+                    await context.SaveChangesAsync();
+                }
+
+                // Eşleştirme: Key'e göre yeni oluşturulan veya mevcut tenant kategorilerini map et
+                var tenantCategories = await context.LookupCategories
+                    .AsNoTracking()
+                    .Where(c => c.TenantId == tenant.Id)
+                    .ToListAsync();
+                var keyToTenantCategory = tenantCategories.ToDictionary(c => c.Key, c => c);
+
+                // Her tenant kategorisi için item kopyala (eğer yoksa)
+                var newTenantItems = new List<LookupItem>();
+                foreach (var gcat in globalCategories)
+                {
+                    if (!keyToTenantCategory.TryGetValue(gcat.Key, out var tcat)) continue;
+
+                    var tenantHasItems = await context.LookupItems
+                        .AsNoTracking()
+                        .AnyAsync(i => i.CategoryId == tcat.Id);
+                    if (tenantHasItems) continue;
+
+                    var sourceItems = globalItems.Where(i => i.CategoryId == gcat.Id).ToList();
+                    foreach (var si in sourceItems)
+                    {
+                        var ti = new LookupItem
+                        {
+                            Id = Guid.NewGuid(),
+                            CategoryId = tcat.Id,
+                            Code = si.Code,
+                            Name = si.Name,
+                            NameLocalizedJson = si.NameLocalizedJson,
+                            OrderNo = si.OrderNo,
+                            IsActive = si.IsActive,
+                            ExternalKey = si.ExternalKey,
+                            TenantId = tenant.Id
+                        };
+                        newTenantItems.Add(ti);
+                    }
+                }
+                if (newTenantItems.Count > 0)
+                {
+                    await context.LookupItems.AddRangeAsync(newTenantItems);
+                    await context.SaveChangesAsync();
+                }
+
+                // Default tenant user: oluştur ve UserTenant üyeliği ver (idempotent)
+                var defaultEmail = $"user@{tenant.Slug}.local";
+                var tu = await userManager.FindByEmailAsync(defaultEmail);
+                if (tu == null)
+                {
+                    var pwd = Environment.GetEnvironmentVariable("SEED_TENANT_USER_PASSWORD") ?? "User1234!";
+                    var newUser = new UserApp
+                    {
+                        UserName = defaultEmail,
+                        Email = defaultEmail,
+                        EmailConfirmed = true,
+                        FirstName = tenant.Name.Split(' ').FirstOrDefault() ?? "Tenant",
+                        LastName = "Kullanıcı",
+                        isSystemAdmin = false,
+                        canSsoLogin = false
+                    };
+                    var createRes = await userManager.CreateAsync(newUser, pwd);
+                    if (createRes.Succeeded)
+                    {
+                        tu = await userManager.FindByEmailAsync(defaultEmail);
+                    }
+                }
+                // UserTenant link: sadece kullanıcı gerçekten mevcutsa oluştur
+                if (tu != null)
+                {
+                    var existingLink = await context.UserTenants.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.UserId == tu.Id && x.TenantId == tenant.Id);
+                    if (existingLink == null)
+                    {
+                        context.UserTenants.Add(new UserTenant
+                        {
+                            UserId = tu.Id,
+                            TenantId = tenant.Id,
+                            IsActive = true,
+                            HasTicketPermission = true,
+                            HasDepartmentPermission = false,
+                            HasOtherCompanyPermission = false,
+                            HasOtherDeptCalendarPerm = false,
+                            canEditTicket = false,
+                            DontApplyDefaultFilters = false
+                        });
+                        await context.SaveChangesAsync();
+                    }
+                }
+            }
+
             var companyName = "Danube Yazılım";
             var workCompany = await context.WorkCompany.FirstOrDefaultAsync(w => w.Name == companyName);
             if (workCompany == null)
@@ -384,10 +634,113 @@ namespace vesa.api.Seed
                     canSsoLogin = true
                 };
 
-                await userManager.CreateAsync(user, password);
+                var createUserResult = await userManager.CreateAsync(user, password);
+                if (!createUserResult.Succeeded)
+                {
+                    // ignore if already created in a race or constraints
+                }
+                else
+                {
+                    existingUser = await userManager.FindByEmailAsync(adminEmail);
+                }
             }
 
+            // Ensure Global Admin role exists with fixed Id and assign to user
+            var globalAdminRoleId = "ed3a94a5-1586-41f8-9906-a0053b6de848";
+            var role = await roleManager.FindByIdAsync(globalAdminRoleId);
+            if (role == null)
+            {
+                role = new IdentityRole
+                {
+                    Id = globalAdminRoleId,
+                    Name = "FormneoAdmin",
+                    NormalizedName = "FORMNEOADMIN"
+                };
+                var roleCreate = await roleManager.CreateAsync(role);
+                if (!roleCreate.Succeeded)
+                {
+                    // try get by name in case Id conflict
+                    role = await roleManager.FindByNameAsync("FormneoAdmin");
+                }
+            }
 
+            existingUser = existingUser ?? await userManager.FindByEmailAsync(adminEmail);
+            if (existingUser != null && role != null)
+            {
+                var inRole = await userManager.IsInRoleAsync(existingUser, role.Name);
+                if (!inRole)
+                {
+                    await userManager.AddToRoleAsync(existingUser, role.Name);
+                }
+
+                // Set tenant owner if empty
+                if (defaultTenantId != Guid.Empty)
+                {
+                    var tenant = await context.MainClients.FirstOrDefaultAsync(t => t.Id == defaultTenantId);
+                    if (tenant != null && string.IsNullOrEmpty(tenant.OwnerUserId))
+                    {
+                        tenant.OwnerUserId = existingUser.Id;
+                        await context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            // Link specified user to ALL tenants via UserTenants (idempotent)
+            var linkAllEmail = "muratmerdogan@gmail.com";
+            var linkAllUser = await userManager.FindByEmailAsync(linkAllEmail);
+            if (linkAllUser != null)
+            {
+                var allTenantIds = await context.MainClients
+                    .AsNoTracking()
+                    .Select(t => t.Id)
+                    .ToListAsync();
+
+                foreach (var tid in allTenantIds)
+                {
+                    var hasLink = await context.UserTenants
+                        .IgnoreQueryFilters()
+                        .AnyAsync(x => x.UserId == linkAllUser.Id && x.TenantId == tid);
+                    if (!hasLink)
+                    {
+                        context.UserTenants.Add(new UserTenant
+                        {
+                            UserId = linkAllUser.Id,
+                            TenantId = tid,
+                            IsActive = true,
+                            HasTicketPermission = true,
+                            HasDepartmentPermission = true,
+                            HasOtherCompanyPermission = false,
+                            HasOtherDeptCalendarPerm = false,
+                            canEditTicket = true,
+                            DontApplyDefaultFilters = false
+                        });
+                    }
+                }
+                await context.SaveChangesAsync();
+            }
+
+            // Ensure UserTenant membership
+            if (existingUser != null && defaultTenantId != Guid.Empty)
+            {
+                var link = await context.UserTenants.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.UserId == existingUser.Id && x.TenantId == defaultTenantId);
+                if (link == null)
+                {
+                    link = new UserTenant
+                    {
+                        UserId = existingUser.Id,
+                        TenantId = defaultTenantId,
+                        IsActive = true,
+                        HasTicketPermission = true,
+                        HasDepartmentPermission = true,
+                        HasOtherCompanyPermission = false,
+                        HasOtherDeptCalendarPerm = false,
+                        canEditTicket = true,
+                        DontApplyDefaultFilters = false
+                    };
+                    context.UserTenants.Add(link);
+                    await context.SaveChangesAsync();
+                }
+            }
             // CRM: Seed 250 customers if none exist
             if (!await context.Customers.AnyAsync())
             {
@@ -401,6 +754,23 @@ namespace vesa.api.Seed
                 var companyTypes = new[] { "A.Ş.", "Ltd. Şti.", "San. ve Tic. A.Ş.", "Tic. Ltd. Şti.", "İnş. San. Tic. A.Ş." };
                 var tags = new[] { "Potansiyel", "Aktif", "VIP", "Stratejik", "Yeni", "Demo", "Test", "Aday", "Premium", "Gold" };
 
+                // Lookup: CustomerType ve CustomerCategory item'larını çek
+                var customerTypeCategory = await context.LookupCategories.FirstOrDefaultAsync(x => x.Key == "CustomerType");
+                var customerTypeItemIds = customerTypeCategory == null
+                    ? new List<Guid>()
+                    : await context.LookupItems
+                        .Where(i => i.CategoryId == customerTypeCategory.Id)
+                        .Select(i => i.Id)
+                        .ToListAsync();
+
+                var customerCategoryCategory = await context.LookupCategories.FirstOrDefaultAsync(x => x.Key == "CustomerCategory");
+                var customerCategoryItemIds = customerCategoryCategory == null
+                    ? new List<Guid>()
+                    : await context.LookupItems
+                        .Where(i => i.CategoryId == customerCategoryCategory.Id)
+                        .Select(i => i.Id)
+                        .ToListAsync();
+
                 for (int i = 1; i <= 250; i++)
                 {
                     var cityIndex = random.Next(cities.Length);
@@ -408,9 +778,9 @@ namespace vesa.api.Seed
                     var district = districts[random.Next(districts.Length)];
                     var sector = sectors[random.Next(sectors.Length)];
                     var companyType = companyTypes[random.Next(companyTypes.Length)];
-                    var customerType = (CustomerType)random.Next(0, 4);
-                    var category = (CustomerCategory)random.Next(0, 4);
-                    var status = (CustomerStatus)random.Next(0, 3); // Karaliste hariç
+                    var customerType = (string)random.Next(0, 4).ToString();
+                    var category = (string)random.Next(0, 4).ToString();
+                    var status = (string)random.Next(0, 3).ToString(); // Karaliste hariç
                     var lifecycleStage = (LifecycleStage)random.Next(0, 5);
 
                     var customerCompanyName = $"{GetRandomCompanyName(random)} {companyType}";
@@ -421,8 +791,15 @@ namespace vesa.api.Seed
                         Name = customerCompanyName,
                         LegalName = legalName,
                         Code = $"CUST{i:0000}",
-                        CustomerType = customerType,
-                        Category = category,
+                        // Demo: CustomerTypeId lookup bağlantısı
+                        CustomerTypeId = customerTypeItemIds.Count == 0
+                            ? (Guid?)null
+                            : customerTypeItemIds[random.Next(customerTypeItemIds.Count)],
+
+                        CategoryId = customerCategoryItemIds.Count == 0
+                            ? (Guid?)null
+                            : customerCategoryItemIds[random.Next(customerCategoryItemIds.Count)],
+
                         Status = status,
                         LifecycleStage = lifecycleStage,
                         TaxOffice = $"{city} {random.Next(1, 10)}. Vergi Dairesi",
@@ -578,6 +955,21 @@ namespace vesa.api.Seed
         private static string GenerateRandomTaxNumber(Random random)
         {
             return $"{random.Next(1000000000, 2000000000)}";
+        }
+
+        private static string Slugify(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+            var s = text.ToLowerInvariant()
+                .Replace("ç", "c").Replace("ğ", "g").Replace("ı", "i").Replace("ö", "o").Replace("ş", "s").Replace("ü", "u")
+                .Replace("&", " ve ");
+            var chars = s.Select(ch => char.IsLetterOrDigit(ch) ? ch : (ch == ' ' || ch == '-' ? '-' : '\0'))
+                         .Where(ch => ch != '\0')
+                         .ToArray();
+            var slug = new string(chars);
+            while (slug.Contains("--")) slug = slug.Replace("--", "-");
+            slug = slug.Trim('-');
+            return slug;
         }
     }
 }

@@ -14,11 +14,13 @@ namespace vesa.service.Services
 	{
 		private readonly AppDbContext _context;
 		private readonly IMapper _mapper;
+        private readonly ITenantContext _tenantContext;
 
-		public LookupService(AppDbContext context, IMapper mapper)
+		public LookupService(AppDbContext context, IMapper mapper, ITenantContext tenantContext)
 		{
 			_context = context;
 			_mapper = mapper;
+            _tenantContext = tenantContext;
 		}
 
 		public async Task<IEnumerable<LookupCategoryDto>> GetCategoriesAsync(string moduleKey = null)
@@ -28,22 +30,47 @@ namespace vesa.service.Services
 			{
 				query = query.Where(x => x.Module != null && x.Module.Key == moduleKey);
 			}
-			var list = await query.OrderBy(x => x.Key).ToListAsync();
+			var tenantId = _tenantContext?.CurrentTenantId;
+			var list = await query
+				.Where(x => x.TenantId == null || (tenantId != null && x.TenantId == tenantId))
+				.OrderBy(x => x.Key)
+				.ToListAsync();
+			if (tenantId != null)
+			{
+				list = list
+					.GroupBy(c => c.Key)
+					.Select(g => g.FirstOrDefault(c => c.TenantId == tenantId) ?? g.First())
+					.ToList();
+			}
 			return _mapper.Map<IEnumerable<LookupCategoryDto>>(list);
 		}
 
 		public async Task<IEnumerable<LookupItemDto>> GetItemsByKeyAsync(string key)
 		{
+			var tenantId = _tenantContext?.CurrentTenantId;
 			var items = await _context.LookupItems
-				.Where(x => x.IsActive && x.Category.Key == key)
+				.Where(x => x.IsActive && x.Category.Key == key && (x.TenantId == null || (tenantId != null && x.TenantId == tenantId)))
 				.OrderBy(x => x.OrderNo)
 				.ToListAsync();
+			if (tenantId != null)
+			{
+				items = items
+					.GroupBy(i => i.Code)
+					.Select(g => g.FirstOrDefault(i => i.TenantId == tenantId) ?? g.First())
+					.OrderBy(i => i.OrderNo)
+					.ToList();
+			}
 			return _mapper.Map<IEnumerable<LookupItemDto>>(items);
 		}
 
 		public async Task<LookupCategoryDto> CreateCategoryAsync(LookupCategoryDto dto)
 		{
 			var entity = _mapper.Map<LookupCategory>(dto);
+			var tenantId = _tenantContext?.CurrentTenantId;
+			if (tenantId != null && dto.IsTenantScoped)
+			{
+				entity.TenantId = tenantId;
+			}
 			_context.LookupCategories.Add(entity);
 			await _context.SaveChangesAsync();
 			return _mapper.Map<LookupCategoryDto>(entity);
@@ -52,6 +79,15 @@ namespace vesa.service.Services
 		public async Task<LookupItemDto> CreateItemAsync(LookupItemDto dto)
 		{
 			var entity = _mapper.Map<LookupItem>(dto);
+			var tenantId = _tenantContext?.CurrentTenantId;
+			if (tenantId != null)
+			{
+				var cat = await _context.LookupCategories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == dto.CategoryId);
+				if (cat != null && cat.TenantId == tenantId)
+				{
+					entity.TenantId = tenantId;
+				}
+			}
 			_context.LookupItems.Add(entity);
 			await _context.SaveChangesAsync();
 			return _mapper.Map<LookupItemDto>(entity);
@@ -136,16 +172,32 @@ namespace vesa.service.Services
 			var module = await _context.LookupModules.FirstOrDefaultAsync(m => m.Key == moduleKey);
 			if (module == null) return null;
 
+			var tenantId = _tenantContext?.CurrentTenantId;
 			var categories = await _context.LookupCategories
-				.Where(c => c.ModuleId == module.Id)
+				.Where(c => c.ModuleId == module.Id && (c.TenantId == null || (tenantId != null && c.TenantId == tenantId)))
 				.OrderBy(c => c.Key)
 				.ToListAsync();
+			if (tenantId != null)
+			{
+				categories = categories
+					.GroupBy(c => c.Key)
+					.Select(g => g.FirstOrDefault(c => c.TenantId == tenantId) ?? g.First())
+					.ToList();
+			}
 
 			var categoryIds = categories.Select(c => c.Id).ToList();
 			var items = await _context.LookupItems
-				.Where(i => categoryIds.Contains(i.CategoryId))
+				.Where(i => categoryIds.Contains(i.CategoryId) && (i.TenantId == null || (tenantId != null && i.TenantId == tenantId)))
 				.OrderBy(i => i.CategoryId).ThenBy(i => i.OrderNo)
 				.ToListAsync();
+			if (tenantId != null)
+			{
+				items = items
+					.GroupBy(i => new { i.CategoryId, i.Code })
+					.Select(g => g.FirstOrDefault(i => i.TenantId == tenantId) ?? g.First())
+					.OrderBy(i => i.CategoryId).ThenBy(i => i.OrderNo)
+					.ToList();
+			}
 
 			var result = new LookupTreeDto
 			{
@@ -165,6 +217,8 @@ namespace vesa.service.Services
 
 			return result;
 		}
+
+
 	}
 }
 

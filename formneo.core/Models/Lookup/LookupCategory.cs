@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace vesa.core.Models.Lookup
 {
-	public class LookupCategory : vesa.core.Models.BaseEntity
+	public class LookupCategory : vesa.core.Models.GlobalBaseEntity
 	{
 		[Required]
 		[StringLength(128)]
@@ -14,6 +14,8 @@ namespace vesa.core.Models.Lookup
 
 		public bool IsTenantScoped { get; set; }
 		public bool IsReadOnly { get; set; }
+
+		public Guid? TenantId { get; set; }
 
 		public Guid? ModuleId { get; set; }
 		public LookupModule? Module { get; set; }

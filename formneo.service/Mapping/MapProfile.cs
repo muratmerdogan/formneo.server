@@ -326,26 +326,14 @@ namespace vesa.service.Mapping
 				.ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags.Select(t => t.Tag).ToList()))
 				.ForMember(dest => dest.Sectors, opt => opt.MapFrom(src => src.Sectors.Select(s => s.Sector).ToList()))
 				.ForMember(dest => dest.Documents, opt => opt.MapFrom(src => src.Documents.Select(d => d.FilePath).ToList()))
-				.ForMember(dest => dest.CustomFields, opt => opt.MapFrom(src => src.CustomFields))
-				.ReverseMap();
-			CreateMap<vesa.core.Models.CRM.Customer, CustomerInsertDto>()
-				.ForMember(dest => dest.CustomerTypeId, opt => opt.MapFrom(src => (int)src.CustomerType))
-				.ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => (int)src.Category))
-				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => (int)src.Status))
-				.ForMember(dest => dest.LifecycleStage, opt => opt.MapFrom(src => (int)src.LifecycleStage))
-				.ForMember(dest => dest.EmailSecondary, opt => opt.MapFrom(src => src.SecondaryEmails))
-				.ForMember(dest => dest.Emails, opt => opt.MapFrom(src => src.SecondaryEmails))
-				.ForMember(dest => dest.Phones, opt => opt.MapFrom(src => src.Phones))
-				.ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
-				.ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags))
-				.ForMember(dest => dest.Documents, opt => opt.MapFrom(src => src.Documents))
-				.ForMember(dest => dest.Sectors, opt => opt.MapFrom(src => src.Sectors))
-				.ForMember(dest => dest.CustomFields, opt => opt.MapFrom(src => src.CustomFields))
-				.ReverseMap()
-				.ForMember(dest => dest.CustomerType, opt => opt.MapFrom(src => (CustomerType)src.CustomerTypeId))
-				.ForMember(dest => dest.Category, opt => opt.MapFrom(src => (CustomerCategory)src.CategoryId))
-				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => (CustomerStatus)src.Status))
-				.ForMember(dest => dest.LifecycleStage, opt => opt.MapFrom(src => (LifecycleStage)src.LifecycleStage));
+				.ForMember(dest => dest.CustomFields, opt => opt.MapFrom(src => src.CustomFields));
+
+			// Insert/Update: DTO -> Entity
+			CreateMap<CustomerInsertDto, vesa.core.Models.CRM.Customer>()
+				.ForMember(dest => dest.CustomerTypeId, opt => opt.MapFrom(src => src.CustomerTypeId));
+
+			CreateMap<CustomerUpdateDto, vesa.core.Models.CRM.Customer>()
+				.ForMember(dest => dest.CustomerTypeId, opt => opt.MapFrom(src => src.CustomerTypeId));
 
 			CreateMap<CustomerEmail, string>().ConvertUsing(x => x.Email);
 			CreateMap<string, CustomerEmail>().ForMember(dest => dest.Email, opt => opt.MapFrom(src => src));

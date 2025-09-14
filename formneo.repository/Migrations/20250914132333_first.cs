@@ -27,6 +27,88 @@ namespace formneo.repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CrmChangeLogs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    EntityName = table.Column<string>(type: "text", nullable: false),
+                    EntityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Action = table.Column<int>(type: "integer", nullable: false),
+                    PropertyName = table.Column<string>(type: "text", nullable: false),
+                    OldValue = table.Column<string>(type: "text", nullable: false),
+                    NewValue = table.Column<string>(type: "text", nullable: false),
+                    ChangedBy = table.Column<string>(type: "text", nullable: false),
+                    ChangedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CrmChangeLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LookupModules",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Key = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    IsTenantScoped = table.Column<bool>(type: "boolean", nullable: false),
+                    IsReadOnly = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LookupModules", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Menus",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    MenuCode = table.Column<string>(type: "text", nullable: false),
+                    ParentMenuId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Route = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Href = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Icon = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    ShowMenu = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Menus", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Menus_Menus_ParentMenuId",
+                        column: x => x.ParentMenuId,
+                        principalTable: "Menus",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRefreshToken",
                 columns: table => new
                 {
@@ -61,6 +143,133 @@ namespace formneo.repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LookupCategories",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Key = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Description = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: true),
+                    IsTenantScoped = table.Column<bool>(type: "boolean", nullable: false),
+                    IsReadOnly = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ModuleId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LookupCategories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LookupCategories_LookupModules_ModuleId",
+                        column: x => x.ModuleId,
+                        principalTable: "LookupModules",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetRolesMenu",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    MenuId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoleId = table.Column<string>(type: "text", nullable: false),
+                    CanView = table.Column<bool>(type: "boolean", nullable: false),
+                    CanAdd = table.Column<bool>(type: "boolean", nullable: false),
+                    CanEdit = table.Column<bool>(type: "boolean", nullable: false),
+                    CanDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRolesMenu", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRolesMenu_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AspNetRolesMenu_Menus_MenuId",
+                        column: x => x.MenuId,
+                        principalTable: "Menus",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LookupItems",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Code = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    NameLocalizedJson = table.Column<string>(type: "text", nullable: true),
+                    OrderNo = table.Column<int>(type: "integer", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    ExternalKey = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LookupItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LookupItems_LookupCategories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "LookupCategories",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Activities",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OpportunityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    DueDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Subject = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    AssignedToUserId = table.Column<string>(type: "text", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    EndTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Activities", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ApproveItems",
                 columns: table => new
                 {
@@ -91,12 +300,13 @@ namespace formneo.repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetRolesMenu",
+                name: "AspNetRolesTenantMenu",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     MenuId = table.Column<Guid>(type: "uuid", nullable: false),
                     RoleId = table.Column<string>(type: "text", nullable: false),
+                    TenantId = table.Column<Guid>(type: "uuid", nullable: false),
                     CanView = table.Column<bool>(type: "boolean", nullable: false),
                     CanAdd = table.Column<bool>(type: "boolean", nullable: false),
                     CanEdit = table.Column<bool>(type: "boolean", nullable: false),
@@ -115,11 +325,16 @@ namespace formneo.repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetRolesMenu", x => x.Id);
+                    table.PrimaryKey("PK_AspNetRolesTenantMenu", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetRolesMenu_AspNetRoles_RoleId",
+                        name: "FK_AspNetRolesTenantMenu_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AspNetRolesTenantMenu_Menus_MenuId",
+                        column: x => x.MenuId,
+                        principalTable: "Menus",
                         principalColumn: "Id");
                 });
 
@@ -184,8 +399,6 @@ namespace formneo.repository.Migrations
                     vacationMode = table.Column<bool>(type: "boolean", nullable: false),
                     LastLoginDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     LastLoginIp = table.Column<string>(type: "text", nullable: true),
-                    manager1 = table.Column<string>(type: "text", nullable: true),
-                    manager2 = table.Column<string>(type: "text", nullable: true),
                     profileInfo = table.Column<string>(type: "text", nullable: true),
                     Title = table.Column<string>(type: "text", nullable: true),
                     PhoneNumber = table.Column<string>(type: "text", nullable: true),
@@ -200,18 +413,10 @@ namespace formneo.repository.Migrations
                     SAPPositionText = table.Column<string>(type: "text", nullable: true),
                     TicketDepartmentId = table.Column<Guid>(type: "uuid", nullable: true),
                     WorkCompanyId = table.Column<Guid>(type: "uuid", nullable: true),
-                    HasTicketPermission = table.Column<bool>(type: "boolean", nullable: false),
-                    HasDepartmentPermission = table.Column<bool>(type: "boolean", nullable: false),
-                    HasOtherCompanyPermission = table.Column<bool>(type: "boolean", nullable: false),
-                    HasOtherDeptCalendarPerm = table.Column<bool>(type: "boolean", nullable: false),
                     ResetPasswordCode = table.Column<string>(type: "text", nullable: true),
                     ResetCodeExpiry = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     PositionId = table.Column<Guid>(type: "uuid", nullable: true),
                     UserLevel = table.Column<int>(type: "integer", nullable: false),
-                    mainManagerUserAppId = table.Column<Guid>(type: "uuid", nullable: true),
-                    canEditTicket = table.Column<bool>(type: "boolean", nullable: false),
-                    DontApplyDefaultFilters = table.Column<bool>(type: "boolean", nullable: false),
-                    PCname = table.Column<string>(type: "text", nullable: true),
                     DepartmentsId = table.Column<Guid>(type: "uuid", nullable: true),
                     FormAuthId = table.Column<Guid>(type: "uuid", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -413,6 +618,71 @@ namespace formneo.repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerTypeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    LegalName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    CompanyType = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    Code = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    TaxOffice = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    TaxNumber = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
+                    IsReferenceCustomer = table.Column<bool>(type: "boolean", nullable: false),
+                    LogoFilePath = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: true),
+                    Note = table.Column<string>(type: "text", nullable: true),
+                    TwitterUrl = table.Column<string>(type: "text", nullable: true),
+                    LinkedinUrl = table.Column<string>(type: "text", nullable: true),
+                    InstagramUrl = table.Column<string>(type: "text", nullable: true),
+                    OwnerId = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    LifecycleStage = table.Column<int>(type: "integer", nullable: false),
+                    NextActivityDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false, defaultValue: new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customers_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Customers_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Customers_LookupItems_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "LookupItems",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Customers_LookupItems_CustomerTypeId",
+                        column: x => x.CustomerTypeId,
+                        principalTable: "LookupItems",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Customers_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Departments",
                 columns: table => new
                 {
@@ -494,57 +764,6 @@ namespace formneo.repository.Migrations
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Kanban_Plant_PlantId",
-                        column: x => x.PlantId,
-                        principalTable: "Plant",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Menus",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    MenuCode = table.Column<string>(type: "text", nullable: false),
-                    ParentMenuId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Route = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Href = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Icon = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    Order = table.Column<int>(type: "integer", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    ShowMenu = table.Column<bool>(type: "boolean", nullable: false),
-                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
-                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Menus", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Menus_Clients_MainClientId",
-                        column: x => x.MainClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Menus_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Menus_Menus_ParentMenuId",
-                        column: x => x.ParentMenuId,
-                        principalTable: "Menus",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Menus_Plant_PlantId",
                         column: x => x.PlantId,
                         principalTable: "Plant",
                         principalColumn: "Id");
@@ -684,6 +903,56 @@ namespace formneo.repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RoleTenants",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoleId = table.Column<string>(type: "text", nullable: false),
+                    TenantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    IsLocked = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoleTenants", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RoleTenants_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RoleTenants_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RoleTenants_Clients_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RoleTenants_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RoleTenants_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TicketRuleEngine",
                 columns: table => new
                 {
@@ -723,6 +992,65 @@ namespace formneo.repository.Migrations
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TicketRuleEngine_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserTenants",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    TenantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    HasTicketPermission = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    HasDepartmentPermission = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    HasOtherCompanyPermission = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    HasOtherDeptCalendarPerm = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    canEditTicket = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    DontApplyDefaultFilters = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    mainManagerUserAppId = table.Column<Guid>(type: "uuid", nullable: true),
+                    PCname = table.Column<string>(type: "text", nullable: true),
+                    manager1 = table.Column<string>(type: "text", nullable: true),
+                    manager2 = table.Column<string>(type: "text", nullable: true),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserTenants", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserTenants_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserTenants_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserTenants_Clients_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserTenants_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserTenants_Plant_PlantId",
                         column: x => x.PlantId,
                         principalTable: "Plant",
                         principalColumn: "Id");
@@ -817,6 +1145,592 @@ namespace formneo.repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustomerAddresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Country = table.Column<string>(type: "text", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: false),
+                    District = table.Column<string>(type: "text", nullable: false),
+                    PostalCode = table.Column<string>(type: "text", nullable: false),
+                    Line1 = table.Column<string>(type: "text", nullable: false),
+                    Line2 = table.Column<string>(type: "text", nullable: false),
+                    IsDefaultBilling = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDefaultShipping = table.Column<bool>(type: "boolean", nullable: false),
+                    IsBilling = table.Column<bool>(type: "boolean", nullable: false),
+                    IsShipping = table.Column<bool>(type: "boolean", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false, defaultValue: new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerAddresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerAddresses_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerAddresses_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerAddresses_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerAddresses_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerCustomFields",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FieldId = table.Column<string>(type: "text", nullable: false),
+                    FieldType = table.Column<string>(type: "text", nullable: false),
+                    Label = table.Column<string>(type: "text", nullable: false),
+                    ValueJson = table.Column<string>(type: "text", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false, defaultValue: new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerCustomFields", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerCustomFields_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerCustomFields_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerCustomFields_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerCustomFields_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerDocuments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    FilePath = table.Column<string>(type: "text", nullable: false),
+                    ContentType = table.Column<string>(type: "text", nullable: false),
+                    FileSize = table.Column<long>(type: "bigint", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Category = table.Column<string>(type: "text", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false, defaultValue: new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerDocuments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerDocuments_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerDocuments_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerDocuments_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerDocuments_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerEmails",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Notify = table.Column<bool>(type: "boolean", nullable: false),
+                    Bulk = table.Column<bool>(type: "boolean", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    IsPrimary = table.Column<bool>(type: "boolean", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false, defaultValue: new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerEmails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerEmails_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerEmails_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerEmails_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerEmails_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerNotes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false, defaultValue: new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerNotes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerNotes_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerNotes_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerNotes_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerNotes_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerOfficials",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FullName = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Department = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false),
+                    IsPrimary = table.Column<bool>(type: "boolean", nullable: false),
+                    KvkkConsent = table.Column<bool>(type: "boolean", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false, defaultValue: new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerOfficials", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerOfficials_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerOfficials_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerOfficials_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerOfficials_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerPhones",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Label = table.Column<string>(type: "text", nullable: false),
+                    Number = table.Column<string>(type: "text", nullable: false),
+                    IsPrimary = table.Column<bool>(type: "boolean", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false, defaultValue: new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerPhones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerPhones_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerPhones_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerPhones_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerPhones_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerSectors",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Sector = table.Column<string>(type: "text", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false, defaultValue: new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerSectors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerSectors_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerSectors_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerSectors_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerSectors_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerTags",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Tag = table.Column<string>(type: "text", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false, defaultValue: new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerTags", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerTags_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerTags_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerTags_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CustomerTags_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Opportunities",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Stage = table.Column<int>(type: "integer", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: true),
+                    Currency = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
+                    Probability = table.Column<int>(type: "integer", nullable: true),
+                    ExpectedCloseDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Source = table.Column<string>(type: "text", nullable: false),
+                    OwnerUserId = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Opportunities", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Opportunities_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Opportunities_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Opportunities_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Opportunities_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reminders",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ActivityId = table.Column<Guid>(type: "uuid", nullable: true),
+                    RemindAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Message = table.Column<string>(type: "text", nullable: false),
+                    Channel = table.Column<string>(type: "text", nullable: false),
+                    IsSent = table.Column<bool>(type: "boolean", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reminders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reminders_Activities_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activities",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Reminders_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Reminders_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Reminders_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Reminders_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SpecialDays",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsAnnual = table.Column<bool>(type: "boolean", nullable: false),
+                    AdvanceNotifyDays = table.Column<int>(type: "integer", nullable: false),
+                    Channel = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    MessageTemplate = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SpecialDays", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SpecialDays_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SpecialDays_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SpecialDays_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_SpecialDays_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Employee",
                 columns: table => new
                 {
@@ -879,6 +1793,55 @@ namespace formneo.repository.Migrations
                         name: "FK_Employee_Plant_PlantId",
                         column: x => x.PlantId,
                         principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserTenantRoles",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    RoleTenantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserTenantRoles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserTenantRoles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserTenantRoles_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserTenantRoles_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserTenantRoles_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserTenantRoles_RoleTenants_RoleTenantId",
+                        column: x => x.RoleTenantId,
+                        principalTable: "RoleTenants",
                         principalColumn: "Id");
                 });
 
@@ -1026,6 +1989,121 @@ namespace formneo.repository.Migrations
                         name: "FK_WorkflowHead_WorkFlowDefination_WorkFlowDefinationId",
                         column: x => x.WorkFlowDefinationId,
                         principalTable: "WorkFlowDefination",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Meetings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OpportunityId = table.Column<Guid>(type: "uuid", nullable: true),
+                    StartTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Subject = table.Column<string>(type: "text", nullable: false),
+                    Location = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    OrganizerUserId = table.Column<string>(type: "text", nullable: false),
+                    AttendeesJson = table.Column<string>(type: "text", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Meetings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Meetings_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Meetings_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Meetings_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Meetings_Opportunities_OpportunityId",
+                        column: x => x.OpportunityId,
+                        principalTable: "Opportunities",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Meetings_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Quotes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OpportunityId = table.Column<Guid>(type: "uuid", nullable: true),
+                    QuoteNo = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    QuoteDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ValidUntil = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Currency = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
+                    Subtotal = table.Column<decimal>(type: "numeric", nullable: false),
+                    DiscountTotal = table.Column<decimal>(type: "numeric", nullable: false),
+                    TaxTotal = table.Column<decimal>(type: "numeric", nullable: false),
+                    GrandTotal = table.Column<decimal>(type: "numeric", nullable: false),
+                    Notes = table.Column<string>(type: "text", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Quotes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Quotes_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Quotes_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Quotes_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Quotes_Opportunities_OpportunityId",
+                        column: x => x.OpportunityId,
+                        principalTable: "Opportunities",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Quotes_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
                         principalColumn: "Id");
                 });
 
@@ -1484,6 +2562,57 @@ namespace formneo.repository.Migrations
                         name: "FK_WorkflowItem_WorkflowHead_WorkflowHeadId",
                         column: x => x.WorkflowHeadId,
                         principalTable: "WorkflowHead",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuoteLines",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    QuoteId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ItemCode = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    ItemName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Unit = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
+                    Quantity = table.Column<decimal>(type: "numeric", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    DiscountRate = table.Column<decimal>(type: "numeric", nullable: false),
+                    TaxRate = table.Column<decimal>(type: "numeric", nullable: false),
+                    LineTotal = table.Column<decimal>(type: "numeric", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
+                    MainClientId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PlantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    UniqNumber = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuoteLines", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_QuoteLines_Clients_MainClientId",
+                        column: x => x.MainClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_QuoteLines_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_QuoteLines_Plant_PlantId",
+                        column: x => x.PlantId,
+                        principalTable: "Plant",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_QuoteLines_Quotes_QuoteId",
+                        column: x => x.QuoteId,
+                        principalTable: "Quotes",
                         principalColumn: "Id");
                 });
 
@@ -2380,17 +3509,42 @@ namespace formneo.repository.Migrations
             migrationBuilder.InsertData(
                 table: "Clients",
                 columns: new[] { "Id", "BillingCustomerId", "BillingEmail", "CreatedDate", "CustomDomain", "DomainVerified", "Email", "FeatureFlags", "IsActive", "LogoUrl", "Name", "OwnerUserId", "PhoneNumber", "Plan", "Quotas", "Slug", "SsoMetadataUrl", "SsoType", "Status", "Timezone", "UpdatedDate" },
-                values: new object[] { new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"), null, null, new DateTime(2025, 8, 9, 18, 41, 5, 758, DateTimeKind.Utc).AddTicks(3956), null, false, "info@vesacons.com", "{}", true, null, "RonesansHolding", null, "5069112452", 0, "{}", null, null, null, 0, "Europe/Istanbul", null });
+                values: new object[] { new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"), null, null, new DateTime(2025, 9, 14, 13, 23, 31, 596, DateTimeKind.Utc).AddTicks(3402), null, false, "info@vesacons.com", "{}", true, null, "RonesansHolding", null, "5069112452", 0, "{}", null, null, null, 0, "Europe/Istanbul", null });
 
             migrationBuilder.InsertData(
                 table: "Companies",
                 columns: new[] { "Id", "ClientId", "CreatedDate", "Name", "UpdatedDate" },
-                values: new object[] { new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"), new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"), new DateTime(2025, 8, 9, 18, 41, 5, 758, DateTimeKind.Utc).AddTicks(1428), "RonesansHolding", null });
+                values: new object[] { new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"), new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"), new DateTime(2025, 9, 14, 13, 23, 31, 595, DateTimeKind.Utc).AddTicks(6038), "RonesansHolding", null });
 
             migrationBuilder.InsertData(
                 table: "Plant",
                 columns: new[] { "Id", "CompanyId", "CreatedDate", "Name", "UpdatedDate" },
-                values: new object[] { new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"), new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"), new DateTime(2025, 8, 9, 18, 41, 5, 758, DateTimeKind.Utc).AddTicks(4242), "RonesansHoldingTurkey", null });
+                values: new object[] { new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"), new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"), new DateTime(2025, 9, 14, 13, 23, 31, 596, DateTimeKind.Utc).AddTicks(3798), "RonesansHoldingTurkey", null });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activities_CompanyId",
+                table: "Activities",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activities_CustomerId",
+                table: "Activities",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activities_MainClientId",
+                table: "Activities",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activities_OpportunityId",
+                table: "Activities",
+                column: "OpportunityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activities_PlantId",
+                table: "Activities",
+                column: "PlantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ApproveItems_CompanyId",
@@ -2424,30 +3578,46 @@ namespace formneo.repository.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetRolesMenu_CompanyId",
-                table: "AspNetRolesMenu",
-                column: "CompanyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetRolesMenu_MainClientId",
-                table: "AspNetRolesMenu",
-                column: "MainClientId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRolesMenu_MenuId_RoleId",
                 table: "AspNetRolesMenu",
                 columns: new[] { "MenuId", "RoleId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetRolesMenu_PlantId",
-                table: "AspNetRolesMenu",
-                column: "PlantId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRolesMenu_RoleId",
                 table: "AspNetRolesMenu",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRolesTenantMenu_CompanyId",
+                table: "AspNetRolesTenantMenu",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRolesTenantMenu_MainClientId",
+                table: "AspNetRolesTenantMenu",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRolesTenantMenu_MenuId",
+                table: "AspNetRolesTenantMenu",
+                column: "MenuId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRolesTenantMenu_PlantId",
+                table: "AspNetRolesTenantMenu",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRolesTenantMenu_RoleId",
+                table: "AspNetRolesTenantMenu",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRolesTenantMenu_TenantId_MenuId_RoleId",
+                table: "AspNetRolesTenantMenu",
+                columns: new[] { "TenantId", "MenuId", "RoleId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -2621,6 +3791,218 @@ namespace formneo.repository.Migrations
                 name: "IX_Companies_ClientId",
                 table: "Companies",
                 column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerAddresses_CompanyId",
+                table: "CustomerAddresses",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerAddresses_CustomerId",
+                table: "CustomerAddresses",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerAddresses_MainClientId",
+                table: "CustomerAddresses",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerAddresses_PlantId",
+                table: "CustomerAddresses",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerCustomFields_CompanyId",
+                table: "CustomerCustomFields",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerCustomFields_CustomerId",
+                table: "CustomerCustomFields",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerCustomFields_MainClientId",
+                table: "CustomerCustomFields",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerCustomFields_PlantId",
+                table: "CustomerCustomFields",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerDocuments_CompanyId",
+                table: "CustomerDocuments",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerDocuments_CustomerId",
+                table: "CustomerDocuments",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerDocuments_MainClientId",
+                table: "CustomerDocuments",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerDocuments_PlantId",
+                table: "CustomerDocuments",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerEmails_CompanyId",
+                table: "CustomerEmails",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerEmails_CustomerId",
+                table: "CustomerEmails",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerEmails_MainClientId",
+                table: "CustomerEmails",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerEmails_PlantId",
+                table: "CustomerEmails",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerNotes_CompanyId",
+                table: "CustomerNotes",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerNotes_CustomerId",
+                table: "CustomerNotes",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerNotes_MainClientId",
+                table: "CustomerNotes",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerNotes_PlantId",
+                table: "CustomerNotes",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerOfficials_CompanyId",
+                table: "CustomerOfficials",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerOfficials_CustomerId",
+                table: "CustomerOfficials",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerOfficials_MainClientId",
+                table: "CustomerOfficials",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerOfficials_PlantId",
+                table: "CustomerOfficials",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerPhones_CompanyId",
+                table: "CustomerPhones",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerPhones_CustomerId",
+                table: "CustomerPhones",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerPhones_MainClientId",
+                table: "CustomerPhones",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerPhones_PlantId",
+                table: "CustomerPhones",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_CategoryId",
+                table: "Customers",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_Code",
+                table: "Customers",
+                column: "Code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_CompanyId",
+                table: "Customers",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_CustomerTypeId",
+                table: "Customers",
+                column: "CustomerTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_MainClientId_Code",
+                table: "Customers",
+                columns: new[] { "MainClientId", "Code" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_PlantId",
+                table: "Customers",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerSectors_CompanyId",
+                table: "CustomerSectors",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerSectors_CustomerId",
+                table: "CustomerSectors",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerSectors_MainClientId",
+                table: "CustomerSectors",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerSectors_PlantId",
+                table: "CustomerSectors",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerTags_CompanyId",
+                table: "CustomerTags",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerTags_CustomerId",
+                table: "CustomerTags",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerTags_MainClientId",
+                table: "CustomerTags",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerTags_PlantId",
+                table: "CustomerTags",
+                column: "PlantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Departments_CompanyId",
@@ -2849,14 +4231,53 @@ namespace formneo.repository.Migrations
                 column: "PlantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Menus_CompanyId",
-                table: "Menus",
+                name: "IX_LookupCategories_ModuleId_Key_TenantId",
+                table: "LookupCategories",
+                columns: new[] { "ModuleId", "Key", "TenantId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LookupCategories_TenantId_ModuleId_Key",
+                table: "LookupCategories",
+                columns: new[] { "TenantId", "ModuleId", "Key" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LookupItems_CategoryId_Code_TenantId",
+                table: "LookupItems",
+                columns: new[] { "CategoryId", "Code", "TenantId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LookupItems_TenantId_CategoryId_Code",
+                table: "LookupItems",
+                columns: new[] { "TenantId", "CategoryId", "Code" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Meetings_CompanyId",
+                table: "Meetings",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Menus_MainClientId",
-                table: "Menus",
+                name: "IX_Meetings_CustomerId",
+                table: "Meetings",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Meetings_MainClientId",
+                table: "Meetings",
                 column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Meetings_OpportunityId",
+                table: "Meetings",
+                column: "OpportunityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Meetings_PlantId",
+                table: "Meetings",
+                column: "PlantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Menus_ParentMenuId",
@@ -2864,8 +4285,23 @@ namespace formneo.repository.Migrations
                 column: "ParentMenuId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Menus_PlantId",
-                table: "Menus",
+                name: "IX_Opportunities_CompanyId",
+                table: "Opportunities",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Opportunities_CustomerId",
+                table: "Opportunities",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Opportunities_MainClientId",
+                table: "Opportunities",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Opportunities_PlantId",
+                table: "Opportunities",
                 column: "PlantId");
 
             migrationBuilder.CreateIndex(
@@ -2962,6 +4398,128 @@ namespace formneo.repository.Migrations
                 name: "IX_ProjectTasks_ProjectId",
                 table: "ProjectTasks",
                 column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuoteLines_CompanyId",
+                table: "QuoteLines",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuoteLines_MainClientId",
+                table: "QuoteLines",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuoteLines_PlantId",
+                table: "QuoteLines",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuoteLines_QuoteId",
+                table: "QuoteLines",
+                column: "QuoteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quotes_CompanyId",
+                table: "Quotes",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quotes_CustomerId",
+                table: "Quotes",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quotes_MainClientId",
+                table: "Quotes",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quotes_OpportunityId",
+                table: "Quotes",
+                column: "OpportunityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quotes_PlantId",
+                table: "Quotes",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quotes_QuoteNo",
+                table: "Quotes",
+                column: "QuoteNo",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reminders_ActivityId",
+                table: "Reminders",
+                column: "ActivityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reminders_CompanyId",
+                table: "Reminders",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reminders_CustomerId",
+                table: "Reminders",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reminders_MainClientId",
+                table: "Reminders",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reminders_PlantId",
+                table: "Reminders",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleTenants_CompanyId",
+                table: "RoleTenants",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleTenants_MainClientId",
+                table: "RoleTenants",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleTenants_PlantId",
+                table: "RoleTenants",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleTenants_RoleId_TenantId",
+                table: "RoleTenants",
+                columns: new[] { "RoleId", "TenantId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleTenants_TenantId",
+                table: "RoleTenants",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SpecialDays_CompanyId",
+                table: "SpecialDays",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SpecialDays_CustomerId",
+                table: "SpecialDays",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SpecialDays_MainClientId",
+                table: "SpecialDays",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SpecialDays_PlantId",
+                table: "SpecialDays",
+                column: "PlantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TicketApprove_CompanyId",
@@ -3292,6 +4850,63 @@ namespace formneo.repository.Migrations
                 column: "UserAppId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserTenantRoles_CompanyId",
+                table: "UserTenantRoles",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTenantRoles_MainClientId",
+                table: "UserTenantRoles",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTenantRoles_PlantId",
+                table: "UserTenantRoles",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTenantRoles_RoleTenantId",
+                table: "UserTenantRoles",
+                column: "RoleTenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTenantRoles_UserId",
+                table: "UserTenantRoles",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTenantRoles_UserId_RoleTenantId",
+                table: "UserTenantRoles",
+                columns: new[] { "UserId", "RoleTenantId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTenants_CompanyId",
+                table: "UserTenants",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTenants_MainClientId",
+                table: "UserTenants",
+                column: "MainClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTenants_PlantId",
+                table: "UserTenants",
+                column: "PlantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTenants_TenantId",
+                table: "UserTenants",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTenants_UserId_TenantId",
+                table: "UserTenants",
+                columns: new[] { "UserId", "TenantId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_WorkCompany_CompanyId",
                 table: "WorkCompany",
                 column: "CompanyId");
@@ -3412,6 +5027,41 @@ namespace formneo.repository.Migrations
                 column: "WorkflowHeadId");
 
             migrationBuilder.AddForeignKey(
+                name: "FK_Activities_Clients_MainClientId",
+                table: "Activities",
+                column: "MainClientId",
+                principalTable: "Clients",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Activities_Companies_CompanyId",
+                table: "Activities",
+                column: "CompanyId",
+                principalTable: "Companies",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Activities_Customers_CustomerId",
+                table: "Activities",
+                column: "CustomerId",
+                principalTable: "Customers",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Activities_Opportunities_OpportunityId",
+                table: "Activities",
+                column: "OpportunityId",
+                principalTable: "Opportunities",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Activities_Plant_PlantId",
+                table: "Activities",
+                column: "PlantId",
+                principalTable: "Plant",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_ApproveItems_Clients_MainClientId",
                 table: "ApproveItems",
                 column: "MainClientId",
@@ -3440,29 +5090,29 @@ namespace formneo.repository.Migrations
                 principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_AspNetRolesMenu_Clients_MainClientId",
-                table: "AspNetRolesMenu",
+                name: "FK_AspNetRolesTenantMenu_Clients_MainClientId",
+                table: "AspNetRolesTenantMenu",
                 column: "MainClientId",
                 principalTable: "Clients",
                 principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_AspNetRolesMenu_Companies_CompanyId",
-                table: "AspNetRolesMenu",
+                name: "FK_AspNetRolesTenantMenu_Clients_TenantId",
+                table: "AspNetRolesTenantMenu",
+                column: "TenantId",
+                principalTable: "Clients",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetRolesTenantMenu_Companies_CompanyId",
+                table: "AspNetRolesTenantMenu",
                 column: "CompanyId",
                 principalTable: "Companies",
                 principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_AspNetRolesMenu_Menus_MenuId",
-                table: "AspNetRolesMenu",
-                column: "MenuId",
-                principalTable: "Menus",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetRolesMenu_Plant_PlantId",
-                table: "AspNetRolesMenu",
+                name: "FK_AspNetRolesTenantMenu_Plant_PlantId",
+                table: "AspNetRolesTenantMenu",
                 column: "PlantId",
                 principalTable: "Plant",
                 principalColumn: "Id");
@@ -3771,6 +5421,9 @@ namespace formneo.repository.Migrations
                 name: "AspNetRolesMenu");
 
             migrationBuilder.DropTable(
+                name: "AspNetRolesTenantMenu");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUserClaims");
 
             migrationBuilder.DropTable(
@@ -3798,6 +5451,36 @@ namespace formneo.repository.Migrations
                 name: "BudgetPromotionRequest");
 
             migrationBuilder.DropTable(
+                name: "CrmChangeLogs");
+
+            migrationBuilder.DropTable(
+                name: "CustomerAddresses");
+
+            migrationBuilder.DropTable(
+                name: "CustomerCustomFields");
+
+            migrationBuilder.DropTable(
+                name: "CustomerDocuments");
+
+            migrationBuilder.DropTable(
+                name: "CustomerEmails");
+
+            migrationBuilder.DropTable(
+                name: "CustomerNotes");
+
+            migrationBuilder.DropTable(
+                name: "CustomerOfficials");
+
+            migrationBuilder.DropTable(
+                name: "CustomerPhones");
+
+            migrationBuilder.DropTable(
+                name: "CustomerSectors");
+
+            migrationBuilder.DropTable(
+                name: "CustomerTags");
+
+            migrationBuilder.DropTable(
                 name: "DepartmentUsers");
 
             migrationBuilder.DropTable(
@@ -3819,6 +5502,9 @@ namespace formneo.repository.Migrations
                 name: "Kanban");
 
             migrationBuilder.DropTable(
+                name: "Meetings");
+
+            migrationBuilder.DropTable(
                 name: "PCTrack");
 
             migrationBuilder.DropTable(
@@ -3826,6 +5512,15 @@ namespace formneo.repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProjectTasks");
+
+            migrationBuilder.DropTable(
+                name: "QuoteLines");
+
+            migrationBuilder.DropTable(
+                name: "Reminders");
+
+            migrationBuilder.DropTable(
+                name: "SpecialDays");
 
             migrationBuilder.DropTable(
                 name: "TicketApprove");
@@ -3852,13 +5547,16 @@ namespace formneo.repository.Migrations
                 name: "UserRefreshToken");
 
             migrationBuilder.DropTable(
+                name: "UserTenantRoles");
+
+            migrationBuilder.DropTable(
+                name: "UserTenants");
+
+            migrationBuilder.DropTable(
                 name: "WorkflowItem");
 
             migrationBuilder.DropTable(
                 name: "Menus");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "BudgetPeriod");
@@ -3867,13 +5565,31 @@ namespace formneo.repository.Migrations
                 name: "Employee");
 
             migrationBuilder.DropTable(
+                name: "Quotes");
+
+            migrationBuilder.DropTable(
+                name: "Activities");
+
+            migrationBuilder.DropTable(
                 name: "TicketComment");
 
             migrationBuilder.DropTable(
                 name: "TicketTeam");
 
             migrationBuilder.DropTable(
+                name: "RoleTenants");
+
+            migrationBuilder.DropTable(
+                name: "Opportunities");
+
+            migrationBuilder.DropTable(
                 name: "Tickets");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "TicketProjects");
@@ -3885,7 +5601,16 @@ namespace formneo.repository.Migrations
                 name: "WorkflowHead");
 
             migrationBuilder.DropTable(
+                name: "LookupItems");
+
+            migrationBuilder.DropTable(
                 name: "ProjectCategories");
+
+            migrationBuilder.DropTable(
+                name: "LookupCategories");
+
+            migrationBuilder.DropTable(
+                name: "LookupModules");
 
             migrationBuilder.DropTable(
                 name: "Clients");

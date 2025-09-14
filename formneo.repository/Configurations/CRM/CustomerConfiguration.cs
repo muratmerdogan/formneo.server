@@ -24,9 +24,22 @@ namespace vesa.repository.Configurations.CRM
 			builder.Property(p => p.NextActivityDate).IsRequired(false);
 
 			// Enum konversiyonları
-			builder.Property(p => p.CustomerType).HasConversion<int>();
-			builder.Property(p => p.Category).HasConversion<int>();
-			builder.Property(p => p.Status).HasConversion<int>();
+			//builder.Property(p => p.CustomerType).HasConversion<int>(); // Kaldırıldı: Artık Lookup FK kullanılıyor ve alan [NotMapped]
+			//builder.Property(p => p.Category).HasConversion<int>(); // Kaldırıldı: Artık Lookup FK kullanılıyor ve alan [NotMapped]
+			//builder.Property(p => p.Status).HasConversion<int>(); // Status string olarak tutuluyor
+
+			//// Lookup ilişkileri (nullable FK)
+			//builder
+			//	.HasOne(p => p.CustomerTypeItem)
+			//	.WithMany()
+			//	.HasForeignKey(p => p.CustomerTypeId)
+			//	.OnDelete(DeleteBehavior.SetNull);
+
+			//builder
+			//	.HasOne(p => p.CategoryItem)
+			//	.WithMany()
+			//	.HasForeignKey(p => p.CategoryId)
+			//	.OnDelete(DeleteBehavior.SetNull);
 
 			builder.HasIndex(p => p.Code).IsUnique();
 

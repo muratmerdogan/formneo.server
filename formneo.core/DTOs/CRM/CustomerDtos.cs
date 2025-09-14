@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using vesa.core.Models.CRM;
 
 namespace vesa.core.DTOs.CRM
 {
@@ -144,65 +145,62 @@ namespace vesa.core.DTOs.CRM
 
 	public class CustomerInsertDto
 	{
+        public string LogoFilePath { get; set; }
+        public string Name { get; set; }
+		public string LegalName { get; set; }
+		public string Code { get; set; }
+
+        public Guid? CustomerTypeId { get; set; }
+		public Guid? CategoryId { get; set; }
+		public string TaxOffice { get; set; }
+		public string TaxNumber { get; set; }
+		public bool IsReferenceCustomer { get; set; }
+        public string Website { get; set; }
+        public string? TwitterUrl { get; set; }
+		public string? FacebookUrl { get; set; }
+		public string? LinkedinUrl { get; set; }
+		public string? InstagramUrl { get; set; }
+		public string OwnerId { get; set; }
+		public int LifecycleStage { get; set; }
+		public DateTime? NextActivityDate { get; set; }
+
+		public List<CustomerOfficialDto> Officials { get; set; }
+
+		public List<CustomFieldDto> CustomFields { get; set; }
+        public List<CustomerEmailDto> Emails { get; set; }
+        public List<CustomerAddressDto> Addresses { get; set; }
+        public List<CustomerPhoneDto> Phones { get; set; }
+        public List<CustomerNoteDto> Notes { get; set; }
+
+        public List<CustomerDocument> Documents { get; set; }
+
+
+    }
+
+	public class CustomerUpdateDto
+	{
+        public string LogoFilePath { get; set; }
+        public Guid Id { get; set; }
+		public byte[] RowVersion { get; set; }
 		public string Name { get; set; }
 		public string LegalName { get; set; }
 		public string Code { get; set; }
 		public int CustomerTypeId { get; set; }
 		public int CategoryId { get; set; }
 		public int Status { get; set; }
-		public List<string> Sectors { get; set; }
-		public string EmailPrimary { get; set; }
-		public List<string> EmailSecondary { get; set; }
-		public List<CustomerEmailDto> Emails { get; set; }
-		public List<CustomerAddressDto> Addresses { get; set; }
-		public List<CustomerPhoneDto> Phones { get; set; }
-		public List<CustomerNoteDto> Notes { get; set; }
 		public string Website { get; set; }
 		public string TaxOffice { get; set; }
 		public string TaxNumber { get; set; }
 		public bool IsReferenceCustomer { get; set; }
-		public List<string> Tags { get; set; }
 		public string DefaultNotificationEmail { get; set; }
-		public string TwitterUrl { get; set; }
-		public string FacebookUrl { get; set; }
-		public string LinkedinUrl { get; set; }
-		public string InstagramUrl { get; set; }
+		public string? TwitterUrl { get; set; }
+		public string? FacebookUrl { get; set; }
+		public string? LinkedinUrl { get; set; }
+		public string? InstagramUrl { get; set; }
 		public string OwnerId { get; set; }
 		public int LifecycleStage { get; set; }
 		public DateTime? NextActivityDate { get; set; }
 
-		// Eski alanlar (geriye uyumluluk için)
-		public string CompanyType { get; set; }
-		public string LogoFilePath { get; set; }
-		public string Note { get; set; }
-		public string Phone { get; set; }
-		public string Mobile { get; set; }
-		public string Fax { get; set; }
-		public string PreferredContact { get; set; }
-		public string UtsInstitutionNumber { get; set; }
-		public string ConnectionCode { get; set; }
-		public List<CustomerOfficialDto> Officials { get; set; }
-		public string PaymentMethod { get; set; }
-		public int? TermDays { get; set; }
-		public string Currency { get; set; }
-		public decimal? Discount { get; set; }
-		public decimal? CreditLimit { get; set; }
-		public bool EInvoice { get; set; }
-		public string IBAN { get; set; }
-		public string TaxExemptionCode { get; set; }
-		public string ContractNo { get; set; }
-		public DateTime? ContractStart { get; set; }
-		public DateTime? ContractEnd { get; set; }
-		public List<string> Documents { get; set; }
-		public string SectorDetailsJson { get; set; }
-		public List<CustomFieldDto> CustomFields { get; set; }
-		public string RichNote { get; set; }
-	}
-
-	public class CustomerUpdateDto : CustomerInsertDto
-	{
-		public Guid Id { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerListDto

@@ -1,32 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using vesa.core.Models.Lookup;
 
 namespace vesa.core.Models.CRM
 {
-	public enum CustomerType
-	{
-		Bireysel,
-		Kurumsal,
-		Kamu,
-		Diger
-	}
-
-	public enum CustomerCategory
-	{
-		Standart,
-		Gold,
-		Premium,
-		VIP
-	}
-
-	public enum CustomerStatus
-	{
-		Aktif,
-		Pasif,
-		Potansiyel,
-		KaraListe
-	}
 
 	public enum LifecycleStage
 	{
@@ -39,9 +18,17 @@ namespace vesa.core.Models.CRM
 
 	public class Customer : vesa.core.Models.BaseEntity
 	{
-		public CustomerType CustomerType { get; set; }
-		public CustomerCategory Category { get; set; }
-		public CustomerStatus Status { get; set; }
+		// Lookup FK + Navigation (örnek: CustomerType)
+		public Guid? CustomerTypeId { get; set; }
+		[ForeignKey(nameof(CustomerTypeId))]
+		public LookupItem? CustomerTypeItem { get; set; }
+
+        public Guid? CategoryId { get; set; }
+        [ForeignKey(nameof(CategoryId))]
+        public LookupItem? CategoryItem { get; set; }
+ 
+		public string Status { get; set; }
+
 		public string Name { get; set; }
 		public string? LegalName { get; set; }
 		public string? CompanyType { get; set; }
@@ -51,6 +38,9 @@ namespace vesa.core.Models.CRM
 		public bool IsReferenceCustomer { get; set; }
 		public string? LogoFilePath { get; set; }
 		public string? Note { get; set; }
+		public string? TwitterUrl { get; set; }
+		public string? LinkedinUrl { get; set; }
+		public string? InstagramUrl { get; set; }
 
 		// Yeni alanlar
 		public string? OwnerId { get; set; }

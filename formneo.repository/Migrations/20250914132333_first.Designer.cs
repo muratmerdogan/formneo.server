@@ -12,8 +12,8 @@ using vesa.repository;
 namespace formneo.repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250826103213_customers")]
-    partial class customers
+    [Migration("20250914132333_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1161,6 +1161,12 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea");
+
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("timestamp without time zone");
 
@@ -1275,8 +1281,8 @@ namespace formneo.repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Category")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -1287,15 +1293,9 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime?>("ContractEnd")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("ContractNo")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("ContractStart")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<string>("CompanyType")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -1304,103 +1304,76 @@ namespace formneo.repository.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<decimal?>("CreditLimit")
-                        .HasColumnType("numeric");
+                    b.Property<Guid?>("CustomerTypeId")
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("CustomerType")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal?>("Discount")
-                        .HasColumnType("numeric");
-
-                    b.Property<bool>("EInvoice")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("EmailPrimary")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("Fax")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
-                    b.Property<string>("IBAN")
-                        .IsRequired()
+                    b.Property<string>("InstagramUrl")
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("LogoFilePath")
-                        .IsRequired()
+                    b.Property<bool>("IsReferenceCustomer")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LegalName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<int>("LifecycleStage")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("LinkedinUrl")
                         .HasColumnType("text");
+
+                    b.Property<string>("LogoFilePath")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
 
                     b.Property<Guid?>("MainClientId")
                         .IsRequired()
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Mobile")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<DateTime?>("NextActivityDate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("PaymentMethod")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
+                    b.Property<string>("OwnerId")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("PreferredContact")
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
                         .IsRequired()
-                        .HasColumnType("text");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea")
+                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
 
-                    b.Property<string>("RichNote")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("SectorDetailsJson")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("TaxExemptionCode")
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("TaxNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("TaxOffice")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
-                    b.Property<int?>("TermDays")
-                        .HasColumnType("integer");
+                    b.Property<string>("TwitterUrl")
+                        .HasColumnType("text");
 
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
@@ -1415,21 +1388,21 @@ namespace formneo.repository.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Website")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("Code")
                         .IsUnique();
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("MainClientId");
+                    b.HasIndex("CustomerTypeId");
 
                     b.HasIndex("PlantId");
+
+                    b.HasIndex("MainClientId", "Code")
+                        .IsUnique();
 
                     b.ToTable("Customers");
                 });
@@ -1466,6 +1439,12 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsBilling")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsDefaultBilling")
                         .HasColumnType("boolean");
 
@@ -1473,6 +1452,9 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsShipping")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Line1")
@@ -1494,6 +1476,13 @@ namespace formneo.repository.Migrations
                     b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea")
+                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
@@ -1567,6 +1556,13 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea")
+                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
+
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -1603,6 +1599,10 @@ namespace formneo.repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<Guid?>("CompanyId")
                         .IsRequired()
                         .HasColumnType("uuid");
@@ -1620,6 +1620,10 @@ namespace formneo.repository.Migrations
 
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("FileName")
                         .IsRequired()
@@ -1642,6 +1646,13 @@ namespace formneo.repository.Migrations
                     b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea")
+                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
 
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
@@ -1675,6 +1686,9 @@ namespace formneo.repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("Bulk")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid?>("CompanyId")
                         .IsRequired()
                         .HasColumnType("uuid");
@@ -1689,20 +1703,40 @@ namespace formneo.repository.Migrations
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPrimary")
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("Notify")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea")
+                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
 
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
@@ -1728,6 +1762,81 @@ namespace formneo.repository.Migrations
                     b.HasIndex("PlantId");
 
                     b.ToTable("CustomerEmails");
+                });
+
+            modelBuilder.Entity("vesa.core.Models.CRM.CustomerNote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CompanyId")
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("PlantId")
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea")
+                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("MainClientId");
+
+                    b.HasIndex("PlantId");
+
+                    b.ToTable("CustomerNotes");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.CustomerOfficial", b =>
@@ -1786,6 +1895,13 @@ namespace formneo.repository.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea")
+                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1814,6 +1930,84 @@ namespace formneo.repository.Migrations
                     b.HasIndex("PlantId");
 
                     b.ToTable("CustomerOfficials");
+                });
+
+            modelBuilder.Entity("vesa.core.Models.CRM.CustomerPhone", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CompanyId")
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("PlantId")
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea")
+                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("MainClientId");
+
+                    b.HasIndex("PlantId");
+
+                    b.ToTable("CustomerPhones");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.CustomerSector", b =>
@@ -1846,6 +2040,13 @@ namespace formneo.repository.Migrations
                     b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea")
+                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
 
                     b.Property<string>("Sector")
                         .IsRequired()
@@ -1907,6 +2108,13 @@ namespace formneo.repository.Migrations
                     b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea")
+                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
 
                     b.Property<string>("Tag")
                         .IsRequired()
@@ -1990,6 +2198,12 @@ namespace formneo.repository.Migrations
                     b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp without time zone");
@@ -2370,6 +2584,12 @@ namespace formneo.repository.Migrations
                     b.Property<DateTime>("RemindAt")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea");
+
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -2516,7 +2736,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 8, 26, 10, 32, 0, 633, DateTimeKind.Utc).AddTicks(9392),
+                            CreatedDate = new DateTime(2025, 9, 14, 13, 23, 31, 595, DateTimeKind.Utc).AddTicks(6038),
                             Name = "RonesansHolding"
                         });
                 });
@@ -3278,6 +3498,185 @@ namespace formneo.repository.Migrations
                     b.ToTable("Inventory");
                 });
 
+            modelBuilder.Entity("vesa.core.Models.Lookup.LookupCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsReadOnly")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsTenantScoped")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<Guid?>("ModuleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModuleId", "Key", "TenantId")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "ModuleId", "Key")
+                        .IsUnique();
+
+                    b.ToTable("LookupCategories");
+                });
+
+            modelBuilder.Entity("vesa.core.Models.Lookup.LookupItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("ExternalKey")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NameLocalizedJson")
+                        .HasColumnType("text");
+
+                    b.Property<int>("OrderNo")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId", "Code", "TenantId")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "CategoryId", "Code")
+                        .IsUnique();
+
+                    b.ToTable("LookupItems");
+                });
+
+            modelBuilder.Entity("vesa.core.Models.Lookup.LookupModule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsReadOnly")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsTenantScoped")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LookupModules");
+                });
+
             modelBuilder.Entity("vesa.core.Models.MainClient", b =>
                 {
                     b.Property<Guid>("Id")
@@ -3365,7 +3764,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 8, 26, 10, 32, 0, 634, DateTimeKind.Utc).AddTicks(3779),
+                            CreatedDate = new DateTime(2025, 9, 14, 13, 23, 31, 596, DateTimeKind.Utc).AddTicks(3402),
                             DomainVerified = false,
                             Email = "info@vesacons.com",
                             FeatureFlags = "{}",
@@ -3645,7 +4044,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 8, 26, 10, 32, 0, 634, DateTimeKind.Utc).AddTicks(4392),
+                            CreatedDate = new DateTime(2025, 9, 14, 13, 23, 31, 596, DateTimeKind.Utc).AddTicks(3798),
                             Name = "RonesansHoldingTurkey"
                         });
                 });
@@ -6226,11 +6625,21 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.CRM.Customer", b =>
                 {
+                    b.HasOne("vesa.core.Models.Lookup.LookupItem", "CategoryItem")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("vesa.core.Models.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("vesa.core.Models.Lookup.LookupItem", "CustomerTypeItem")
+                        .WithMany()
+                        .HasForeignKey("CustomerTypeId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
@@ -6244,7 +6653,11 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.Navigation("CategoryItem");
+
                     b.Navigation("Company");
+
+                    b.Navigation("CustomerTypeItem");
 
                     b.Navigation("MainClient");
 
@@ -6391,6 +6804,41 @@ namespace formneo.repository.Migrations
                     b.Navigation("Plant");
                 });
 
+            modelBuilder.Entity("vesa.core.Models.CRM.CustomerNote", b =>
+                {
+                    b.HasOne("vesa.core.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                        .WithMany("Notes")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("vesa.core.Models.Plant", "Plant")
+                        .WithMany()
+                        .HasForeignKey("PlantId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("MainClient");
+
+                    b.Navigation("Plant");
+                });
+
             modelBuilder.Entity("vesa.core.Models.CRM.CustomerOfficial", b =>
                 {
                     b.HasOne("vesa.core.Models.Company", "Company")
@@ -6401,6 +6849,41 @@ namespace formneo.repository.Migrations
 
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany("Officials")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("vesa.core.Models.Plant", "Plant")
+                        .WithMany()
+                        .HasForeignKey("PlantId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("MainClient");
+
+                    b.Navigation("Plant");
+                });
+
+            modelBuilder.Entity("vesa.core.Models.CRM.CustomerPhone", b =>
+                {
+                    b.HasOne("vesa.core.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                        .WithMany("Phones")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -7054,6 +7537,27 @@ namespace formneo.repository.Migrations
                     b.Navigation("TicketDepartment");
 
                     b.Navigation("UserApp");
+                });
+
+            modelBuilder.Entity("vesa.core.Models.Lookup.LookupCategory", b =>
+                {
+                    b.HasOne("vesa.core.Models.Lookup.LookupModule", "Module")
+                        .WithMany()
+                        .HasForeignKey("ModuleId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Module");
+                });
+
+            modelBuilder.Entity("vesa.core.Models.Lookup.LookupItem", b =>
+                {
+                    b.HasOne("vesa.core.Models.Lookup.LookupCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("vesa.core.Models.MainClient", b =>
@@ -8238,7 +8742,11 @@ namespace formneo.repository.Migrations
 
                     b.Navigation("Documents");
 
+                    b.Navigation("Notes");
+
                     b.Navigation("Officials");
+
+                    b.Navigation("Phones");
 
                     b.Navigation("SecondaryEmails");
 

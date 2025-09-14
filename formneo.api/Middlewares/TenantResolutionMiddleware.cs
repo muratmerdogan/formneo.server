@@ -28,7 +28,7 @@ namespace vesa.api.Middlewares
 		public async Task Invoke(HttpContext context, ITenantContext tenantContext, IUserService userService, IUserTenantService userTenantService, IOptions<RoleScopeOptions> roleScopeOptions, UserManager<UserApp> userManager, RoleManager<IdentityRole> roleManager, IMemoryCache cache, ILogger<TenantResolutionMiddleware> logger)
 		{
 
-            await _next(context);
+            //await _next(context);
             tenantContext.CurrentTenantId = null;
 			Stopwatch sw = null;
 			if (logger != null && logger.IsEnabled(LogLevel.Debug))
@@ -116,13 +116,13 @@ namespace vesa.api.Middlewares
 					}
 				}
 
-				// Header boş gönderildiyse: sadece global admin baypas edebilir
+				// Header yok veya boşsa: GET/HEAD serbest, yazmalarda header zorunlu
 				if (context.Request.Headers.TryGetValue(HeaderName, out var hv))
 				{
 					var headerVal = (hv.FirstOrDefault() ?? string.Empty).Trim();
 					if (string.IsNullOrEmpty(headerVal))
 					{
-						if (isGlobalAdmin)
+						if (HttpMethods.IsGet(context.Request.Method) || HttpMethods.IsHead(context.Request.Method))
 						{
 							await _next(context);
 							if (sw != null)
@@ -132,18 +132,15 @@ namespace vesa.api.Middlewares
 							}
 							return;
 						}
-						else
-						{
-							context.Response.StatusCode = StatusCodes.Status403Forbidden;
-							await context.Response.WriteAsync("Global scope requires global admin role");
-							return;
-						}
+
+						context.Response.StatusCode = StatusCodes.Status400BadRequest;
+						await context.Response.WriteAsync("X-Tenant-Id header required for write operations");
+						return;
 					}
 				}
-				// Header tamamen yoksa: global admin değilse reddet
 				else
 				{
-					if (isGlobalAdmin)
+					if (HttpMethods.IsGet(context.Request.Method) || HttpMethods.IsHead(context.Request.Method))
 					{
 						await _next(context);
 						if (sw != null)
@@ -153,12 +150,10 @@ namespace vesa.api.Middlewares
 						}
 						return;
 					}
-					else
-					{
-						context.Response.StatusCode = StatusCodes.Status403Forbidden;
-						await context.Response.WriteAsync("global scope requires global admin role");
-						return;
-					}
+
+					context.Response.StatusCode = StatusCodes.Status400BadRequest;
+					await context.Response.WriteAsync("X-Tenant-Id header required for write operations");
+					return;
 				}
 			}
 
@@ -213,9 +208,26 @@ namespace vesa.api.Middlewares
 							}
 							else
 							{
-								context.Response.StatusCode = StatusCodes.Status403Forbidden;
-								await context.Response.WriteAsync("Tenant access denied");
-								return;
+								// Global admin ise üyelik şartını baypas et
+								var globalOnlyRoleIds2 = roleScopeOptions?.Value?.GlobalOnlyRoleIds ?? new System.Collections.Generic.List<string>();
+								bool isGlobalAdmin2 = false;
+								var roleNames2 = await userManager.GetRolesAsync(identityUser);
+								if (roleNames2 != null && roleNames2.Count > 0)
+								{
+									var roleIds2 = roleManager.Roles.Where(r => roleNames2.Contains(r.Name)).Select(r => r.Id).ToList();
+									isGlobalAdmin2 = roleIds2.Any(id => globalOnlyRoleIds2.Contains(id));
+								}
+
+								if (isGlobalAdmin2)
+								{
+									tenantContext.CurrentTenantId = tenantId;
+								}
+								else
+								{
+									context.Response.StatusCode = StatusCodes.Status403Forbidden;
+									await context.Response.WriteAsync("Tenant access denied");
+									return;
+								}
 							}
 						}
 					}

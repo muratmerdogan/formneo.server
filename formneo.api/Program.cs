@@ -414,7 +414,7 @@ app.UseCustomException();
 
 app.UseAuthentication();
 
-//app.UseMiddleware<vesa.api.Middlewares.TenantResolutionMiddleware>();
+app.UseMiddleware<vesa.api.Middlewares.TenantResolutionMiddleware>();
 
 app.UseAuthorization();
 

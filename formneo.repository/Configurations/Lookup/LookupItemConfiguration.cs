@@ -12,7 +12,7 @@ namespace vesa.repository.Configurations.Lookup
 			builder.Property(p => p.Name).HasMaxLength(256).IsRequired();
 			builder.Property(p => p.NameLocalizedJson).IsRequired(false);
 			builder.Property(p => p.ExternalKey).HasMaxLength(128).IsRequired(false);
-			builder.HasIndex(p => new { p.MainClientId, p.CategoryId, p.Code }).IsUnique();
+			builder.HasIndex(p => new { p.TenantId, p.CategoryId, p.Code }).IsUnique();
 			builder.HasOne(p => p.Category).WithMany().HasForeignKey(p => p.CategoryId);
 		}
 	}

@@ -1278,8 +1278,8 @@ namespace formneo.repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Category")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -1301,8 +1301,11 @@ namespace formneo.repository.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("CustomerType")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("CustomerTypeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("InstagramUrl")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnType("boolean");
@@ -1316,6 +1319,9 @@ namespace formneo.repository.Migrations
 
                     b.Property<int>("LifecycleStage")
                         .HasColumnType("integer");
+
+                    b.Property<string>("LinkedinUrl")
+                        .HasColumnType("text");
 
                     b.Property<string>("LogoFilePath")
                         .HasMaxLength(512)
@@ -1351,8 +1357,9 @@ namespace formneo.repository.Migrations
                         .HasColumnType("bytea")
                         .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("TaxNumber")
                         .HasMaxLength(64)
@@ -1361,6 +1368,9 @@ namespace formneo.repository.Migrations
                     b.Property<string>("TaxOffice")
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
+
+                    b.Property<string>("TwitterUrl")
+                        .HasColumnType("text");
 
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
@@ -1377,14 +1387,19 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("Code")
                         .IsUnique();
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("MainClientId");
+                    b.HasIndex("CustomerTypeId");
 
                     b.HasIndex("PlantId");
+
+                    b.HasIndex("MainClientId", "Code")
+                        .IsUnique();
 
                     b.ToTable("Customers");
                 });
@@ -1581,6 +1596,10 @@ namespace formneo.repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<Guid?>("CompanyId")
                         .IsRequired()
                         .HasColumnType("uuid");
@@ -1598,6 +1617,10 @@ namespace formneo.repository.Migrations
 
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("FileName")
                         .IsRequired()
@@ -2710,7 +2733,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 8, 29, 12, 52, 25, 396, DateTimeKind.Utc).AddTicks(6092),
+                            CreatedDate = new DateTime(2025, 9, 14, 13, 23, 31, 595, DateTimeKind.Utc).AddTicks(6038),
                             Name = "RonesansHolding"
                         });
                 });
@@ -3478,10 +3501,6 @@ namespace formneo.repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -3507,15 +3526,10 @@ namespace formneo.repository.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
-                    b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("ModuleId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
+                    b.Property<Guid?>("TenantId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("UniqNumber")
@@ -3533,13 +3547,10 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("ModuleId", "Key", "TenantId")
+                        .IsUnique();
 
-                    b.HasIndex("ModuleId");
-
-                    b.HasIndex("PlantId");
-
-                    b.HasIndex("MainClientId", "ModuleId", "Key")
+                    b.HasIndex("TenantId", "ModuleId", "Key")
                         .IsUnique();
 
                     b.ToTable("LookupCategories");
@@ -3559,10 +3570,6 @@ namespace formneo.repository.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -3580,10 +3587,6 @@ namespace formneo.repository.Migrations
                     b.Property<bool>("IsDelete")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -3595,8 +3598,7 @@ namespace formneo.repository.Migrations
                     b.Property<int>("OrderNo")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
+                    b.Property<Guid?>("TenantId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("UniqNumber")
@@ -3614,13 +3616,10 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("CategoryId", "Code", "TenantId")
+                        .IsUnique();
 
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("PlantId");
-
-                    b.HasIndex("MainClientId", "CategoryId", "Code")
+                    b.HasIndex("TenantId", "CategoryId", "Code")
                         .IsUnique();
 
                     b.ToTable("LookupItems");
@@ -3630,10 +3629,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -3657,17 +3652,9 @@ namespace formneo.repository.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
-                    b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
-
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
@@ -3683,13 +3670,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("PlantId");
-
-                    b.HasIndex("MainClientId", "Key")
-                        .IsUnique();
 
                     b.ToTable("LookupModules");
                 });
@@ -3781,7 +3761,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 8, 29, 12, 52, 25, 396, DateTimeKind.Utc).AddTicks(7508),
+                            CreatedDate = new DateTime(2025, 9, 14, 13, 23, 31, 596, DateTimeKind.Utc).AddTicks(3402),
                             DomainVerified = false,
                             Email = "info@vesacons.com",
                             FeatureFlags = "{}",
@@ -4061,7 +4041,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 8, 29, 12, 52, 25, 396, DateTimeKind.Utc).AddTicks(7656),
+                            CreatedDate = new DateTime(2025, 9, 14, 13, 23, 31, 596, DateTimeKind.Utc).AddTicks(3798),
                             Name = "RonesansHoldingTurkey"
                         });
                 });
@@ -6642,11 +6622,21 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.CRM.Customer", b =>
                 {
+                    b.HasOne("vesa.core.Models.Lookup.LookupItem", "CategoryItem")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("vesa.core.Models.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("vesa.core.Models.Lookup.LookupItem", "CustomerTypeItem")
+                        .WithMany()
+                        .HasForeignKey("CustomerTypeId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
@@ -6660,7 +6650,11 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.Navigation("CategoryItem");
+
                     b.Navigation("Company");
+
+                    b.Navigation("CustomerTypeItem");
 
                     b.Navigation("MainClient");
 
@@ -7544,36 +7538,12 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.Lookup.LookupCategory", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
-                        .WithMany()
-                        .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.Lookup.LookupModule", "Module")
                         .WithMany()
                         .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("MainClient");
-
                     b.Navigation("Module");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Lookup.LookupItem", b =>
@@ -7584,58 +7554,7 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
-                        .WithMany()
-                        .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("Category");
-
-                    b.Navigation("Company");
-
-                    b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
-                });
-
-            modelBuilder.Entity("vesa.core.Models.Lookup.LookupModule", b =>
-                {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
-                        .WithMany()
-                        .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.MainClient", b =>

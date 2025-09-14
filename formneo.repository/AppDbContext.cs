@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Primitives;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,7 @@ using vesa.core.Models.TaskManagement;
 using vesa.core.Models.Ticket;
 using vesa.core.Models.CRM;
 using vesa.core.Models.Lookup;
+using vesa.core.Services;
 
 
 namespace vesa.repository
@@ -107,12 +109,16 @@ namespace vesa.repository
         //public DbSet<EmpSalary> EmpSalary { get; set; }
 
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
+        private readonly IConfiguration _configuration;
+        private readonly ITenantContext _tenantContext;
+        public AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, ITenantContext tenantContext) : base(options)
         {
 
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
             _httpContextAccessor = httpContextAccessor;
+            _configuration = configuration;
+            _tenantContext = tenantContext;
 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -258,12 +264,46 @@ namespace vesa.repository
             modelBuilder.Entity<Quote>()
                 .Property(p => p.Status).HasConversion<int>();
 
-            // CRM Soft Delete Query Filters
-            modelBuilder.Entity<vesa.core.Models.CRM.Customer>().HasQueryFilter(e => !e.IsDelete);
+            // Global tenant query filter for all BaseEntity (exclude GlobalBaseEntity)
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                var clrType = entityType.ClrType;
+                if (clrType == null) continue;
+                if (typeof(GlobalBaseEntity).IsAssignableFrom(clrType)) continue;
+                if (!typeof(BaseEntity).IsAssignableFrom(clrType)) continue;
+
+                var parameter = System.Linq.Expressions.Expression.Parameter(clrType, "e");
+                var isDeleteProp = System.Linq.Expressions.Expression.Property(parameter, nameof(BaseEntity.IsDelete));
+                var notDeleted = System.Linq.Expressions.Expression.Not(isDeleteProp);
+
+                var mainClientProp = System.Linq.Expressions.Expression.Property(parameter, nameof(BaseEntity.MainClientId));
+                var ctxConst = System.Linq.Expressions.Expression.Constant(this);
+                var tenantProp = System.Linq.Expressions.Expression.Property(ctxConst, nameof(CurrentTenantIdForFilter));
+                var equalsTenant = System.Linq.Expressions.Expression.Equal(mainClientProp, tenantProp);
+
+                var body = System.Linq.Expressions.Expression.AndAlso(notDeleted, equalsTenant);
+
+                var lambda = System.Linq.Expressions.Expression.Lambda(body, parameter);
+                modelBuilder.Entity(clrType).HasQueryFilter(lambda);
+            }
             // Lookup Soft Delete Query Filters
             modelBuilder.Entity<LookupModule>().HasQueryFilter(e => !e.IsDelete);
             modelBuilder.Entity<LookupCategory>().HasQueryFilter(e => !e.IsDelete);
             modelBuilder.Entity<LookupItem>().HasQueryFilter(e => !e.IsDelete);
+
+            // Hybrid lookup unique constraints (global + tenant override)
+            modelBuilder.Entity<LookupCategory>()
+                .HasIndex(c => new { c.ModuleId, c.Key, c.TenantId })
+                .IsUnique();
+
+            modelBuilder.Entity<LookupItem>()
+                .HasIndex(i => new { i.CategoryId, i.Code, i.TenantId })
+                .IsUnique();
+
+            // Per-tenant unique constraints (örnek: Customer.Code)
+            modelBuilder.Entity<vesa.core.Models.CRM.Customer>()
+                .HasIndex(c => new { c.MainClientId, c.Code })
+                .IsUnique();
             modelBuilder.Entity<CustomerAddress>().HasQueryFilter(e => !e.IsDelete);
             modelBuilder.Entity<CustomerOfficial>().HasQueryFilter(e => !e.IsDelete);
             modelBuilder.Entity<CustomerEmail>().HasQueryFilter(e => !e.IsDelete);
@@ -291,14 +331,47 @@ namespace vesa.repository
 
 
         }
+        // Tenant-aware query filter backing field (reads from ITenantContext)
+        private Guid? CurrentTenantIdForFilter => _tenantContext?.CurrentTenantId;
+        private (Guid tenantId, Guid companyId, Guid plantId) ResolveContextIds()
+        {
+            Guid tenantId = Guid.Empty;
+            Guid companyId = Guid.Empty;
+            Guid plantId = Guid.Empty;
+
+            try
+            {
+                var httpContext = _httpContextAccessor?.HttpContext;
+
+                string headerTenant = httpContext?.Request?.Headers?["X-Tenant-Id"].FirstOrDefault();
+                if (!string.IsNullOrWhiteSpace(headerTenant) && Guid.TryParse(headerTenant, out var tid)) tenantId = tid;
+
+                // HTTP isteği YOKSA (örn. seed, background job), appsettings fallback uygula.
+                // HTTP isteği VARSA ve header boşsa, fallback kullanma: tenant damgası yapılmasın.
+                if (tenantId == Guid.Empty && httpContext == null)
+                {
+                    var cfgTenant = _configuration?["MultiTenancy:DefaultMainClientId"];
+                    if (!string.IsNullOrWhiteSpace(cfgTenant) && Guid.TryParse(cfgTenant, out var tid2)) tenantId = tid2;
+                }
+
+                // Company/Plant için de yalnızca HTTP context yoksa fallback uygula
+                if (httpContext == null)
+                {
+                    var cfgCompany = _configuration?["MultiTenancy:DefaultCompanyId"];
+                    if (!string.IsNullOrWhiteSpace(cfgCompany) && Guid.TryParse(cfgCompany, out var cid)) companyId = cid;
+
+                    var cfgPlant = _configuration?["MultiTenancy:DefaultPlantId"];
+                    if (!string.IsNullOrWhiteSpace(cfgPlant) && Guid.TryParse(cfgPlant, out var pid)) plantId = pid;
+                }
+            }
+            catch { }
+
+            return (tenantId, companyId, plantId);
+        }
+
         public override int SaveChanges()
         {
-
-            string currentClient = "77df6fbd-4160-4cea-8f24-96564b54e5ac";
-
-            string currentCompany = "1bf2fc2e-0e25-46a8-aa96-8f1480331b5b";
-
-            string currentPlant = "0779dd43-6047-400d-968d-e6f1b0c3b286";
+            var ids = ResolveContextIds();
 
 
             try
@@ -324,10 +397,14 @@ namespace vesa.repository
 
 
                                     entityReference.CreatedDate = DateTime.Now;
-                                    entityReference.MainClientId = new Guid(currentClient);
-                                    entityReference.CompanyId = new Guid(currentCompany); ;
-                                    entityReference.PlantId = new Guid(currentPlant); ;
-                                    entityReference.Id = Guid.NewGuid();
+                                    if (_httpContextAccessor?.HttpContext != null && ids.tenantId == Guid.Empty)
+                                    {
+                                        throw new InvalidOperationException($"Tenant context is required for write operations for entity {item.Entity.GetType().Name}. Provide X-Tenant-Id header.");
+                                    }
+                                    if (ids.tenantId != Guid.Empty) entityReference.MainClientId = ids.tenantId;
+                                    if (ids.companyId != Guid.Empty) entityReference.CompanyId = ids.companyId;
+                                    if (ids.plantId != Guid.Empty) entityReference.PlantId = ids.plantId;
+                                    if (entityReference.Id == Guid.Empty) entityReference.Id = Guid.NewGuid();
 
 
 
@@ -363,9 +440,13 @@ namespace vesa.repository
 
 
 
-                                    entityReference.MainClientId = new Guid(currentClient);
-                                    entityReference.CompanyId = new Guid(currentCompany); ;
-                                    entityReference.PlantId = new Guid(currentPlant); ;
+                                    if (_httpContextAccessor?.HttpContext != null && ids.tenantId == Guid.Empty)
+                                    {
+                                        throw new InvalidOperationException($"Tenant context is required for write operations for entity {item.Entity.GetType().Name}. Provide X-Tenant-Id header.");
+                                    }
+                                    if (ids.tenantId != Guid.Empty) entityReference.MainClientId = ids.tenantId;
+                                    if (ids.companyId != Guid.Empty) entityReference.CompanyId = ids.companyId;
+                                    if (ids.plantId != Guid.Empty) entityReference.PlantId = ids.plantId;
                                     entityReference.UpdatedDate = DateTime.Now;
 
                                     if (userName != null)
@@ -567,11 +648,7 @@ namespace vesa.repository
         }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            string currentClient = "77df6fbd-4160-4cea-8f24-96564b54e5ac";
-
-            string currentCompany = "1bf2fc2e-0e25-46a8-aa96-8f1480331b5b";
-
-            string currentPlant = "0779dd43-6047-400d-968d-e6f1b0c3b286";
+            var ids = ResolveContextIds();
 
             try
             {
@@ -594,9 +671,9 @@ namespace vesa.repository
                                     Entry(entityReference).Property(x => x.UpdatedBy).IsModified = false;
 
                                     entityReference.CreatedDate = DateTime.Now;
-                                    entityReference.MainClientId = new Guid(currentClient);
-                                    entityReference.CompanyId = new Guid(currentCompany); ;
-                                    entityReference.PlantId = new Guid(currentPlant); ;
+                                    if (ids.tenantId != Guid.Empty) entityReference.MainClientId = ids.tenantId;
+                                    if (ids.companyId != Guid.Empty) entityReference.CompanyId = ids.companyId;
+                                    if (ids.plantId != Guid.Empty) entityReference.PlantId = ids.plantId;
                                     entityReference.Id = Guid.NewGuid();
 
                                     if (userName != null)
@@ -631,9 +708,9 @@ namespace vesa.repository
                                     Entry(entityReference).Property(x => x.CreatedBy).IsModified = false;
                                     Entry(entityReference).Property(x => x.UniqNumber).IsModified = false;
 
-                                    entityReference.MainClientId = new Guid(currentClient);
-                                    entityReference.CompanyId = new Guid(currentCompany); ;
-                                    entityReference.PlantId = new Guid(currentPlant); ;
+                                    if (ids.tenantId != Guid.Empty) entityReference.MainClientId = ids.tenantId;
+                                    if (ids.companyId != Guid.Empty) entityReference.CompanyId = ids.companyId;
+                                    if (ids.plantId != Guid.Empty) entityReference.PlantId = ids.plantId;
                                     entityReference.UpdatedDate = DateTime.Now;
 
                                     if (userName != null)
