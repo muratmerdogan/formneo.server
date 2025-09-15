@@ -86,6 +86,7 @@ services:
 
 volumes:
   pgdata:
+
   dpkeys:
   minio_data:
   n8n_data:
