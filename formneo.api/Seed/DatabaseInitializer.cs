@@ -960,6 +960,326 @@ namespace vesa.api.Seed
                     await context.SaveChangesAsync();
                 }
             }
+
+            // MENU: Üst seviye menüler (idempotent)
+            {
+                var topMenus = new[]
+                {
+                    new { Code = "MAIN_HOME",     Name = "Ana Sayfa", Icon = "home",        Order = 1, Show = true,  Desc = "Genel gösterge paneli" },
+                    new { Code = "MAIN_CRM",      Name = "CRM",       Icon = "briefcase",    Order = 2, Show = true,  Desc = "Müşteri ilişkileri" },
+                    new { Code = "MAIN_QR",       Name = "QR",        Icon = "qrcode",       Order = 3, Show = true,  Desc = "QR işlemleri" },
+                    new { Code = "MAIN_ADMIN",    Name = "Yönetim",   Icon = "settings",     Order = 4, Show = true,  Desc = "Yönetim ve yetkiler" },
+                    new { Code = "MAIN_SETTINGS", Name = "Ayarlar",   Icon = "cog",          Order = 5, Show = true,  Desc = "Sistem ayarları" },
+                };
+
+                var existingCodes = await context.Menus
+                    .AsNoTracking()
+                    .Where(m => topMenus.Select(t => t.Code).Contains(m.MenuCode))
+                    .Select(m => m.MenuCode)
+                    .ToListAsync();
+
+                var toInsert = topMenus
+                    .Where(t => !existingCodes.Contains(t.Code))
+                    .Select(t => new Menu
+                    {
+                        Id = Guid.NewGuid(),
+                        MenuCode = t.Code,
+                        ParentMenuId = null,
+                        Name = t.Name,
+                        // Üst seviye menüler: link alanları boş string olsun (frontend null split hatasından kaçınmak için)
+                        Route = string.Empty,
+                        Href = string.Empty,
+                        Icon = t.Icon,
+                        IsActive = true,
+                        Order = t.Order,
+                        Description = t.Desc,
+                        ShowMenu = t.Show,
+                        CreatedDate = DateTime.UtcNow,
+                        CreatedBy = "seed",
+                        UpdatedBy = string.Empty
+                    })
+                    .ToList();
+
+                if (toInsert.Any())
+                {
+                    await context.Menus.AddRangeAsync(toInsert);
+                    await context.SaveChangesAsync();
+                }
+
+                // Mevcutta null olan üst seviye Route/Href değerlerini boş stringe çevir
+                var nullLinkedRootMenus = await context.Menus
+                    .Where(m => m.ParentMenuId == null && (m.Route == null || m.Href == null))
+                    .ToListAsync();
+                if (nullLinkedRootMenus.Any())
+                {
+                    foreach (var m in nullLinkedRootMenus)
+                    {
+                        if (m.Route == null) m.Route = string.Empty;
+                        if (m.Href == null) m.Href = string.Empty;
+                    }
+                    await context.SaveChangesAsync();
+                }
+
+                // Global admin (MAIN_ADMIN) altına Tenants Management menüsü (idempotent)
+                var parentAdmin = await context.Menus.AsNoTracking().FirstOrDefaultAsync(m => m.MenuCode == "MAIN_ADMIN");
+                if (parentAdmin != null)
+                {
+                    var childCode = "tenants-management"; // key
+                    var existsChild = await context.Menus.AsNoTracking().AnyAsync(m => m.MenuCode == childCode);
+                    if (!existsChild)
+                    {
+                        var child = new Menu
+                        {
+                            Id = Guid.NewGuid(),
+                            MenuCode = childCode,
+                            ParentMenuId = parentAdmin.Id,
+                            Name = "Tenants Management",
+                            Route = "/tenants/management",
+                            Href = "/tenants/management",
+                            Icon = "users-cog",
+                            IsActive = true,
+                            Order = 1,
+                            Description = "Tenant yönetim ekranları",
+                            ShowMenu = true,
+                            CreatedDate = DateTime.UtcNow,
+                            CreatedBy = "seed",
+                            UpdatedBy = string.Empty
+                        };
+                        await context.Menus.AddAsync(child);
+                        await context.SaveChangesAsync();
+                    }
+
+                    // Global admin altına Roles List
+                    var rolesListCode = "rolesList";
+                    var rolesListExists = await context.Menus.AsNoTracking().AnyAsync(m => m.MenuCode == rolesListCode);
+                    if (!rolesListExists)
+                    {
+                        var rolesList = new Menu
+                        {
+                            Id = Guid.NewGuid(),
+                            MenuCode = rolesListCode,
+                            ParentMenuId = parentAdmin.Id,
+                            Name = "Roles List",
+                            Route = "/roles",
+                            Href = "/roles",
+                            Icon = "user-shield",
+                            IsActive = true,
+                            Order = 2,
+                            Description = "Rollerin listesi",
+                            ShowMenu = true,
+                            CreatedDate = DateTime.UtcNow,
+                            CreatedBy = "seed",
+                            UpdatedBy = string.Empty
+                        };
+                        await context.Menus.AddAsync(rolesList);
+                        await context.SaveChangesAsync();
+                    }
+
+                    // Global admin altına Rol Tanımlama
+                    var roleDefineCode = "rolesDefine";
+                    var roleDefineExists = await context.Menus.AsNoTracking().AnyAsync(m => m.MenuCode == roleDefineCode);
+                    if (!roleDefineExists)
+                    {
+                        var roleDefine = new Menu
+                        {
+                            Id = Guid.NewGuid(),
+                            MenuCode = roleDefineCode,
+                            ParentMenuId = parentAdmin.Id,
+                            Name = "Rol Tanımlama",
+                            Route = "/admin/roles/define",
+                            Href = "/admin/roles/define",
+                            Icon = "user-cog",
+                            IsActive = true,
+                            Order = 3,
+                            Description = "Rol tanımlama ve ayarları",
+                            ShowMenu = true,
+                            CreatedDate = DateTime.UtcNow,
+                            CreatedBy = "seed",
+                            UpdatedBy = string.Empty
+                        };
+                        await context.Menus.AddAsync(roleDefine);
+                        await context.SaveChangesAsync();
+                    }
+
+                    // Global admin altına Sistem Ayarları
+                    var sysSettingsCode = "settings-parameters";
+                    var sysSettingsExists = await context.Menus.AsNoTracking().AnyAsync(m => m.MenuCode == sysSettingsCode);
+                    if (!sysSettingsExists)
+                    {
+                        var sysSettings = new Menu
+                        {
+                            Id = Guid.NewGuid(),
+                            MenuCode = sysSettingsCode,
+                            ParentMenuId = parentAdmin.Id,
+                            Name = "Sistem Ayarları",
+                            Route = "/settings/parameters",
+                            Href = "/settings/parameters",
+                            Icon = "cog",
+                            IsActive = true,
+                            Order = 4,
+                            Description = "Sistem parametre yönetimi",
+                            ShowMenu = true,
+                            CreatedDate = DateTime.UtcNow,
+                            CreatedBy = "seed",
+                            UpdatedBy = string.Empty
+                        };
+                        await context.Menus.AddAsync(sysSettings);
+                        await context.SaveChangesAsync();
+                    }
+
+                    // Global admin altına Menü Yönetimi (sistem)
+                    var menusMgmtCode = "menus";
+                    var menusMgmtExists = await context.Menus.AsNoTracking().AnyAsync(m => m.MenuCode == menusMgmtCode);
+                    if (!menusMgmtExists)
+                    {
+                        var menusMgmt = new Menu
+                        {
+                            Id = Guid.NewGuid(),
+                            MenuCode = menusMgmtCode,
+                            ParentMenuId = parentAdmin.Id,
+                            Name = "Menü Yönetimi (sistem)",
+                            Route = "/menus",
+                            Href = "/menus",
+                            Icon = "list",
+                            IsActive = true,
+                            Order = 5,
+                            Description = "Sistem menü yönetimi",
+                            ShowMenu = true,
+                            CreatedDate = DateTime.UtcNow,
+                            CreatedBy = "seed",
+                            UpdatedBy = string.Empty
+                        };
+                        await context.Menus.AddAsync(menusMgmt);
+                        await context.SaveChangesAsync();
+                    }
+
+                    // Global admin altında Kullanıcı Yönetimi (kategori) ve altına User List
+                    var usersAdminCatCode = "users-admin";
+                    var usersAdminCat = await context.Menus.FirstOrDefaultAsync(m => m.MenuCode == usersAdminCatCode);
+                    if (usersAdminCat == null)
+                    {
+                        usersAdminCat = new Menu
+                        {
+                            Id = Guid.NewGuid(),
+                            MenuCode = usersAdminCatCode,
+                            ParentMenuId = parentAdmin.Id,
+                            Name = "Kullanıcı Yönetimi",
+                            Route = string.Empty,
+                            Href = string.Empty,
+                            Icon = "users",
+                            IsActive = true,
+                            Order = 6,
+                            Description = "Kullanıcı işlemleri",
+                            ShowMenu = true,
+                            CreatedDate = DateTime.UtcNow,
+                            CreatedBy = "seed",
+                            UpdatedBy = string.Empty
+                        };
+                        await context.Menus.AddAsync(usersAdminCat);
+                        await context.SaveChangesAsync();
+                    }
+
+                    var userListAdminCode = "userList-admin";
+                    var userListAdminExists = await context.Menus.AsNoTracking().AnyAsync(m => m.MenuCode == userListAdminCode);
+                    if (!userListAdminExists)
+                    {
+                        var userListAdmin = new Menu
+                        {
+                            Id = Guid.NewGuid(),
+                            MenuCode = userListAdminCode,
+                            ParentMenuId = usersAdminCat.Id,
+                            Name = "User List",
+                            Route = "/users",
+                            Href = "/users",
+                            Icon = "user",
+                            IsActive = true,
+                            Order = 1,
+                            Description = "Kullanıcı listesi",
+                            ShowMenu = true,
+                            CreatedDate = DateTime.UtcNow,
+                            CreatedBy = "seed",
+                            UpdatedBy = string.Empty
+                        };
+                        await context.Menus.AddAsync(userListAdmin);
+                        await context.SaveChangesAsync();
+                    }
+                }
+
+                // TENANT ADMIN kök menüsü ve altında Kullanıcı Yönetimi > User List
+                var tenantAdminRoot = await context.Menus.FirstOrDefaultAsync(m => m.MenuCode == "TENANT_ADMIN");
+                if (tenantAdminRoot == null)
+                {
+                    tenantAdminRoot = new Menu
+                    {
+                        Id = Guid.NewGuid(),
+                        MenuCode = "TENANT_ADMIN",
+                        ParentMenuId = null,
+                        Name = "Tenant Admin",
+                        Route = string.Empty,
+                        Href = string.Empty,
+                        Icon = "shield",
+                        IsActive = true,
+                        Order = 6,
+                        Description = "Tenant yönetim başlıkları",
+                        ShowMenu = true,
+                        CreatedDate = DateTime.UtcNow,
+                        CreatedBy = "seed",
+                        UpdatedBy = string.Empty
+                    };
+                    await context.Menus.AddAsync(tenantAdminRoot);
+                    await context.SaveChangesAsync();
+                }
+
+                var usersTenantCatCode = "users-tenant-admin";
+                var usersTenantCat = await context.Menus.FirstOrDefaultAsync(m => m.MenuCode == usersTenantCatCode);
+                if (usersTenantCat == null)
+                {
+                    usersTenantCat = new Menu
+                    {
+                        Id = Guid.NewGuid(),
+                        MenuCode = usersTenantCatCode,
+                        ParentMenuId = tenantAdminRoot.Id,
+                        Name = "Kullanıcı Yönetimi",
+                        Route = string.Empty,
+                        Href = string.Empty,
+                        Icon = "users",
+                        IsActive = true,
+                        Order = 1,
+                        Description = "Kullanıcı işlemleri",
+                        ShowMenu = true,
+                        CreatedDate = DateTime.UtcNow,
+                        CreatedBy = "seed",
+                        UpdatedBy = string.Empty
+                    };
+                    await context.Menus.AddAsync(usersTenantCat);
+                    await context.SaveChangesAsync();
+                }
+
+                var userListTenantCode = "userList-tenant";
+                var userListTenantExists = await context.Menus.AsNoTracking().AnyAsync(m => m.MenuCode == userListTenantCode);
+                if (!userListTenantExists)
+                {
+                    var userListTenant = new Menu
+                    {
+                        Id = Guid.NewGuid(),
+                        MenuCode = userListTenantCode,
+                        ParentMenuId = usersTenantCat.Id,
+                        Name = "User List",
+                        Route = "/users",
+                        Href = "/users",
+                        Icon = "user",
+                        IsActive = true,
+                        Order = 1,
+                        Description = "Kullanıcı listesi",
+                        ShowMenu = true,
+                        CreatedDate = DateTime.UtcNow,
+                        CreatedBy = "seed",
+                        UpdatedBy = string.Empty
+                    };
+                    await context.Menus.AddAsync(userListTenant);
+                    await context.SaveChangesAsync();
+                }
+            }
         }
 
         private static string GetRandomCompanyName(Random random)

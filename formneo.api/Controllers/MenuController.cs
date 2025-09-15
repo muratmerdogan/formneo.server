@@ -237,6 +237,86 @@ namespace vesa.api.Controllers
             return menus;
         }
 
+        // Global admin önizleme: Belirli tenant ve kullanıcı için efektif menüyü döndürür
+        [HttpGet("effective-preview")]
+        public async Task<ActionResult<List<Menu>>> EffectivePreview([FromQuery] Guid tenantId, [FromQuery] string userId)
+        {
+            var isGlobalAdmin = await IsCurrentUserGlobalAdminAsync();
+            if (!isGlobalAdmin)
+            {
+                return Forbid();
+            }
+            if (tenantId == Guid.Empty || string.IsNullOrWhiteSpace(userId))
+            {
+                return BadRequest("tenantId ve userId zorunludur.");
+            }
+
+            // Tüm menü ağacını hazırla
+            var menusQuery = await _menuService.Include();
+            var allMenus = menusQuery.ToList();
+            var rootMenus = allMenus.Where(m => m.ParentMenuId == null && m.IsDelete == false)
+                .Select(m => new Menu
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    ParentMenuId = m.ParentMenuId,
+                    Order = m.Order,
+                    Href = m.Href,
+                    Icon = m.Icon,
+                    IsDelete = m.IsDelete
+                })
+                .ToList()
+                .OrderBy(e => e.Order)
+                .ToList();
+
+            foreach (var menu in rootMenus)
+            {
+                AddSubMenus(menu, allMenus.OrderBy(e => e.Order).ToList());
+            }
+
+            // Kullanıcının bu tenant’taki rol kimlikleri
+            var userTenantRoles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId);
+            var roleIds = userTenantRoles
+                .Where(x => x.IsActive && x.RoleTenant != null && x.RoleTenant.IsActive)
+                .Select(x => x.RoleTenant.RoleId)
+                .Distinct()
+                .ToList();
+
+            if (roleIds.Count == 0)
+            {
+                return new List<Menu>();
+            }
+
+            // Tenant + rol bazlı menü izinlerinden görüntülenebilir olanlar
+            var query = await _roleTenantMenuService.Include();
+            var allowedMenus = await query
+                .Where(x => x.TenantId == tenantId && roleIds.Contains(x.RoleId) && x.CanView)
+                .Include(x => x.Menu)
+                .Select(x => x.Menu)
+                .ToListAsync();
+
+            var authorizedHrefs = new HashSet<string>(
+                (allowedMenus ?? new List<Menu>())
+                    .Where(m => m != null && !string.IsNullOrEmpty(m.Href))
+                    .Select(m => m.Href)
+            );
+
+            // Yetkili alt menülerle filtrelenmiş kökler
+            var filteredMenus = rootMenus
+                .Select(menu =>
+                {
+                    var subs = menu.SubMenus ?? new List<Menu>();
+                    menu.SubMenus = subs
+                        .Where(sub => sub != null && !string.IsNullOrEmpty(sub.Href) && authorizedHrefs.Contains(sub.Href))
+                        .ToList();
+                    return menu;
+                })
+                .Where(menu => menu.SubMenus != null && menu.SubMenus.Any())
+                .ToList();
+
+            return filteredMenus;
+        }
+
         // Yetki kontrolü yapmadan, silinmemiş tüm menü ağacını döner.
         // Rol atama başlangıcında kullanılabilir.
         [HttpGet("all-plain")]
