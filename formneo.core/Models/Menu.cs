@@ -40,6 +40,9 @@ namespace vesa.core.Models
 
         public bool ShowMenu { get; set; }
 
+        // Global admin modunda gösterilmemesi gereken tenant-bazlı menüler için işaret
+        public bool IsTenantOnly { get; set; }
+
     }
 
     public class MenuInsertDto

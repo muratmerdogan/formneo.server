@@ -96,7 +96,7 @@ namespace vesa.api.Seed
                 }
             }
             // Lookup seed: Modules + CRM kategorileri ve örnek itemlar
-            if (!await context.LookupModules.AnyAsync())
+            if (configuration.GetValue<bool>("Seed:EnableLookup") && !await context.LookupModules.AnyAsync())
             {
                 var crmModule = new LookupModule { Id = Guid.NewGuid(), Key = "CRM", Name = "CRM", IsTenantScoped = false };
                 await context.LookupModules.AddAsync(crmModule);
@@ -429,46 +429,49 @@ namespace vesa.api.Seed
 
             // Seed: 50 adet tenant ve her birine tenant-bazlı lookup kopyaları (hibrit model)
             // Idempotent: slug'a göre kontrol ederek oluşturur
-            var existingTenantSlugs = await context.MainClients.Select(t => t.Slug).ToListAsync();
-            var tenantList = new List<MainClient>();
-            string[] tenantNames = new[]
+            if (configuration.GetValue<bool>("Seed:EnableDemoTenants"))
             {
-                "Anka Teknoloji","Zirve Yazılım","Atlas Bilişim","Nova Sistem","Pera Dijital",
-                "Eksen Data","Mavi Bulut","Kanyon Yazılım","Delta Çözümleri","Vizyon Tech",
-                "Akıncı Sistem","Ufuk Yazılım","Sinerji Bilişim","Orion Teknoloji","Lale Dijital",
-                "Ayazağa Sistem","Çınar Yazılım","Kule Bilişim","Safir Teknoloji","Alfa Dijital",
-                "Beta Sistem","Gamma Yazılım","Sigma Bilişim","Kuzey Teknoloji","Güney Yazılım",
-                "Doğu Sistem","Batı Bilişim","Deniz Teknoloji","Dağ Yazılım","Güneş Dijital",
-                "Ay Bilişim","Yıldız Sistem","Bulut Yazılım","Perge Teknoloji","Göktürk Dijital",
-                "Ege Yazılım","Marmara Sistem","Akdeniz Bilişim","Karadeniz Tech","İç Anadolu Yazılım",
-                "Doğu Anadolu Sistem","Güneydoğu Bilişim","Pamir Teknoloji","Fırat Yazılım","Dicle Sistem",
-                "Aras Bilişim","Nemrut Dijital","Kapadokya Yazılım","Göbeklitepe Teknoloji","Truva Bilişim"
-            };
-            foreach (var name in tenantNames)
-            {
-                var slug = Slugify(name);
-                if (existingTenantSlugs.Contains(slug)) continue;
-                var t = new MainClient
+                var existingTenantSlugs = await context.MainClients.Select(t => t.Slug).ToListAsync();
+                var tenantList = new List<MainClient>();
+                string[] tenantNames = new[]
                 {
-                    Id = Guid.NewGuid(),
-                    Name = name,
-                    Slug = slug,
-                    Email = $"admin@{slug}.local",
-                    PhoneNumber = "+90 212 000 0000",
-                    Status = MainClientStatus.Active,
-                    Plan = MainClientPlan.Free,
-                    Timezone = "Europe/Istanbul",
-                    FeatureFlags = "{}",
-                    Quotas = "{}",
-                    CreatedDate = DateTime.UtcNow,
-                    IsActive = true
+                    "Anka Teknoloji","Zirve Yazılım","Atlas Bilişim","Nova Sistem","Pera Dijital",
+                    "Eksen Data","Mavi Bulut","Kanyon Yazılım","Delta Çözümleri","Vizyon Tech",
+                    "Akıncı Sistem","Ufuk Yazılım","Sinerji Bilişim","Orion Teknoloji","Lale Dijital",
+                    "Ayazağa Sistem","Çınar Yazılım","Kule Bilişim","Safir Teknoloji","Alfa Dijital",
+                    "Beta Sistem","Gamma Yazılım","Sigma Bilişim","Kuzey Teknoloji","Güney Yazılım",
+                    "Doğu Sistem","Batı Bilişim","Deniz Teknoloji","Dağ Yazılım","Güneş Dijital",
+                    "Ay Bilişim","Yıldız Sistem","Bulut Yazılım","Perge Teknoloji","Göktürk Dijital",
+                    "Ege Yazılım","Marmara Sistem","Akdeniz Bilişim","Karadeniz Tech","İç Anadolu Yazılım",
+                    "Doğu Anadolu Sistem","Güneydoğu Bilişim","Pamir Teknoloji","Fırat Yazılım","Dicle Sistem",
+                    "Aras Bilişim","Nemrut Dijital","Kapadokya Yazılım","Göbeklitepe Teknoloji","Truva Bilişim"
                 };
-                tenantList.Add(t);
-            }
-            if (tenantList.Count > 0)
-            {
-                await context.MainClients.AddRangeAsync(tenantList);
-                await context.SaveChangesAsync();
+                foreach (var name in tenantNames)
+                {
+                    var slug = Slugify(name);
+                    if (existingTenantSlugs.Contains(slug)) continue;
+                    var t = new MainClient
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = name,
+                        Slug = slug,
+                        Email = $"admin@{slug}.local",
+                        PhoneNumber = "+90 212 000 0000",
+                        Status = MainClientStatus.Active,
+                        Plan = MainClientPlan.Free,
+                        Timezone = "Europe/Istanbul",
+                        FeatureFlags = "{}",
+                        Quotas = "{}",
+                        CreatedDate = DateTime.UtcNow,
+                        IsActive = true
+                    };
+                    tenantList.Add(t);
+                }
+                if (tenantList.Count > 0)
+                {
+                    await context.MainClients.AddRangeAsync(tenantList);
+                    await context.SaveChangesAsync();
+                }
             }
 
             // Global kategorileri ve item'ları çek
@@ -602,46 +605,48 @@ namespace vesa.api.Seed
                 }
             }
 
-            var companyName = "Danube Yazılım";
-            var workCompany = await context.WorkCompany.FirstOrDefaultAsync(w => w.Name == companyName);
-            if (workCompany == null)
+            if (configuration.GetValue<bool>("Seed:EnableWorkCompany"))
             {
-                workCompany = new WorkCompany
+                var companyName = "Danube Yazılım";
+                var workCompany = await context.WorkCompany.FirstOrDefaultAsync(w => w.Name == companyName);
+                if (workCompany == null)
                 {
-                    Id = Guid.NewGuid(),
-                    Name = companyName,
-                    ApproveWorkDesign = ApproveWorkDesign.NoApprove,
-                    IsActive = true
-                };
-                context.WorkCompany.Add(workCompany);
-                await context.SaveChangesAsync();
+                    workCompany = new WorkCompany
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = companyName,
+                        ApproveWorkDesign = ApproveWorkDesign.NoApprove,
+                        IsActive = true
+                    };
+                    context.WorkCompany.Add(workCompany);
+                    await context.SaveChangesAsync();
+                }
             }
 
-            var adminEmail = "muratmerdogan@gmail.com";
-            var existingUser = await userManager.FindByEmailAsync(adminEmail);
-            if (existingUser == null)
+            UserApp existingUser = null;
+            if (configuration.GetValue<bool>("Seed:EnableAdminUser"))
             {
-                var password = Environment.GetEnvironmentVariable("SEED_ADMIN_PASSWORD") ?? "Test1234!";
-                var user = new UserApp
+                var adminEmail = "muratmerdogan@gmail.com";
+                existingUser = await userManager.FindByEmailAsync(adminEmail);
+                if (existingUser == null)
                 {
-                    UserName = adminEmail,
-                    Email = adminEmail,
-                    EmailConfirmed = true,
-                    FirstName = "Murat",
-                    LastName = "Merdoğan",
-                    isSystemAdmin = true,
-                    WorkCompanyId = workCompany.Id,
-                    canSsoLogin = true
-                };
+                    var password = Environment.GetEnvironmentVariable("SEED_ADMIN_PASSWORD") ?? "Test1234!";
+                    var user = new UserApp
+                    {
+                        UserName = adminEmail,
+                        Email = adminEmail,
+                        EmailConfirmed = true,
+                        FirstName = "Murat",
+                        LastName = "Merdoğan",
+                        isSystemAdmin = true,
+                        canSsoLogin = true
+                    };
 
-                var createUserResult = await userManager.CreateAsync(user, password);
-                if (!createUserResult.Succeeded)
-                {
-                    // ignore if already created in a race or constraints
-                }
-                else
-                {
-                    existingUser = await userManager.FindByEmailAsync(adminEmail);
+                    var createUserResult = await userManager.CreateAsync(user, password);
+                    if (createUserResult.Succeeded)
+                    {
+                        existingUser = await userManager.FindByEmailAsync(adminEmail);
+                    }
                 }
             }
 
@@ -664,7 +669,6 @@ namespace vesa.api.Seed
                 }
             }
 
-            existingUser = existingUser ?? await userManager.FindByEmailAsync(adminEmail);
             if (existingUser != null && role != null)
             {
                 var inRole = await userManager.IsInRoleAsync(existingUser, role.Name);
@@ -685,38 +689,40 @@ namespace vesa.api.Seed
                 }
             }
 
-            // Link specified user to ALL tenants via UserTenants (idempotent)
-            var linkAllEmail = "muratmerdogan@gmail.com";
-            var linkAllUser = await userManager.FindByEmailAsync(linkAllEmail);
-            if (linkAllUser != null)
+            if (configuration.GetValue<bool>("Seed:EnableLinkAllTenants"))
             {
-                var allTenantIds = await context.MainClients
-                    .AsNoTracking()
-                    .Select(t => t.Id)
-                    .ToListAsync();
-
-                foreach (var tid in allTenantIds)
+                var linkAllEmail = "muratmerdogan@gmail.com";
+                var linkAllUser = await userManager.FindByEmailAsync(linkAllEmail);
+                if (linkAllUser != null)
                 {
-                    var hasLink = await context.UserTenants
-                        .IgnoreQueryFilters()
-                        .AnyAsync(x => x.UserId == linkAllUser.Id && x.TenantId == tid);
-                    if (!hasLink)
+                    var allTenantIds = await context.MainClients
+                        .AsNoTracking()
+                        .Select(t => t.Id)
+                        .ToListAsync();
+
+                    foreach (var tid in allTenantIds)
                     {
-                        context.UserTenants.Add(new UserTenant
+                        var hasLink = await context.UserTenants
+                            .IgnoreQueryFilters()
+                            .AnyAsync(x => x.UserId == linkAllUser.Id && x.TenantId == tid);
+                        if (!hasLink)
                         {
-                            UserId = linkAllUser.Id,
-                            TenantId = tid,
-                            IsActive = true,
-                            HasTicketPermission = true,
-                            HasDepartmentPermission = true,
-                            HasOtherCompanyPermission = false,
-                            HasOtherDeptCalendarPerm = false,
-                            canEditTicket = true,
-                            DontApplyDefaultFilters = false
-                        });
+                            context.UserTenants.Add(new UserTenant
+                            {
+                                UserId = linkAllUser.Id,
+                                TenantId = tid,
+                                IsActive = true,
+                                HasTicketPermission = true,
+                                HasDepartmentPermission = true,
+                                HasOtherCompanyPermission = false,
+                                HasOtherDeptCalendarPerm = false,
+                                canEditTicket = true,
+                                DontApplyDefaultFilters = false
+                            });
+                        }
                     }
+                    await context.SaveChangesAsync();
                 }
-                await context.SaveChangesAsync();
             }
 
             // Ensure UserTenant membership
@@ -741,235 +747,236 @@ namespace vesa.api.Seed
                     await context.SaveChangesAsync();
                 }
             }
-            // CRM: Idempotent seed - mevcut kodları dikkate alarak 250 müşteri ekle
-            {
-                var hasAny = await context.Customers.IgnoreQueryFilters().AnyAsync();
-                var random = new Random();
-                var customers = new List<core.Models.CRM.Customer>();
+ //           // CRM: Idempotent seed - mevcut kodları dikkate alarak 250 müşteri ekle
+ //           {
+ //               var hasAny = await context.Customers.IgnoreQueryFilters().AnyAsync();
+ //               var random = new Random();
+ //               var customers = new List<core.Models.CRM.Customer>();
 
-                // Mevcut en yüksek CUST#### kodunu bul
-                int startIndex = 0;
-                if (hasAny)
-                {
-                    var maxCode = await context.Customers
-                        .IgnoreQueryFilters()
-                        .Where(c => c.Code.StartsWith("CUST"))
-                        .Select(c => c.Code)
-                        .ToListAsync();
-                    if (maxCode.Any())
-                    {
-                        // CUST#### biçiminden sayıyı çek
-                        var maxNum = maxCode
-                            .Select(code =>
-                            {
-                                if (code?.Length >= 8 && code.StartsWith("CUST"))
-                                {
-                                    var numPart = code.Substring(4);
-                                    return int.TryParse(numPart, out var n) ? n : 0;
-                                }
-                                return 0;
-                            })
-                            .Max();
-                        startIndex = maxNum;
-                    }
-                }
+ //               // Mevcut en yüksek CUST#### kodunu bul
+ //               int startIndex = 0;
+ //               if (hasAny)
+ //               {
+ //                   var maxCode = await context.Customers
+ //                       .IgnoreQueryFilters()
+ //                       .Where(c => c.Code.StartsWith("CUST"))
+ //                       .Select(c => c.Code)
+ //                       .ToListAsync();
+ //                   if (maxCode.Any())
+ //                   {
+ //                       // CUST#### biçiminden sayıyı çek
+ //                       var maxNum = maxCode
+ //                           .Select(code =>
+ //                           {
+ //                               if (code?.Length >= 8 && code.StartsWith("CUST"))
+ //                               {
+ //                                   var numPart = code.Substring(4);
+ //                                   return int.TryParse(numPart, out var n) ? n : 0;
+ //                               }
+ //                               return 0;
+ //                           })
+ //                           .Max();
+ //                       startIndex = maxNum;
+ //                   }
+ //               }
 
-                // Şehirler, sektörler ve firma türleri
-                var cities = new[] { "İstanbul", "Ankara", "İzmir", "Bursa", "Antalya", "Adana", "Konya", "Gaziantep", "Kayseri", "Eskişehir" };
-                var districts = new[] { "Merkez", "Kadıköy", "Beşiktaş", "Şişli", "Ataşehir", "Kartal", "Maltepe", "Ümraniye", "Pendik", "Tuzla" };
-                var sectors = new[] { "Teknoloji", "İmalat", "Perakende", "Finans", "Sağlık", "Eğitim", "İnşaat", "Lojistik", "Gıda", "Otomotiv" };
-                var companyTypes = new[] { "A.Ş.", "Ltd. Şti.", "San. ve Tic. A.Ş.", "Tic. Ltd. Şti.", "İnş. San. Tic. A.Ş." };
-                var tags = new[] { "Potansiyel", "Aktif", "VIP", "Stratejik", "Yeni", "Demo", "Test", "Aday", "Premium", "Gold" };
+ //               // Şehirler, sektörler ve firma türleri
+ //               var cities = new[] { "İstanbul", "Ankara", "İzmir", "Bursa", "Antalya", "Adana", "Konya", "Gaziantep", "Kayseri", "Eskişehir" };
+ //               var districts = new[] { "Merkez", "Kadıköy", "Beşiktaş", "Şişli", "Ataşehir", "Kartal", "Maltepe", "Ümraniye", "Pendik", "Tuzla" };
+ //               var sectors = new[] { "Teknoloji", "İmalat", "Perakende", "Finans", "Sağlık", "Eğitim", "İnşaat", "Lojistik", "Gıda", "Otomotiv" };
+ //               var companyTypes = new[] { "A.Ş.", "Ltd. Şti.", "San. ve Tic. A.Ş.", "Tic. Ltd. Şti.", "İnş. San. Tic. A.Ş." };
+ //               var tags = new[] { "Potansiyel", "Aktif", "VIP", "Stratejik", "Yeni", "Demo", "Test", "Aday", "Premium", "Gold" };
 
-                // Lookup: CustomerType ve CustomerCategory item'larını çek
-                var customerTypeCategory = await context.LookupCategories.FirstOrDefaultAsync(x => x.Key == "CustomerType");
-                var customerTypeItemIds = customerTypeCategory == null
-                    ? new List<Guid>()
-                    : await context.LookupItems
-                        .Where(i => i.CategoryId == customerTypeCategory.Id)
-                        .Select(i => i.Id)
-                        .ToListAsync();
+ //               // Lookup: CustomerType ve CustomerCategory item'larını çek
+ //               var customerTypeCategory = await context.LookupCategories.FirstOrDefaultAsync(x => x.Key == "CustomerType");
+ //               var customerTypeItemIds = customerTypeCategory == null
+ //                   ? new List<Guid>()
+ //                   : await context.LookupItems
+ //                       .Where(i => i.CategoryId == customerTypeCategory.Id)
+ //                       .Select(i => i.Id)
+ //                       .ToListAsync();
 
-                var customerCategoryCategory = await context.LookupCategories.FirstOrDefaultAsync(x => x.Key == "CustomerCategory");
-                var customerCategoryItemIds = customerCategoryCategory == null
-                    ? new List<Guid>()
-                    : await context.LookupItems
-                        .Where(i => i.CategoryId == customerCategoryCategory.Id)
-                        .Select(i => i.Id)
-                        .ToListAsync();
+ //               var customerCategoryCategory = await context.LookupCategories.FirstOrDefaultAsync(x => x.Key == "CustomerCategory");
+ //               var customerCategoryItemIds = customerCategoryCategory == null
+ //                   ? new List<Guid>()
+ //                   : await context.LookupItems
+ //                       .Where(i => i.CategoryId == customerCategoryCategory.Id)
+ //                       .Select(i => i.Id)
+ //                       .ToListAsync();
 
-                for (int i = 1; i <= 250; i++)
-                {
-                    var cityIndex = random.Next(cities.Length);
-                    var city = cities[cityIndex];
-                    var district = districts[random.Next(districts.Length)];
-                    var sector = sectors[random.Next(sectors.Length)];
-                    var companyType = companyTypes[random.Next(companyTypes.Length)];
-                    var customerType = (string)random.Next(0, 4).ToString();
-                    var category = (string)random.Next(0, 4).ToString();
-                    var status = (string)random.Next(0, 3).ToString(); // Karaliste hariç
-                    var lifecycleStage = (LifecycleStage)random.Next(0, 5);
+ //               for (int i = 1; i <= 250; i++)
+ //               {
+ //                   var cityIndex = random.Next(cities.Length);
+ //                   var city = cities[cityIndex];
+ //                   var district = districts[random.Next(districts.Length)];
+ //                   var sector = sectors[random.Next(sectors.Length)];
+ //                   var companyType = companyTypes[random.Next(companyTypes.Length)];
+ //                   var customerType = (string)random.Next(0, 4).ToString();
+ //                   var category = (string)random.Next(0, 4).ToString();
+ //                   var status = (string)random.Next(0, 3).ToString(); // Karaliste hariç
+ //                   var lifecycleStage = (LifecycleStage)random.Next(0, 5);
 
-                    var customerCompanyName = $"{GetRandomCompanyName(random)} {companyType}";
-                    var legalName = customerCompanyName.Replace(companyType, $"Sanayi ve Ticaret {companyType}");
+ //                   var customerCompanyName = $"{GetRandomCompanyName(random)} {companyType}";
+ //                   var legalName = customerCompanyName.Replace(companyType, $"Sanayi ve Ticaret {companyType}");
 
-                    startIndex++;
-                    var code = $"CUST{startIndex:0000}";
-                    // Güvenlik: aynı kod var mı kontrol et (yarış durumlarına karşı)
-                    var exists = await context.Customers.IgnoreQueryFilters().AnyAsync(c => c.Code == code);
-                    if (exists)
-                    {
-                        // varsa bir sonraki indexe geç
-                        i--;
-                        continue;
-                    }
+ //                   startIndex++;
+ //                   var code = $"CUST{startIndex:0000}";
+ //                   // Güvenlik: aynı kod var mı kontrol et (yarış durumlarına karşı)
+ //                   var exists = await context.Customers.IgnoreQueryFilters().AnyAsync(c => c.Code == code);
+ //                   if (exists)
+ //                   {
+ //                       // varsa bir sonraki indexe geç
+ //                       i--;
+ //                       continue;
+ //                   }
 
-                    var cust = new core.Models.CRM.Customer
-                    {
-                        Name = customerCompanyName,
-                        LegalName = legalName,
-                        Code = code,
-                        // Demo: CustomerTypeId lookup bağlantısı
-                        CustomerTypeId = customerTypeItemIds.Count == 0
-                            ? (Guid?)null
-                            : customerTypeItemIds[random.Next(customerTypeItemIds.Count)],
+ //                   var cust = new core.Models.CRM.Customer
+ //                   {
+ //                       Name = customerCompanyName,
+ //                       LegalName = legalName,
+ //                       Code = code,
+ //                       // Demo: CustomerTypeId lookup bağlantısı
+ //                       CustomerTypeId = customerTypeItemIds.Count == 0
+ //                           ? (Guid?)null
+ //                           : customerTypeItemIds[random.Next(customerTypeItemIds.Count)],
 
-                        CategoryId = customerCategoryItemIds.Count == 0
-                            ? (Guid?)null
-                            : customerCategoryItemIds[random.Next(customerCategoryItemIds.Count)],
+ //                       CategoryId = customerCategoryItemIds.Count == 0
+ //                           ? (Guid?)null
+ //                           : customerCategoryItemIds[random.Next(customerCategoryItemIds.Count)],
 
-                        Status = status,
-                        LifecycleStage = lifecycleStage,
-                        TaxOffice = $"{city} {random.Next(1, 10)}. Vergi Dairesi",
-                        TaxNumber = GenerateRandomTaxNumber(random),
-                        IsReferenceCustomer = random.NextDouble() < 0.1, // %10 referans müşteri
-                        OwnerId = Guid.NewGuid().ToString(),
-                        NextActivityDate = DateTime.Now.AddDays(random.Next(1, 30)),
-                        Note = $"Otomatik oluşturulan {sector} sektöründen demo müşteri.",
+ //                       Status = status,
+ //                       LifecycleStage = lifecycleStage,
+ //                       TaxOffice = $"{city} {random.Next(1, 10)}. Vergi Dairesi",
+ //                       TaxNumber = GenerateRandomTaxNumber(random),
+ //                       IsReferenceCustomer = random.NextDouble() < 0.1, // %10 referans müşteri
+ //                       OwnerId = Guid.NewGuid().ToString(),
+ //                       NextActivityDate = DateTime.Now.AddDays(random.Next(1, 30)),
+ //                       Note = $"Otomatik oluşturulan {sector} sektöründen demo müşteri.",
 
 
-                        // Adresler
-                        Addresses = new List<CustomerAddress>
-                        {
-                            new CustomerAddress
-                            {
-                                Type = AddressType.Merkez,
-                                Country = "TR",
-                                City = city,
-                                District = district,
-                                PostalCode = $"{34000 + random.Next(0, 100):00000}",
-                                Line1 = $"{GetRandomStreetName(random)} Cd. No:{random.Next(1, 200)}",
-                                Line2 = random.NextDouble() < 0.3 ? $"Kat:{random.Next(1, 10)} Daire:{random.Next(1, 20)}" : "",
-                                IsDefaultBilling = true,
-                                IsDefaultShipping = random.NextDouble() < 0.7,
-                                IsBilling = true,
-                                IsShipping = random.NextDouble() < 0.8,
-                                IsActive = true,
+ //                       // Adresler
+ //                       Addresses = new List<CustomerAddress>
+ //                       {
+ //                           new CustomerAddress
+ //                           {
+ //                               Type = AddressType.Merkez,
+ //                               Country = "TR",
+ //                               City = city,
+ //                               District = district,
+ //                               PostalCode = $"{34000 + random.Next(0, 100):00000}",
+ //                               Line1 = $"{GetRandomStreetName(random)} Cd. No:{random.Next(1, 200)}",
+ //                               Line2 = random.NextDouble() < 0.3 ? $"Kat:{random.Next(1, 10)} Daire:{random.Next(1, 20)}" : "",
+ //                               IsDefaultBilling = true,
+ //                               IsDefaultShipping = random.NextDouble() < 0.7,
+ //                               IsBilling = true,
+ //                               IsShipping = random.NextDouble() < 0.8,
+ //                               IsActive = true,
 
-                            }
-                        },
+ //                           }
+ //                       },
 
-                        // Email'ler
-                        SecondaryEmails = new List<CustomerEmail>
-                        {
-                            new CustomerEmail
-                            {
-                                Email = $"info@{GetEmailDomain(customerCompanyName)}.com",
-                                Description = "Genel",
-                                Notify = true,
-                                Bulk = false,
-                                IsActive = true,
-                                IsPrimary = true,
+ //                       // Email'ler
+ //                       SecondaryEmails = new List<CustomerEmail>
+ //                       {
+ //                           new CustomerEmail
+ //                           {
+ //                               Email = $"info@{GetEmailDomain(customerCompanyName)}.com",
+ //                               Description = "Genel",
+ //                               Notify = true,
+ //                               Bulk = false,
+ //                               IsActive = true,
+ //                               IsPrimary = true,
 
-                            },
-                            new CustomerEmail
-                            {
-                                Email = $"sales@{GetEmailDomain(customerCompanyName)}.com",
-                                Description = "Satış",
-                                Notify = false,
-                                Bulk = true,
-                                IsActive = true,
-                                IsPrimary = false,
+ //                           },
+ //                           new CustomerEmail
+ //                           {
+ //                               Email = $"sales@{GetEmailDomain(customerCompanyName)}.com",
+ //                               Description = "Satış",
+ //                               Notify = false,
+ //                               Bulk = true,
+ //                               IsActive = true,
+ //                               IsPrimary = false,
 
-                            }
-                        },
+ //                           }
+ //                       },
 
-                        // Telefonlar
-                        Phones = new List<CustomerPhone>
-                        {
-                            new CustomerPhone
-                            {
-                                Label = "Merkez",
-                                Number = $"+90 {random.Next(200, 600)} {random.Next(100, 999)} {random.Next(10, 99)} {random.Next(10, 99)}",
-                                IsPrimary = true,
-                                IsActive = true,
+ //                       // Telefonlar
+ //                       Phones = new List<CustomerPhone>
+ //                       {
+ //                           new CustomerPhone
+ //                           {
+ //                               Label = "Merkez",
+ //                               Number = $"+90 {random.Next(200, 600)} {random.Next(100, 999)} {random.Next(10, 99)} {random.Next(10, 99)}",
+ //                               IsPrimary = true,
+ //                               IsActive = true,
 
-                            },
-                            new CustomerPhone
-                            {
-                                Label = "Mobil",
-                                Number = $"+90 5{random.Next(10, 99)} {random.Next(100, 999)} {random.Next(10, 99)} {random.Next(10, 99)}",
-                                IsPrimary = false,
-                                IsActive = true,
+ //                           },
+ //                           new CustomerPhone
+ //                           {
+ //                               Label = "Mobil",
+ //                               Number = $"+90 5{random.Next(10, 99)} {random.Next(100, 999)} {random.Next(10, 99)} {random.Next(10, 99)}",
+ //                               IsPrimary = false,
+ //                               IsActive = true,
 
-                            }
-                        },
+ //                           }
+ //                       },
 
-                        // Notlar
-                        Notes = new List<CustomerNote>
-                        {
-                            new CustomerNote
-                            {
-                                Date = DateTime.Now.AddDays(-random.Next(1, 30)),
-                                Title = "İlk Görüşme",
-                                Content = $"{sector} sektöründe faaliyet gösteren firma ile ilk görüşme gerçekleştirildi.",
- // PostgreSQL için boş RowVersion
-                            },
-                            new CustomerNote
-                            {
-                                Date = DateTime.Now.AddDays(-random.Next(31, 60)),
-                                Title = "Firma Kuruluşu",
-                                Content = "Firma kaydı sisteme eklendi.",
- // PostgreSQL için boş RowVersion
-                            }
-                        },
+ //                       // Notlar
+ //                       Notes = new List<CustomerNote>
+ //                       {
+ //                           new CustomerNote
+ //                           {
+ //                               Date = DateTime.Now.AddDays(-random.Next(1, 30)),
+ //                               Title = "İlk Görüşme",
+ //                               Content = $"{sector} sektöründe faaliyet gösteren firma ile ilk görüşme gerçekleştirildi.",
+ //// PostgreSQL için boş RowVersion
+ //                           },
+ //                           new CustomerNote
+ //                           {
+ //                               Date = DateTime.Now.AddDays(-random.Next(31, 60)),
+ //                               Title = "Firma Kuruluşu",
+ //                               Content = "Firma kaydı sisteme eklendi.",
+ //// PostgreSQL için boş RowVersion
+ //                           }
+ //                       },
 
-                        // Tag'ler
-                        Tags = new List<CustomerTag>
-                        {
-                            new CustomerTag { Tag = tags[random.Next(tags.Length)] },
-                            new CustomerTag { Tag = "Demo" }
-                        },
+ //                       // Tag'ler
+ //                       Tags = new List<CustomerTag>
+ //                       {
+ //                           new CustomerTag { Tag = tags[random.Next(tags.Length)] },
+ //                           new CustomerTag { Tag = "Demo" }
+ //                       },
 
-                        // Sektörler
-                        Sectors = new List<CustomerSector>
-                        {
-                            new CustomerSector { Sector = sector }
-                        },
+ //                       // Sektörler
+ //                       Sectors = new List<CustomerSector>
+ //                       {
+ //                           new CustomerSector { Sector = sector }
+ //                       },
 
-                        Documents = new List<CustomerDocument>(),
-                        CustomFields = new List<CustomerCustomField>()
-                    };
+ //                       Documents = new List<CustomerDocument>(),
+ //                       CustomFields = new List<CustomerCustomField>()
+ //                   };
 
-                    customers.Add(cust);
-                }
+ //                   customers.Add(cust);
+ //               }
 
-                if (customers.Count > 0)
-                {
-                    await context.Customers.AddRangeAsync(customers);
-                    await context.SaveChangesAsync();
-                }
-            }
+ //               if (customers.Count > 0)
+ //               {
+ //                   await context.Customers.AddRangeAsync(customers);
+ //                   await context.SaveChangesAsync();
+ //               }
+ //           }
 
             // MENU: Üst seviye menüler (idempotent)
+            if (configuration.GetValue<bool>("Seed:EnableMenu"))
             {
                 var topMenus = new[]
                 {
-                    new { Code = "MAIN_HOME",     Name = "Ana Sayfa", Icon = "home",        Order = 1, Show = true,  Desc = "Genel gösterge paneli" },
-                    new { Code = "MAIN_CRM",      Name = "CRM",       Icon = "briefcase",    Order = 2, Show = true,  Desc = "Müşteri ilişkileri" },
-                    new { Code = "MAIN_QR",       Name = "QR",        Icon = "qrcode",       Order = 3, Show = true,  Desc = "QR işlemleri" },
-                    new { Code = "MAIN_ADMIN",    Name = "Yönetim",   Icon = "settings",     Order = 4, Show = true,  Desc = "Yönetim ve yetkiler" },
-                    new { Code = "MAIN_SETTINGS", Name = "Ayarlar",   Icon = "cog",          Order = 5, Show = true,  Desc = "Sistem ayarları" },
+                    new { Code = "MAIN_HOME",     Name = "Ana Sayfa", Icon = "home",        Order = 1, Show = true,  Desc = "Genel gösterge paneli", IsTenantOnly = false },
+                    new { Code = "MAIN_CRM",      Name = "CRM",       Icon = "briefcase",    Order = 2, Show = true,  Desc = "Müşteri ilişkileri",     IsTenantOnly = true
+                    },
+                    new { Code = "MAIN_QR",       Name = "QR",        Icon = "qrcode",       Order = 3, Show = true,  Desc = "QR işlemleri",           IsTenantOnly = true },
+                    new { Code = "MAIN_ADMIN",    Name = "Yönetim",   Icon = "settings",     Order = 4, Show = true,  Desc = "Yönetim ve yetkiler",    IsTenantOnly = false },
                 };
 
                 var existingCodes = await context.Menus
@@ -994,6 +1001,7 @@ namespace vesa.api.Seed
                         Order = t.Order,
                         Description = t.Desc,
                         ShowMenu = t.Show,
+                        IsTenantOnly = t.IsTenantOnly,
                         CreatedDate = DateTime.UtcNow,
                         CreatedBy = "seed",
                         UpdatedBy = string.Empty
@@ -1041,6 +1049,7 @@ namespace vesa.api.Seed
                             Order = 1,
                             Description = "Tenant yönetim ekranları",
                             ShowMenu = true,
+                            IsTenantOnly = true,
                             CreatedDate = DateTime.UtcNow,
                             CreatedBy = "seed",
                             UpdatedBy = string.Empty
@@ -1067,37 +1076,12 @@ namespace vesa.api.Seed
                             Order = 2,
                             Description = "Rollerin listesi",
                             ShowMenu = true,
+                            IsTenantOnly = false,
                             CreatedDate = DateTime.UtcNow,
                             CreatedBy = "seed",
                             UpdatedBy = string.Empty
                         };
                         await context.Menus.AddAsync(rolesList);
-                        await context.SaveChangesAsync();
-                    }
-
-                    // Global admin altına Rol Tanımlama
-                    var roleDefineCode = "rolesDefine";
-                    var roleDefineExists = await context.Menus.AsNoTracking().AnyAsync(m => m.MenuCode == roleDefineCode);
-                    if (!roleDefineExists)
-                    {
-                        var roleDefine = new Menu
-                        {
-                            Id = Guid.NewGuid(),
-                            MenuCode = roleDefineCode,
-                            ParentMenuId = parentAdmin.Id,
-                            Name = "Rol Tanımlama",
-                            Route = "/admin/roles/define",
-                            Href = "/admin/roles/define",
-                            Icon = "user-cog",
-                            IsActive = true,
-                            Order = 3,
-                            Description = "Rol tanımlama ve ayarları",
-                            ShowMenu = true,
-                            CreatedDate = DateTime.UtcNow,
-                            CreatedBy = "seed",
-                            UpdatedBy = string.Empty
-                        };
-                        await context.Menus.AddAsync(roleDefine);
                         await context.SaveChangesAsync();
                     }
 
@@ -1119,6 +1103,7 @@ namespace vesa.api.Seed
                             Order = 4,
                             Description = "Sistem parametre yönetimi",
                             ShowMenu = true,
+                            IsTenantOnly = false,
                             CreatedDate = DateTime.UtcNow,
                             CreatedBy = "seed",
                             UpdatedBy = string.Empty
@@ -1145,6 +1130,7 @@ namespace vesa.api.Seed
                             Order = 5,
                             Description = "Sistem menü yönetimi",
                             ShowMenu = true,
+                            IsTenantOnly = false,
                             CreatedDate = DateTime.UtcNow,
                             CreatedBy = "seed",
                             UpdatedBy = string.Empty
@@ -1164,13 +1150,14 @@ namespace vesa.api.Seed
                             MenuCode = usersAdminCatCode,
                             ParentMenuId = parentAdmin.Id,
                             Name = "Kullanıcı Yönetimi",
-                            Route = string.Empty,
+                            Route = "/users",
                             Href = string.Empty,
                             Icon = "users",
                             IsActive = true,
                             Order = 6,
                             Description = "Kullanıcı işlemleri",
                             ShowMenu = true,
+                            IsTenantOnly = false,
                             CreatedDate = DateTime.UtcNow,
                             CreatedBy = "seed",
                             UpdatedBy = string.Empty
@@ -1196,6 +1183,7 @@ namespace vesa.api.Seed
                             Order = 1,
                             Description = "Kullanıcı listesi",
                             ShowMenu = true,
+                            IsTenantOnly = false,
                             CreatedDate = DateTime.UtcNow,
                             CreatedBy = "seed",
                             UpdatedBy = string.Empty
@@ -1222,6 +1210,7 @@ namespace vesa.api.Seed
                         Order = 6,
                         Description = "Tenant yönetim başlıkları",
                         ShowMenu = true,
+                        IsTenantOnly = true,
                         CreatedDate = DateTime.UtcNow,
                         CreatedBy = "seed",
                         UpdatedBy = string.Empty
@@ -1247,6 +1236,7 @@ namespace vesa.api.Seed
                         Order = 1,
                         Description = "Kullanıcı işlemleri",
                         ShowMenu = true,
+                        IsTenantOnly = true,
                         CreatedDate = DateTime.UtcNow,
                         CreatedBy = "seed",
                         UpdatedBy = string.Empty
@@ -1272,6 +1262,7 @@ namespace vesa.api.Seed
                         Order = 1,
                         Description = "Kullanıcı listesi",
                         ShowMenu = true,
+                        IsTenantOnly = true,
                         CreatedDate = DateTime.UtcNow,
                         CreatedBy = "seed",
                         UpdatedBy = string.Empty

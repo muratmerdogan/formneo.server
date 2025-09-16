@@ -44,6 +44,8 @@ namespace vesa.core.DTOs.Menu
 
         public bool ShowMenu { get; set; }
 
+        public bool IsTenantOnly { get; set; }
+
 
     }
 }

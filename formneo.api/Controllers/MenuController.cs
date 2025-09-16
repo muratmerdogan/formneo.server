@@ -155,7 +155,9 @@ namespace vesa.api.Controllers
                 Order = m.Order,
                 Href = m.Href,
                 Icon = m.Icon,
-                IsDelete = m.IsDelete
+                IsDelete = m.IsDelete,
+                MenuCode = m.MenuCode,
+                IsTenantOnly = m.IsTenantOnly
             }).ToList().OrderBy(e => e.Order);
 
             // Alt menüleri ekleyelim
@@ -171,7 +173,9 @@ namespace vesa.api.Controllers
             // Global mod (tenant header yok/boş) ise ve kullanıcı global admin ise tüm menüyü döndür
             if (isGlobalAdmin && (_tenantContext?.CurrentTenantId == null || _tenantContext.CurrentTenantId == Guid.Empty))
             {
-                return rootMenusList;
+                // Tenant-only işaretli kök dalları gizle
+                var filtered = rootMenusList.Where(r => r.IsTenantOnly == false).ToList();
+                return filtered;
             }
             //List<Menu> parametersMenu = new List<Menu>();
             //var forms = await _formservice.GetAllAsync();
@@ -228,7 +232,10 @@ namespace vesa.api.Controllers
             // Global moddaysa ve kullanıcı global admin ise tüm listeyi döndür
             if (isGlobalAdmin && (_tenantContext?.CurrentTenantId == null || _tenantContext.CurrentTenantId == Guid.Empty))
             {
-                return menus;
+
+                var filtered = menus.Where(r => r.IsTenantOnly == false).ToList();
+                return filtered;
+
             }
 
             var data = await GetAuthByUser();
@@ -320,14 +327,10 @@ namespace vesa.api.Controllers
         // Yetki kontrolü yapmadan, silinmemiş tüm menü ağacını döner.
         // Rol atama başlangıcında kullanılabilir.
         [HttpGet("all-plain")]
-        public async Task<List<MenuListDto>> AllPlain()
+        public async Task<List<MenuListDto>> AllPlain([FromQuery] bool tenantOnly = false)
         {
-            var menusQuery = await _menuService.Include();
-            var allMenus = menusQuery.ToList();
-
-            // Tüm menüleri (IsDelete == false) ile filtrele
-            var menus = _menuService.Where(e => e.IsDelete == false).Result.Data.ToList();
-
+            // Tüm menüler (IsDelete == false), opsiyonel tenantOnly filtresi
+            var menus = _menuService.Where(e => e.IsDelete == false && (!tenantOnly || e.IsTenantOnly)).Result.Data.ToList();
             return menus;
         }
 
