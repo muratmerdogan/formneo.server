@@ -218,12 +218,15 @@ builder.Services.Configure<RoleScopeOptions>(builder.Configuration.GetSection("R
 //});
 
 
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddScoped<vesa.api.Filters.GlobalEntityWriteInterceptor>();
+
+builder.Services.AddDbContext<AppDbContext>((sp, options) =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSqlConnection"), npgsqlOptions =>
     {
         npgsqlOptions.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
     });
+    options.AddInterceptors(sp.GetRequiredService<vesa.api.Filters.GlobalEntityWriteInterceptor>());
 });
 IdentityModelEventSource.ShowPII = true; //Add this line
 
@@ -425,6 +428,14 @@ app.UseDeveloperExceptionPage();
 app.MapControllers();
 
 // İlk çalıştırmada veritabanını ve admin kullanıcıyı oluştur
-await vesa.api.Seed.DatabaseInitializer.InitializeAsync(app.Services);
+vesa.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = true;
+//try
+//{
+//    await vesa.api.Seed.DatabaseInitializer.InitializeAsync(app.Services);
+//}
+//finally
+//{
+//    vesa.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = false;
+//}
 
 app.Run();

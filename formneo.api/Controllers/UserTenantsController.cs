@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using vesa.core.DTOs;
 using vesa.core.DTOs.UserTenants;
 using vesa.core.Models;
@@ -17,10 +18,14 @@ namespace vesa.api.Controllers
     public class UserTenantsController : CustomBaseController
     {
         private readonly IUserTenantService _service;
+        private readonly IUserTenantRoleService _userTenantRoleService;
+        private readonly IConfiguration _configuration;
 
-        public UserTenantsController(IUserTenantService service)
+        public UserTenantsController(IUserTenantService service, IUserTenantRoleService userTenantRoleService, IConfiguration configuration)
         {
-            _service = service;
+			_service = service;
+            _userTenantRoleService = userTenantRoleService;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -38,12 +43,38 @@ namespace vesa.api.Controllers
             return Ok(list);
         }
 
-        [HttpGet("by-user/{userId}")]
-        public async Task<ActionResult<IEnumerable<UserTenantFullDto>>> GetByUser(string userId)
-        {
-            var list = await _service.GetByUserAsync(userId);
-            return Ok(list);
-        }
+		[HttpGet("by-user/{userId}")]
+        public async Task<ActionResult<IEnumerable<UserTenantWithAdminFlagDto>>> GetByUser(string userId)
+		{
+			var list = await _service.GetByUserAsync(userId);
+			var tenantAdminRoleId = _configuration.GetValue<string>("RoleScope:TenantAdminRoleId") ?? "7f3d3baf-2f5c-4f6c-9d1e-6b6d3b25a001";
+			var result = new List<UserTenantWithAdminFlagDto>();
+			foreach (var item in list)
+			{
+				// item'in TenantId alanı olduğu varsayımıyla
+				var tenantIdProp = item.GetType().GetProperty("TenantId");
+				Guid tenantId = Guid.Empty;
+				if (tenantIdProp != null)
+				{
+					var val = tenantIdProp.GetValue(item);
+					if (val is Guid g) tenantId = g;
+				}
+
+				bool isTenantAdmin = false;
+				if (tenantId != Guid.Empty && !string.IsNullOrWhiteSpace(userId))
+				{
+					var roles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId);
+					if (roles != null)
+					{
+						isTenantAdmin = roles.Any(r => r?.RoleTenant?.RoleId == tenantAdminRoleId);
+					}
+				}
+
+                var dto = UserTenantWithAdminFlagDto.From(item, isTenantAdmin);
+				result.Add(dto);
+			}
+			return Ok(result);
+		}
 
         [HttpGet("by-tenant/{tenantId}")]
         public async Task<List<UserTenantByTenantDto>> GetByTenant(Guid tenantId)

@@ -104,6 +104,58 @@ namespace vesa.core.DTOs.UserTenants
         public List<string> UserIds { get; set; } = new List<string>();
         public bool IsActive { get; set; } = true;
     }
+
+    public class UserTenantWithAdminFlagDto
+    {
+        public Guid Id { get; set; }
+        public string UserId { get; set; }
+        public Guid TenantId { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+
+        // Tenant scoped fields
+        public bool HasTicketPermission { get; set; }
+        public bool HasDepartmentPermission { get; set; }
+        public bool HasOtherCompanyPermission { get; set; }
+        public bool HasOtherDeptCalendarPerm { get; set; }
+
+        public bool canEditTicket { get; set; }
+        public bool DontApplyDefaultFilters { get; set; }
+
+        public Guid? mainManagerUserAppId { get; set; }
+
+        public string? PCname { get; set; }
+        public string? manager1 { get; set; }
+        public string? manager2 { get; set; }
+
+        // Admin flag
+        public bool IsTenantAdmin { get; set; }
+
+        public static UserTenantWithAdminFlagDto From(object source, bool isTenantAdmin)
+        {
+            var dto = new UserTenantWithAdminFlagDto
+            {
+                IsTenantAdmin = isTenantAdmin
+            };
+
+            // Use reflection to copy properties from source object
+            var sourceType = source.GetType();
+            var targetType = typeof(UserTenantWithAdminFlagDto);
+
+            foreach (var sourceProp in sourceType.GetProperties())
+            {
+                var targetProp = targetType.GetProperty(sourceProp.Name);
+                if (targetProp != null && targetProp.CanWrite && sourceProp.CanRead)
+                {
+                    var value = sourceProp.GetValue(source);
+                    targetProp.SetValue(dto, value);
+                }
+            }
+
+            return dto;
+        }
+    }
 }
 
 

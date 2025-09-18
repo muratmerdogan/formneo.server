@@ -334,6 +334,13 @@ namespace vesa.api.Controllers
             return menus;
         }
 
+		[HttpGet("tenant-only")]
+		public async Task<List<MenuListDto>> TenantOnly()
+		{
+			var response = await _menuService.Where(e => e.IsDelete == false && e.IsTenantOnly);
+			return response.Data.OrderBy(m => m.Order).ToList();
+		}
+
         public static void AddSubMenus(Menu menu, List<Menu> allMenus)
         {
             var subMenus = allMenus.Where(m => m.ParentMenuId == menu.Id && m.IsDelete == false).Select(m => new Menu

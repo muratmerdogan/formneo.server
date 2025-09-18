@@ -9,6 +9,8 @@ using vesa.core.UnitOfWorks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+using vesa.core.Options;
 
 namespace vesa.api.Controllers
 {
@@ -24,12 +26,13 @@ namespace vesa.api.Controllers
         private readonly IMemoryCache _memoryCache;
         private readonly IGlobalServiceWithDto<AspNetRolesMenu, RoleMenuListDto> _roleMenuService;
         IUnitOfWork _unitOfWork;
+        private readonly IOptions<RoleScopeOptions> _roleScopeOptions;
 
         public RoleMenuController(
             IMapper mapper,
             RoleManager<IdentityRole> roleManager,
             IGlobalServiceWithDto<AspNetRolesMenu, RoleMenuListDto> roleMenuService, IUnitOfWork unitOfWork, UserManager<UserApp> userManager,
-             IMemoryCache memoryCache)
+             IMemoryCache memoryCache, IOptions<RoleScopeOptions> roleScopeOptions)
         {
             _mapper = mapper;
             _roleManager = roleManager;
@@ -37,6 +40,7 @@ namespace vesa.api.Controllers
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _memoryCache = memoryCache;
+            _roleScopeOptions = roleScopeOptions;
         }
 
         [HttpGet]
@@ -61,6 +65,20 @@ namespace vesa.api.Controllers
 
 
             return roles.ToList();
+        }
+
+        [HttpGet("AllOnlyHeadWithoutGlobal")]
+        public async Task<List<IdentityRole>> AllOnlyHeadWithoutGlobal()
+        {
+            var roles = await _roleManager.Roles.ToListAsync();
+            var globalOnlyRoleIds = _roleScopeOptions?.Value?.GlobalOnlyRoleIds ?? new List<string>();
+            if (globalOnlyRoleIds == null || globalOnlyRoleIds.Count == 0)
+            {
+                return roles.ToList();
+            }
+
+            var filtered = roles.Where(r => !globalOnlyRoleIds.Contains(r.Id)).ToList();
+            return filtered;
         }
 
         [HttpPost]

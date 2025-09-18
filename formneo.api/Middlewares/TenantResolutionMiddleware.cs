@@ -116,7 +116,10 @@ namespace vesa.api.Middlewares
 					}
 				}
 
-				// Header yok veya boşsa: GET/HEAD serbest, yazmalarda header zorunlu
+				// Make global-admin info available to downstream components (e.g., EF interceptors)
+				context.Items["IsGlobalAdmin"] = isGlobalAdmin;
+
+				// Header yok veya boşsa: GET/HEAD serbest, yazmalarda header zorunlu (global admin hariç)
 				if (context.Request.Headers.TryGetValue(HeaderName, out var hv))
 				{
 					var headerVal = (hv.FirstOrDefault() ?? string.Empty).Trim();
@@ -133,9 +136,14 @@ namespace vesa.api.Middlewares
 							return;
 						}
 
-						context.Response.StatusCode = StatusCodes.Status400BadRequest;
-						await context.Response.WriteAsync("X-Tenant-Id header required for write operations");
-						return;
+						// Global admin ise: tenant header olmadan yazmaya izin ver (global varlıklar için)
+			
+						if (!isGlobalAdmin)
+						{
+							context.Response.StatusCode = StatusCodes.Status400BadRequest;
+							await context.Response.WriteAsync("X-Tenant-Id header required for write operations");
+							return;
+						}
 					}
 				}
 				else
@@ -151,9 +159,14 @@ namespace vesa.api.Middlewares
 						return;
 					}
 
-					context.Response.StatusCode = StatusCodes.Status400BadRequest;
-					await context.Response.WriteAsync("X-Tenant-Id header required for write operations");
-					return;
+					// Global admin ise: tenant header olmadan yazmaya izin ver (global varlıklar için)
+	
+					if (!isGlobalAdmin)
+					{
+						context.Response.StatusCode = StatusCodes.Status400BadRequest;
+						await context.Response.WriteAsync("X-Tenant-Id header required for write operations");
+						return;
+					}
 				}
 			}
 

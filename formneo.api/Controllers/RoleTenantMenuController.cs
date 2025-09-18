@@ -20,8 +20,8 @@ namespace vesa.api.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RoleTenantMenuController : CustomBaseController
     {
+        private const string TenantAdminRoleId = "7f3d3baf-2f5c-4f6c-9d1e-6b6d3b25a001";
         private readonly IRoleTenantMenuService _service;
-        private readonly ITenantContext _tenantContext;
         private readonly IUserTenantRoleService _userTenantRoleService;
         private readonly IRoleTenantService _roleTenantService;
         private readonly IMemoryCache _memoryCache;
@@ -30,7 +30,6 @@ namespace vesa.api.Controllers
         public RoleTenantMenuController(IRoleTenantMenuService service, ITenantContext tenantContext, IUserTenantRoleService userTenantRoleService, IRoleTenantService roleTenantService, IMemoryCache memoryCache, UserManager<UserApp> userManager)
         {
             _service = service;
-            _tenantContext = tenantContext;
             _userTenantRoleService = userTenantRoleService;
             _roleTenantService = roleTenantService;
             _memoryCache = memoryCache;
@@ -63,22 +62,20 @@ namespace vesa.api.Controllers
         // - userId zorunlu; kullanıcının tenant içindeki aktif UserTenantRole kayıtları olmalı
         // - Kullanıcı tenant üyesi değilse 403 döner
         [HttpGet("roles-by-user")]
-        public async Task<IEnumerable<RoleTenantMenuListDto>> GetRolesMenusByUser([FromQuery] string userId)
+        public async Task<IEnumerable<RoleTenantMenuListDto>> GetRolesMenusByUser([FromQuery] string userId, [FromQuery] Guid tenantId)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
                 throw new vesa.service.Exceptions.ClientSideException("userId zorunludur");
             }
 
-            // Global modda çalışamaz; tenant zorunlu
-            var tenantId = _tenantContext?.CurrentTenantId;
-            if (tenantId == null)
+            if (tenantId == Guid.Empty)
             {
-                throw new vesa.service.Exceptions.ClientSideException("Bu uç nokta global modda kullanılamaz. X-Tenant-Id zorunludur.");
+                throw new vesa.service.Exceptions.ClientSideException("tenantId zorunludur");
             }
 
             // Kullanıcının bu tenant'a ait aktif rolü var mı?
-            var userRoles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId.Value);
+            var userRoles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId);
             if (userRoles == null || !userRoles.Any())
             {
                 throw new vesa.service.Exceptions.ClientSideException("Kullanıcı belirtilen tenant'a ait değildir veya aktif rolü yoktur");
@@ -94,7 +91,7 @@ namespace vesa.api.Controllers
             foreach (var group in userRoles.GroupBy(r => r.RoleTenant))
             {
                 var roleId = group.Key.RoleId;
-                var menus = await _service.GetByRoleAndTenantAsync(roleId, tenantId.Value);
+                var menus = await _service.GetByRoleAndTenantAsync(roleId, tenantId);
                 result.AddRange(menus);
             }
 
@@ -103,20 +100,19 @@ namespace vesa.api.Controllers
 
         // Sadece rolleri döndürür (RoleId listesi). Kullanıcı tenant'a ait değilse 403 döner.
         [HttpGet("roles/by-user")]
-        public async Task<IEnumerable<string>> GetRolesByUser([FromQuery] string userId)
+        public async Task<IEnumerable<string>> GetRolesByUser([FromQuery] string userId, [FromQuery] Guid tenantId)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
                 throw new vesa.service.Exceptions.ClientSideException("userId zorunludur");
             }
 
-            var tenantId = _tenantContext?.CurrentTenantId;
-            if (tenantId == null)
+            if (tenantId == Guid.Empty)
             {
-                throw new vesa.service.Exceptions.ClientSideException("Bu uç nokta global modda kullanılamaz. X-Tenant-Id zorunludur.");
+                throw new vesa.service.Exceptions.ClientSideException("tenantId zorunludur");
             }
 
-            var userRoles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId.Value);
+            var userRoles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId);
             if (userRoles == null || !userRoles.Any())
             {
                 throw new vesa.service.Exceptions.ClientSideException("Kullanıcı belirtilen tenant'a ait değildir veya aktif rolü yoktur");
@@ -134,24 +130,23 @@ namespace vesa.api.Controllers
         // Tenant'taki tüm rol + menüleri döndürür, kullanıcının sahip olduklarını Item.Selected = true olarak işaretler
         // Global mod desteklenmez; CurrentTenantId zorunlu
         [HttpGet("roles-with-menus/by-user")]
-        public async Task<RoleTenantWithMenusGetDto> GetTenantRolesWithMenusMarkedForUser([FromQuery] string userId)
+        public async Task<RoleTenantWithMenusGetDto> GetTenantRolesWithMenusMarkedForUser([FromQuery] string userId, [FromQuery] Guid tenantId)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
                 throw new vesa.service.Exceptions.ClientSideException("userId zorunludur");
             }
 
-            var tenantId = _tenantContext?.CurrentTenantId;
-            if (tenantId == null)
+            if (tenantId == Guid.Empty)
             {
-                throw new vesa.service.Exceptions.ClientSideException("Bu uç nokta global modda kullanılamaz. X-Tenant-Id zorunludur.");
+                throw new vesa.service.Exceptions.ClientSideException("tenantId zorunludur");
             }
 
             // Tenant'a ait tüm rol+menü yapısını al
-            var full = await _roleTenantService.GetByTenantWithMenusAsync(tenantId.Value);
+            var full = await _roleTenantService.GetByTenantWithMenusAsync(tenantId);
 
             // Kullanıcının bu tenant'taki aktif rol üyeliklerini al
-            var userRoles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId.Value);
+            var userRoles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId);
             var assignedRoleIds = new HashSet<string>(userRoles.Select(ur => ur.RoleTenant.RoleId));
 
             // Kullanıcının sahip olduğu rolleri işaretle
@@ -165,20 +160,19 @@ namespace vesa.api.Controllers
 
         // Yeni: Tenant'taki tüm rolleri kullanıcının sahip olup olmadığını işaretleyerek döner
         [HttpGet("user-role-assignments")]
-        public async Task<UserRoleAssignmentGetDto> GetUserRoleAssignments([FromQuery] string userId)
+        public async Task<UserRoleAssignmentGetDto> GetUserRoleAssignments([FromQuery] string userId, [FromQuery] Guid tenantId)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
                 throw new vesa.service.Exceptions.ClientSideException("userId zorunludur");
             }
 
-            var tenantId = _tenantContext?.CurrentTenantId;
-            if (tenantId == null)
+            if (tenantId == Guid.Empty)
             {
-                throw new vesa.service.Exceptions.ClientSideException("Bu uç nokta global modda kullanılamaz. X-Tenant-Id zorunludur.");
+                throw new vesa.service.Exceptions.ClientSideException("tenantId zorunludur");
             }
 
-            var result = await _roleTenantService.GetUserRoleAssignmentsAsync(userId, tenantId.Value);
+            var result = await _roleTenantService.GetUserRoleAssignmentsAsync(userId, tenantId);
             return result;
         }
 
@@ -191,16 +185,9 @@ namespace vesa.api.Controllers
                 return BadRequest("Geçersiz veri");
             }
 
-            var tenantId = _tenantContext?.CurrentTenantId;
-            if (tenantId == null)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden, "Bu uç nokta global modda kullanılamaz. X-Tenant-Id zorunludur.");
-            }
-
-            // TenantId DTO içinde yoksa mevcut bağlamdan set et (istenirse)
             if (dto.TenantId == Guid.Empty)
             {
-                dto.TenantId = tenantId.Value;
+                return BadRequest("tenantId zorunludur");
             }
 
             // Null gelen RoleAssignments listesini boş listeye çevirerek servis içinde null referansı engelle
@@ -213,11 +200,78 @@ namespace vesa.api.Controllers
             var targetUsername = targetUser?.UserName;
             if (!string.IsNullOrWhiteSpace(targetUsername))
             {
-                var cacheKey = $"{targetUsername}:{tenantId.Value}:menus";
+                var cacheKey = $"{targetUsername}:{dto.TenantId}:menus";
                 _memoryCache.Remove(cacheKey);
             }
             return Ok();
         }
+
+        // Global admin aksiyonu: Kullanıcıyı seçip ilgili tenant için TenantAdmin yapar
+        [HttpPost("make-tenant-admin")]
+        public async Task<IActionResult> MakeTenantAdmin([FromBody] MakeTenantAdminRequest dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.UserId))
+            {
+                return BadRequest("Geçersiz veri");
+            }
+            var tenantIds = dto.TenantIds ?? new List<Guid>();
+            if (tenantIds.Count == 0)
+            {
+                return BadRequest("TenantIds zorunludur ve en az bir öğe içermelidir");
+            }
+
+            var targetUser = await _userManager.FindByIdAsync(dto.UserId);
+            var targetUsername = targetUser?.UserName;
+
+            foreach (var tid in tenantIds)
+            {
+                // 1) Tenant için TenantAdmin rolü aktif mi? (RoleTenant yoksa oluştur)
+                var existing = await _roleTenantService.GetByRoleAndTenantAsync(TenantAdminRoleId, tid);
+                if (existing == null)
+                {
+                    await _roleTenantService.RemoveByRoleAndTenantAsync(TenantAdminRoleId, tid);
+                    var insertDto = new RoleTenantInsertDto
+                    {
+                        RoleId = TenantAdminRoleId,
+                        TenantId = tid,
+                        IsActive = true,
+                        IsLocked = false
+                    };
+                    await _roleTenantService.AddAsync(insertDto);
+                }
+
+                // 2) Kullanıcıya TenantAdmin rolünü ata (tenant scope)
+                var assignDto = new UserRoleAssignmentSaveDto
+                {
+                    UserId = dto.UserId,
+                    TenantId = tid,
+                    RoleAssignments = new List<UserRoleAssignmentSaveItemDto>
+                    {
+                        new UserRoleAssignmentSaveItemDto
+                        {
+                            RoleId = TenantAdminRoleId,
+                            ShouldAssign = true
+                        }
+                    }
+                };
+                await _roleTenantService.SaveUserRoleAssignmentsAsync(assignDto);
+
+                // 3) Menü cache'ini temizle
+                if (!string.IsNullOrWhiteSpace(targetUsername))
+                {
+                    var cacheKey = $"{targetUsername}:{tid}:menus";
+                    _memoryCache.Remove(cacheKey);
+                }
+            }
+
+            return Ok();
+        }
+    }
+
+    public class MakeTenantAdminRequest
+    {
+        public string UserId { get; set; }
+        public List<Guid> TenantIds { get; set; }
     }
 }
 

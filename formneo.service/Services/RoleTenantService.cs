@@ -420,14 +420,11 @@ namespace vesa.service.Services
 		{
 			var userTenantRoleRepo = _userTenantRoleRepository;
 			var roleTenantRepo = _genericRepository;
-			var currentTenantId = _tenantContext.CurrentTenantId ?? Guid.Empty;
-			if (currentTenantId == Guid.Empty)
-			{
-				throw new vesa.service.Exceptions.ClientSideException("Geçerli oturum tenant'ı bulunamadı.");
-			}
+			var currentTenantId = dto.TenantId;
 
-			// Hedef rol listesi (ShouldAssign = true)
-			var desiredRoleIds = (dto.RoleAssignments ?? new List<UserRoleAssignmentSaveItemDto>())
+
+            // Hedef rol listesi (ShouldAssign = true)
+            var desiredRoleIds = (dto.RoleAssignments ?? new List<UserRoleAssignmentSaveItemDto>())
 				.Where(x => x.ShouldAssign)
 				.Select(x => x.RoleId)
 				.Where(x => !string.IsNullOrWhiteSpace(x))
