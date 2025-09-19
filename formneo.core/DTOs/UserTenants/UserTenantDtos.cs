@@ -114,6 +114,10 @@ namespace vesa.core.DTOs.UserTenants
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
+        // Tenant information
+        public string TenantName { get; set; }
+        public string TenantSlug { get; set; }
+
         // Tenant scoped fields
         public bool HasTicketPermission { get; set; }
         public bool HasDepartmentPermission { get; set; }

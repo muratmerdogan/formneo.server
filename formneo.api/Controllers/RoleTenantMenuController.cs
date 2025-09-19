@@ -12,6 +12,8 @@ using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Identity;
 using vesa.core.Models;
+using vesa.core.UnitOfWorks;
+using Microsoft.EntityFrameworkCore;
 
 namespace vesa.api.Controllers
 {
@@ -24,16 +26,20 @@ namespace vesa.api.Controllers
         private readonly IRoleTenantMenuService _service;
         private readonly IUserTenantRoleService _userTenantRoleService;
         private readonly IRoleTenantService _roleTenantService;
+        private readonly IUserTenantService _userTenantService;
         private readonly IMemoryCache _memoryCache;
         private readonly UserManager<UserApp> _userManager;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public RoleTenantMenuController(IRoleTenantMenuService service, ITenantContext tenantContext, IUserTenantRoleService userTenantRoleService, IRoleTenantService roleTenantService, IMemoryCache memoryCache, UserManager<UserApp> userManager)
+        public RoleTenantMenuController(IRoleTenantMenuService service, ITenantContext tenantContext, IUserTenantRoleService userTenantRoleService, IRoleTenantService roleTenantService, IUserTenantService userTenantService, IMemoryCache memoryCache, UserManager<UserApp> userManager, IUnitOfWork unitOfWork)
         {
             _service = service;
             _userTenantRoleService = userTenantRoleService;
             _roleTenantService = roleTenantService;
+            _userTenantService = userTenantService;
             _memoryCache = memoryCache;
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("{roleId}/{tenantId}")]
@@ -215,53 +221,106 @@ namespace vesa.api.Controllers
                 return BadRequest("Geçersiz veri");
             }
             var tenantIds = dto.TenantIds ?? new List<Guid>();
-            if (tenantIds.Count == 0)
-            {
-                return BadRequest("TenantIds zorunludur ve en az bir öğe içermelidir");
-            }
+            // tenantIds boş olabilir - bu durumda sadece tüm TenantAdmin rolleri silinir
 
             var targetUser = await _userManager.FindByIdAsync(dto.UserId);
             var targetUsername = targetUser?.UserName;
 
-            foreach (var tid in tenantIds)
+            // Transaction başlat
+            _unitOfWork.BeginTransaction();
+            try
             {
-                // 1) Tenant için TenantAdmin rolü aktif mi? (RoleTenant yoksa oluştur)
-                var existing = await _roleTenantService.GetByRoleAndTenantAsync(TenantAdminRoleId, tid);
-                if (existing == null)
+                // 1) Kullanıcının TÜM tenant'lardaki TenantAdmin rollerini sil
+                var allUserTenants = await _userTenantService.GetByUserAsync(dto.UserId);
+                foreach (var userTenant in allUserTenants)
                 {
-                    await _roleTenantService.RemoveByRoleAndTenantAsync(TenantAdminRoleId, tid);
-                    var insertDto = new RoleTenantInsertDto
+                    // TenantAdmin rolünü sil (transaction'sız)
+                    var existingUserRoles = await _userTenantRoleService.Where(x =>
+                        x.UserId == dto.UserId &&
+                        x.RoleTenant.TenantId == userTenant.TenantId &&
+                        x.RoleTenant.RoleId == TenantAdminRoleId)
+                        .Include(x => x.RoleTenant)
+                        .ToListAsync();
+                    
+                    if (existingUserRoles.Any())
                     {
-                        RoleId = TenantAdminRoleId,
-                        TenantId = tid,
-                        IsActive = true,
-                        IsLocked = false
-                    };
-                    await _roleTenantService.AddAsync(insertDto);
-                }
-
-                // 2) Kullanıcıya TenantAdmin rolünü ata (tenant scope)
-                var assignDto = new UserRoleAssignmentSaveDto
-                {
-                    UserId = dto.UserId,
-                    TenantId = tid,
-                    RoleAssignments = new List<UserRoleAssignmentSaveItemDto>
-                    {
-                        new UserRoleAssignmentSaveItemDto
+                        foreach (var role in existingUserRoles)
                         {
-                            RoleId = TenantAdminRoleId,
-                            ShouldAssign = true
+                            await _userTenantRoleService.RemoveAsync(role);
                         }
                     }
-                };
-                await _roleTenantService.SaveUserRoleAssignmentsAsync(assignDto);
+                }
 
-                // 3) Menü cache'ini temizle
+                // 2) Belirtilen tenant'lar için TenantAdmin rolü ata (eğer varsa)
+                if (tenantIds.Any())
+                {
+                    foreach (var tid in tenantIds)
+                    {
+                        // 2.1) Tenant için TenantAdmin rolü aktif mi? (RoleTenant yoksa oluştur)
+                        var existing = await _roleTenantService.GetByRoleAndTenantAsync(TenantAdminRoleId, tid);
+                        if (existing == null)
+                        {
+                            var insertDto = new RoleTenantInsertDto
+                            {
+                                RoleId = TenantAdminRoleId,
+                                TenantId = tid,
+                                IsActive = true,
+                                IsLocked = false
+                            };
+                            await _roleTenantService.AddAsync(insertDto);
+                        }
+
+                        // 2.2) TenantAdmin rolünü ata (transaction'sız)
+                        var roleTenant = await _roleTenantService.GetByRoleAndTenantAsync(TenantAdminRoleId, tid);
+                        if (roleTenant != null)
+                        {
+                            var userTenantRole = new UserTenantRole
+                            {
+                                Id = Guid.NewGuid(),
+                                UserId = dto.UserId,
+                                RoleTenantId = roleTenant.Id,
+                                IsActive = true,
+                                CreatedDate = DateTime.UtcNow,
+                                CreatedBy = "system"
+                            };
+                            await _userTenantRoleService.AddAsync(userTenantRole);
+                        }
+                    }
+                }
+
+                // 3) Transaction'ı commit et
+                await _unitOfWork.CommitAsync();
+
+                // 4) Cache'leri temizle
                 if (!string.IsNullOrWhiteSpace(targetUsername))
                 {
-                    var cacheKey = $"{targetUsername}:{tid}:menus";
-                    _memoryCache.Remove(cacheKey);
+                    if (tenantIds.Any())
+                    {
+                        // Sadece belirtilen tenant'ların cache'ini temizle
+                        foreach (var tid in tenantIds)
+                        {
+                            var cacheKey = $"{targetUsername}:{tid}:menus";
+                            _memoryCache.Remove(cacheKey);
+                        }
+                    }
+                    else
+                    {
+                        // Hiç tenant belirtilmemişse tüm tenant'ların cache'ini temizle
+                        var userTenantsForCache = await _userTenantService.GetByUserAsync(dto.UserId);
+                        foreach (var userTenant in userTenantsForCache)
+                        {
+                            var cacheKey = $"{targetUsername}:{userTenant.TenantId}:menus";
+                            _memoryCache.Remove(cacheKey);
+                        }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Hata durumunda rollback
+                _unitOfWork.Rollback();
+                System.Diagnostics.Debug.WriteLine($"Tenant admin atama hatası: {ex.Message}");
+                throw;
             }
 
             return Ok();

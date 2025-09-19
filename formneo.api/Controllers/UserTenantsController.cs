@@ -43,38 +43,68 @@ namespace vesa.api.Controllers
             return Ok(list);
         }
 
-		[HttpGet("by-user/{userId}")]
+	[HttpGet("by-user/{userId}")]
         public async Task<ActionResult<IEnumerable<UserTenantWithAdminFlagDto>>> GetByUser(string userId)
+	{
+		var list = await _service.GetByUserAsync(userId);
+		var tenantAdminRoleId = _configuration.GetValue<string>("RoleScope:TenantAdminRoleId") ?? "7f3d3baf-2f5c-4f6c-9d1e-6b6d3b25a001";
+		var result = new List<UserTenantWithAdminFlagDto>();
+		foreach (var item in list)
 		{
-			var list = await _service.GetByUserAsync(userId);
-			var tenantAdminRoleId = _configuration.GetValue<string>("RoleScope:TenantAdminRoleId") ?? "7f3d3baf-2f5c-4f6c-9d1e-6b6d3b25a001";
-			var result = new List<UserTenantWithAdminFlagDto>();
-			foreach (var item in list)
+			// item'in TenantId alanı olduğu varsayımıyla
+			var tenantIdProp = item.GetType().GetProperty("TenantId");
+			Guid tenantId = Guid.Empty;
+			if (tenantIdProp != null)
 			{
-				// item'in TenantId alanı olduğu varsayımıyla
-				var tenantIdProp = item.GetType().GetProperty("TenantId");
-				Guid tenantId = Guid.Empty;
-				if (tenantIdProp != null)
-				{
-					var val = tenantIdProp.GetValue(item);
-					if (val is Guid g) tenantId = g;
-				}
+				var val = tenantIdProp.GetValue(item);
+				if (val is Guid g) tenantId = g;
+			}
 
-				bool isTenantAdmin = false;
-				if (tenantId != Guid.Empty && !string.IsNullOrWhiteSpace(userId))
+			bool isTenantAdmin = false;
+			if (tenantId != Guid.Empty && !string.IsNullOrWhiteSpace(userId))
+			{
+				var roles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId);
+				if (roles != null)
 				{
-					var roles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId);
-					if (roles != null)
+					isTenantAdmin = roles.Any(r => r?.RoleTenant?.RoleId == tenantAdminRoleId);
+					
+					// Debug: Kullanıcının rollerini logla
+					System.Diagnostics.Debug.WriteLine($"User {userId} in Tenant {tenantId}: {roles.Count} roles found");
+					foreach (var role in roles)
 					{
-						isTenantAdmin = roles.Any(r => r?.RoleTenant?.RoleId == tenantAdminRoleId);
+						System.Diagnostics.Debug.WriteLine($"  - RoleId: {role?.RoleTenant?.RoleId}, IsActive: {role?.IsActive}");
 					}
 				}
-
-                var dto = UserTenantWithAdminFlagDto.From(item, isTenantAdmin);
-				result.Add(dto);
 			}
-			return Ok(result);
+
+            var dto = UserTenantWithAdminFlagDto.From(item, isTenantAdmin);
+			
+			// Tenant ismi ve slug'ını ekle (reflection ile kopyalama işlemi çalışmıyorsa manuel olarak ekle)
+			var tenantNameProp = item.GetType().GetProperty("TenantName");
+			var tenantSlugProp = item.GetType().GetProperty("TenantSlug");
+			
+			if (tenantNameProp != null)
+			{
+				var tenantNameValue = tenantNameProp.GetValue(item)?.ToString();
+				if (!string.IsNullOrEmpty(tenantNameValue))
+				{
+					dto.TenantName = tenantNameValue;
+				}
+			}
+			
+			if (tenantSlugProp != null)
+			{
+				var tenantSlugValue = tenantSlugProp.GetValue(item)?.ToString();
+				if (!string.IsNullOrEmpty(tenantSlugValue))
+				{
+					dto.TenantSlug = tenantSlugValue;
+				}
+			}
+			
+			result.Add(dto);
 		}
+		return Ok(result);
+	}
 
         [HttpGet("by-tenant/{tenantId}")]
         public async Task<List<UserTenantByTenantDto>> GetByTenant(Guid tenantId)

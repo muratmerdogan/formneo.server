@@ -105,48 +105,8 @@ namespace vesa.api.Controllers
             var menus = await _menuService.Include();
 
             var menuList = menus.ToList();
-            List<Menu> extFormMenus = [];
-            if (menuList != null)
-            {
-                //var forms = _formRepository.GetAll().Include(x => x.WorkFlowDefination).Where(e => e.IsDelete == false && e.IsActive == 1);
-
-                var loginUser = await _userService.GetUserByEmailAsync(User.Identity.Name);
-                var loginUserId = loginUser.Data.Id;
-                var result = await _formAuthService.Include();
-                var forms = await result.Include(e => e.Form).ToListAsync();
-                forms = forms.Where(e => e.Form.ShowInMenu == true && e.UserIds.Contains(Guid.Parse(loginUserId))).ToList();
-
-                foreach (var form in forms)
-                {
-                    var newForm = new Menu
-                    {
-                        Href = $"/formList/{form.FormId}",
-                        Description = form.Form.FormDescription,
-                        Name = form.Form.FormName,
-                        Order = 6,
-                        IsActive = form.Form.IsActive == 1,
-                        IsDelete = form.Form.IsDelete,
-                        ParentMenuId = new Guid("3db50541-830a-44c1-beb6-12905f615abe")
-                    };
-                    menuList.Add(newForm);
-                    extFormMenus.Add(newForm);
-                }
-                //var eduForm = new Menu
-                //{
-                //    Href = "/userFormList/8f6276ba-0e59-4c53-a59a-161c41f77214",
-                //    Description = "8f6276ba-0e59-4c53-a59a-161c41f77214",
-                //    Name = "Eğitimin Davranışa Dönüşümü",
-                //    Order = 6,
-                //    IsActive = true,
-                //    IsDelete = false,
-                //    ParentMenuId = new Guid("84D1D30A-D99C-4B2E-AACB-0AED9EDBB4B9")
-                //};
-
-                //menuList.Add(eduForm);
-            }
 
 
-            //var rootMenus = menus.ToList().Where(m => m.ParentMenuId == null && m.IsDelete == false).Select(m => new Menu
             var rootMenus = menuList.Where(m => m.ParentMenuId == null && m.IsDelete == false).Select(m => new Menu
             {
                 Id = m.Id,
@@ -177,30 +137,9 @@ namespace vesa.api.Controllers
                 var filtered = rootMenusList.Where(r => r.IsTenantOnly == false).ToList();
                 return filtered;
             }
-            //List<Menu> parametersMenu = new List<Menu>();
-            //var forms = await _formservice.GetAllAsync();
-            //foreach (var item in forms)
-            //{
-            //    parametersMenu.Add(new Menu { Name = item.FormName, Href = "/paramEdit/" + item.Id });
-
-            //}
-
-            // Yeni menü öğesini ekl
-            //rootMenusList.Add(new Menu { Name = "Parametreler", SubMenus = parametersMenu, Icon = "hammer", ParentMenu = null, Href = "", Order = 99999 });
-
-            //return rootMenusList.ToList().OrderBy(e => e.Order).ToList();
-
-            // data içindeki href değerlerini alıyoruz
+       
             var data = await GetAuthByUser();
             var authorizedHrefs = new HashSet<string>((data ?? new List<Menu>()).Select(d => d.Href));
-
-            //authorizedHrefs.Add("/userFormList/8f6276ba-0e59-4c53-a59a-161c41f77214");
-            foreach (var form in extFormMenus)
-            {
-                authorizedHrefs.Add(form.Href);
-            }
-
-            // Yetkili olan menüleri filtreliyoruz
 
 
 
@@ -240,8 +179,25 @@ namespace vesa.api.Controllers
 
             var data = await GetAuthByUser();
             var authorizedHrefs = new HashSet<string>((data ?? new List<Menu>()).Select(d => d.Href));
-            menus = menus.Where(m => !string.IsNullOrEmpty(m.Href) && authorizedHrefs.Contains(m.Href)).ToList();
-            return menus;
+            
+            // Yetkili menüleri al
+            var authorizedMenus = menus.Where(m => !string.IsNullOrEmpty(m.Href) && authorizedHrefs.Contains(m.Href)).ToList();
+            
+            // Parent menü kontrolü: Eğer bir alt menüye yetki varsa, parent menüsünü de ekle
+            var parentMenuIds = new HashSet<Guid>();
+            foreach (var menu in authorizedMenus)
+            {
+                if (menu.ParentMenuId.HasValue)
+                {
+                    parentMenuIds.Add(menu.ParentMenuId.Value);
+                }
+            }
+            
+            // Parent menüleri de listeye ekle (eğer zaten listede yoksa)
+            var parentMenus = menus.Where(m => parentMenuIds.Contains(m.Id) && !authorizedMenus.Any(am => am.Id == m.Id)).ToList();
+            authorizedMenus.AddRange(parentMenus);
+            
+            return authorizedMenus;
         }
 
         // Global admin önizleme: Belirli tenant ve kullanıcı için efektif menüyü döndürür
@@ -452,8 +408,6 @@ namespace vesa.api.Controllers
 
         //    return menuItems;
         //}
-
-
         [HttpGet("GetAuthByUser")]
         public async Task<List<Menu>> GetAuthByUser()
         {
@@ -466,28 +420,25 @@ namespace vesa.api.Controllers
                 {
                     return new List<Menu>();
                 }
-
+                
                 var globalCacheKey = $"{User.Identity.Name}:global:menus";
                 if (_memoryCache.TryGetValue(globalCacheKey, out var cachedGlobal))
                 {
                     return cachedGlobal as List<Menu> ?? new List<Menu>();
                 }
-
                 var menusQueryGlobal = await _menuService.Include();
                 var allMenusGlobal = menusQueryGlobal
                     .Where(m => m.IsDelete == false)
                     .ToList();
-
+                
                 _memoryCache.Set(globalCacheKey, allMenusGlobal, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
                 return allMenusGlobal;
             }
-
             var cacheKey = $"{User.Identity.Name}:{tenantId}:menus";
             if (_memoryCache.TryGetValue(cacheKey, out var cachedValue))
             {
                 return cachedValue as List<Menu> ?? new List<Menu>();
             }
-
             string userName = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
             if (string.IsNullOrWhiteSpace(userName))
             {
