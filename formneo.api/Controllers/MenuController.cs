@@ -497,7 +497,7 @@ namespace vesa.api.Controllers
                 }
                 var menusQueryGlobal = await _menuService.Include();
                 var allMenusGlobal = menusQueryGlobal
-                    .Where(m => m.IsDelete == false)
+                    .Where(m => m.IsDelete == false && m.IsTenantOnly==false)
                     .ToList();
                 
                 _memoryCache.Set(globalCacheKey, allMenusGlobal, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
