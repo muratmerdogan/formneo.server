@@ -68,6 +68,8 @@ namespace vesa.core.Models
         public string? Description { get; set; }
 
         public bool ShowMenu { get; set; }
+
+        public bool IsTenantOnly { get; set; }
     }
 
     public class MenuUpdateDto
@@ -96,5 +98,7 @@ namespace vesa.core.Models
         public string? Description { get; set; }
 
         public bool ShowMenu { get; set; }
+
+        public bool IsTenantOnly { get; set; }
     }
 }

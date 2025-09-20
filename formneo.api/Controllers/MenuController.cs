@@ -37,11 +37,12 @@ namespace vesa.api.Controllers
         private readonly ITenantContext _tenantContext;
         private readonly IRoleTenantMenuService _roleTenantMenuService;
         private readonly IUserTenantRoleService _userTenantRoleService;
+        private readonly IUserTenantService _userTenantService;
         private readonly IOptions<RoleScopeOptions> _roleScopeOptions;
 
         public MenuController(IMapper mapper, IGlobalServiceWithDto<Menu, MenuListDto> Service, IServiceWithDto<FormRuleEngine, FormRuleEngineDto> formRuleEngineService,
             IFormService formService, IGlobalServiceWithDto<AspNetRolesMenu, RoleMenuListDto> roleMenuService, IMemoryCache memoryCache, RoleManager<IdentityRole> roleManager, UserManager<UserApp> userManager, IFormRepository formRepository,
-            IServiceWithDto<FormAuth, FormAuthDto> formAuthService, IUserService userService, ITenantContext tenantContext, IRoleTenantMenuService roleTenantMenuService, IUserTenantRoleService userTenantRoleService, IOptions<RoleScopeOptions> roleScopeOptions)
+            IServiceWithDto<FormAuth, FormAuthDto> formAuthService, IUserService userService, ITenantContext tenantContext, IRoleTenantMenuService roleTenantMenuService, IUserTenantRoleService userTenantRoleService, IUserTenantService userTenantService, IOptions<RoleScopeOptions> roleScopeOptions)
         {
 
             _menuService = Service;
@@ -59,6 +60,7 @@ namespace vesa.api.Controllers
             _tenantContext = tenantContext;
             _roleTenantMenuService = roleTenantMenuService;
             _userTenantRoleService = userTenantRoleService;
+            _userTenantService = userTenantService;
             _roleScopeOptions = roleScopeOptions;
         }
         private async Task<bool> IsCurrentUserGlobalAdminAsync()
@@ -95,6 +97,37 @@ namespace vesa.api.Controllers
             catch
             {
                 return false;
+            }
+        }
+
+        private void ClearAllMenuCaches()
+        {
+            try
+            {
+                // Tüm kullanıcıların menü cache'lerini temizle
+                // Bu işlem biraz maliyetli olabilir ama menü değişiklikleri nadiren olur
+                var allUsers = _userManager.Users.ToList();
+                foreach (var user in allUsers)
+                {
+                    // Global admin cache'ini temizle
+                    _memoryCache.Remove($"global-admin:{user.Id}");
+                    
+                    // Eski format menü cache'ini temizle (RoleMenuController'dan)
+                    _memoryCache.Remove($"{user.UserName}menus");
+                    
+                    // Kullanıcının tüm tenant'ları için menü cache'ini temizle
+                    var userTenants = _userTenantService.GetByUserAsync(user.Id).Result;
+                    foreach (var userTenant in userTenants)
+                    {
+                        var cacheKey = $"{user.UserName}:{userTenant.TenantId}:menus";
+                        _memoryCache.Remove(cacheKey);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Cache temizleme hatası log'lanabilir ama ana işlemi etkilememeli
+                // Log hatası burada eklenebilir
             }
         }
         [HttpGet]
@@ -139,17 +172,15 @@ namespace vesa.api.Controllers
             }
        
             var data = await GetAuthByUser();
-            var authorizedHrefs = new HashSet<string>((data ?? new List<Menu>()).Select(d => d.Href));
-
-
+            var authorizedMenuIds = new HashSet<Guid>((data ?? new List<Menu>()).Select(d => d.Id));
 
             var filteredMenus = rootMenusList
                .Select(menu =>
                {
-                   // Yetkili olan submenu'leri filtreliyoruz (null güvenli)
+                   // Yetkili olan submenu'leri filtreliyoruz (Menu ID bazlı)
                    var subs = menu.SubMenus ?? new List<Menu>();
                    menu.SubMenus = subs
-                       .Where(sub => sub != null && sub.Href != null && authorizedHrefs.Contains(sub.Href))
+                       .Where(sub => sub != null && authorizedMenuIds.Contains(sub.Id))
                        .ToList();
 
                    return menu;
@@ -178,10 +209,10 @@ namespace vesa.api.Controllers
             }
 
             var data = await GetAuthByUser();
-            var authorizedHrefs = new HashSet<string>((data ?? new List<Menu>()).Select(d => d.Href));
+            var authorizedMenuIds = new HashSet<Guid>((data ?? new List<Menu>()).Select(d => d.Id));
             
-            // Yetkili menüleri al
-            var authorizedMenus = menus.Where(m => !string.IsNullOrEmpty(m.Href) && authorizedHrefs.Contains(m.Href)).ToList();
+            // Yetkili menüleri al (Menu ID bazlı)
+            var authorizedMenus = menus.Where(m => authorizedMenuIds.Contains(m.Id)).ToList();
             
             // Parent menü kontrolü: Eğer bir alt menüye yetki varsa, parent menüsünü de ekle
             var parentMenuIds = new HashSet<Guid>();
@@ -198,6 +229,35 @@ namespace vesa.api.Controllers
             authorizedMenus.AddRange(parentMenus);
             
             return authorizedMenus;
+        }
+
+        // GET: api/Menu/all-without-auth
+        [HttpGet("all-without-auth")]
+        public async Task<List<Menu>> GetAllMenusWithoutAuth()
+        {
+            var menus = await _menuService.Include();
+            var menuList = menus.ToList();
+
+            var rootMenus = menuList.Where(m => m.ParentMenuId == null && m.IsDelete == false).Select(m => new Menu
+            {
+                Id = m.Id,
+                Name = m.Name,
+                ParentMenuId = m.ParentMenuId,
+                Order = m.Order,
+                Href = m.Href,
+                Icon = m.Icon,
+                IsDelete = m.IsDelete,
+                MenuCode = m.MenuCode,
+                IsTenantOnly = m.IsTenantOnly
+            }).ToList().OrderBy(e => e.Order);
+
+            // Alt menüleri ekleyelim
+            foreach (var menu in rootMenus)
+            {
+                AddSubMenus(menu, menuList.OrderBy(e => e.Order).ToList());
+            }
+
+            return rootMenus.ToList();
         }
 
         // Global admin önizleme: Belirli tenant ve kullanıcı için efektif menüyü döndürür
@@ -327,6 +387,9 @@ namespace vesa.api.Controllers
         {
             var result = await _menuService.AddAsync(_mapper.Map<MenuListDto>(dto));
 
+            // Menü cache'lerini temizle - yeni menü eklendiğinde tüm kullanıcıların menü cache'i geçersiz olur
+            ClearAllMenuCaches();
+
             return result.Data;
         }
 
@@ -352,6 +415,9 @@ namespace vesa.api.Controllers
                 }
 
                 await _menuService.SoftDeleteAsync(id);
+
+                // Menü cache'lerini temizle - menü silindiğinde tüm kullanıcıların menü cache'i geçersiz olur
+                ClearAllMenuCaches();
 
                 return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
             }
@@ -385,6 +451,9 @@ namespace vesa.api.Controllers
             {
 
                 var result = await _menuService.UpdateAsync(_mapper.Map<MenuListDto>(dto));
+
+                // Menü cache'lerini temizle - menü güncellendiğinde tüm kullanıcıların menü cache'i geçersiz olur
+                ClearAllMenuCaches();
 
                 return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
             }

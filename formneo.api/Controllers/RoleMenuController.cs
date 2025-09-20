@@ -6,6 +6,7 @@ using NLayer.Core.Services;
 using vesa.core.DTOs;
 using vesa.core.Models;
 using vesa.core.UnitOfWorks;
+using vesa.core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Memory;
@@ -25,22 +26,58 @@ namespace vesa.api.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMemoryCache _memoryCache;
         private readonly IGlobalServiceWithDto<AspNetRolesMenu, RoleMenuListDto> _roleMenuService;
+        private readonly IRoleTenantMenuService _roleTenantMenuService;
+        private readonly IUserTenantService _userTenantService;
         IUnitOfWork _unitOfWork;
         private readonly IOptions<RoleScopeOptions> _roleScopeOptions;
 
         public RoleMenuController(
             IMapper mapper,
             RoleManager<IdentityRole> roleManager,
-            IGlobalServiceWithDto<AspNetRolesMenu, RoleMenuListDto> roleMenuService, IUnitOfWork unitOfWork, UserManager<UserApp> userManager,
+            IGlobalServiceWithDto<AspNetRolesMenu, RoleMenuListDto> roleMenuService, 
+            IRoleTenantMenuService roleTenantMenuService,
+            IUserTenantService userTenantService,
+            IUnitOfWork unitOfWork, UserManager<UserApp> userManager,
              IMemoryCache memoryCache, IOptions<RoleScopeOptions> roleScopeOptions)
         {
             _mapper = mapper;
             _roleManager = roleManager;
             _roleMenuService = roleMenuService;
+            _roleTenantMenuService = roleTenantMenuService;
+            _userTenantService = userTenantService;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _memoryCache = memoryCache;
             _roleScopeOptions = roleScopeOptions;
+        }
+
+        private void ClearAllRoleMenuCaches()
+        {
+            try
+            {
+                // Tüm kullanıcıların menü cache'lerini temizle
+                var allUsers = _userManager.Users.ToList();
+                foreach (var user in allUsers)
+                {
+                    // Global admin cache'ini temizle
+                    _memoryCache.Remove($"global-admin:{user.Id}");
+                    
+                    // Eski format menü cache'ini temizle
+                    _memoryCache.Remove($"{user.UserName}menus");
+                    
+                    // Kullanıcının tüm tenant'ları için menü cache'ini temizle
+                    var userTenants = _userTenantService.GetByUserAsync(user.Id).Result;
+                    foreach (var userTenant in userTenants)
+                    {
+                        var cacheKey = $"{user.UserName}:{userTenant.TenantId}:menus";
+                        _memoryCache.Remove(cacheKey);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Cache temizleme hatası log'lanabilir ama ana işlemi etkilememeli
+            }
         }
 
         [HttpGet]
@@ -124,6 +161,28 @@ namespace vesa.api.Controllers
                     }
                 }
 
+                // Global menü yetkilerini kaydettikten sonra, tenant menülerini de senkronize et
+                var globalRoleMenus = new List<AspNetRolesMenu>();
+                foreach (var menuPermission in dto.MenuPermissions)
+                {
+                    globalRoleMenus.Add(new AspNetRolesMenu
+                    {
+                        RoleId = role.Id,
+                        MenuId = menuPermission.MenuId,
+                        CanView = menuPermission.CanView,
+                        CanAdd = menuPermission.CanAdd,
+                        CanEdit = menuPermission.CanEdit,
+                        CanDelete = menuPermission.CanDelete,
+                        Description = dto.Description
+                    });
+                }
+                
+                // Tenant menülerini senkronize et
+                await _roleTenantMenuService.SyncRoleMenusFromGlobalAsync(role.Id, globalRoleMenus);
+
+                // Rol menü cache'lerini temizle
+                ClearAllRoleMenuCaches();
+
                 // Tüm işlemler başarılı olduğunda commit yap
                 await _unitOfWork.CommitAsync();
                 return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
@@ -194,6 +253,28 @@ namespace vesa.api.Controllers
                     }
                 }
 
+                // Global menü yetkilerini güncelledikten sonra, tenant menülerini de senkronize et
+                var globalRoleMenus = new List<AspNetRolesMenu>();
+                foreach (var menuPermission in dto.MenuPermissions)
+                {
+                    globalRoleMenus.Add(new AspNetRolesMenu
+                    {
+                        RoleId = role.Id,
+                        MenuId = menuPermission.MenuId,
+                        CanView = menuPermission.CanView,
+                        CanAdd = menuPermission.CanAdd,
+                        CanEdit = menuPermission.CanEdit,
+                        CanDelete = menuPermission.CanDelete,
+                        Description = dto.Description
+                    });
+                }
+                
+                // Tenant menülerini senkronize et
+                await _roleTenantMenuService.SyncRoleMenusFromGlobalAsync(role.Id, globalRoleMenus);
+
+                // Rol menü cache'lerini temizle
+                ClearAllRoleMenuCaches();
+
                 // Tüm işlemler başarılı olduğunda commit yap
                 await _unitOfWork.CommitAsync();
                 return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
@@ -228,6 +309,8 @@ namespace vesa.api.Controllers
 
                 await _roleManager.DeleteAsync(role);
 
+                // Rol menü cache'lerini temizle
+                ClearAllRoleMenuCaches();
 
                 _unitOfWork.Commit();
                 return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));

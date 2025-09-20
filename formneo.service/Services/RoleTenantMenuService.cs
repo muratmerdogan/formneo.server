@@ -71,6 +71,47 @@ namespace vesa.service.Services
             });
             await _repo.AddRangeAsync(toInsert);
         }
+
+        public async Task SyncRoleMenusFromGlobalAsync(string roleId, List<AspNetRolesMenu> globalRoleMenus)
+        {
+            // Bu role ait tüm tenant menülerini al
+            var existingTenantMenus = await _repo.Where(x => x.RoleId == roleId).ToListAsync();
+            
+            // Her tenant için global menü yetkilerini senkronize et
+            var tenants = existingTenantMenus.Select(x => x.TenantId).Distinct().ToList();
+            
+            foreach (var tenantId in tenants)
+            {
+                // Bu tenant için mevcut yetkileri temizle
+                var tenantMenus = existingTenantMenus.Where(x => x.TenantId == tenantId).ToList();
+                if (tenantMenus.Any())
+                {
+                    _repo.RemoveRange(tenantMenus);
+                }
+                
+                // Global yetkileri bu tenant'a kopyala
+                var tenantRoleMenus = globalRoleMenus.Select(globalMenu => new AspNetRolesTenantMenu
+                {
+                    Id = Guid.NewGuid(),
+                    RoleId = roleId,
+                    TenantId = tenantId,
+                    MenuId = globalMenu.MenuId,
+                    CanView = globalMenu.CanView,
+                    CanAdd = globalMenu.CanAdd,
+                    CanEdit = globalMenu.CanEdit,
+                    CanDelete = globalMenu.CanDelete,
+                    Description = globalMenu.Description,
+                    CreatedDate = DateTime.UtcNow,
+                    CreatedBy = "system",
+                    UpdatedBy = ""
+                }).ToList();
+                
+                if (tenantRoleMenus.Any())
+                {
+                    await _repo.AddRangeAsync(tenantRoleMenus);
+                }
+            }
+        }
     }
 }
 

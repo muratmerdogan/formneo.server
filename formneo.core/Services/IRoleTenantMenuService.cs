@@ -12,6 +12,7 @@ namespace vesa.core.Services
         Task BulkSaveAsync(RoleTenantMenuBulkSaveDto dto);
         Task<IEnumerable<RoleTenantMenuListDto>> GetByRoleAndTenantAsync(string roleId, Guid tenantId);
         Task RemoveByRoleAndTenantAsync(string roleId, Guid tenantId);
+        Task SyncRoleMenusFromGlobalAsync(string roleId, List<AspNetRolesMenu> globalRoleMenus);
     }
 }
 
