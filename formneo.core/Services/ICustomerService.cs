@@ -12,5 +12,10 @@ namespace vesa.core.Services
 		Task<CustomerListDto> CreateAsync(CustomerInsertDto dto);
 		Task<CustomerListDto> UpdateAsync(CustomerUpdateDto dto);
 		Task DeleteAsync(Guid id);
+		
+		// Optimize edilmiş metodlar
+		Task<CustomerPagedResultDto> GetListPagedAsync(int page = 1, int pageSize = 50, bool includeDetails = false);
+		Task<IEnumerable<CustomerBasicDto>> GetListBasicAsync(int skip = 0, int take = 50);
+		Task<int> GetTotalCountAsync();
 	}
 }

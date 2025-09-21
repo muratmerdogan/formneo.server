@@ -326,14 +326,36 @@ namespace vesa.service.Mapping
 				.ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags.Select(t => t.Tag).ToList()))
 				.ForMember(dest => dest.Sectors, opt => opt.MapFrom(src => src.Sectors.Select(s => s.Sector).ToList()))
 				.ForMember(dest => dest.Documents, opt => opt.MapFrom(src => src.Documents.Select(d => d.FilePath).ToList()))
-				.ForMember(dest => dest.CustomFields, opt => opt.MapFrom(src => src.CustomFields));
+				.ForMember(dest => dest.CustomFields, opt => opt.MapFrom(src => src.CustomFields))
+				.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+				.ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+				.ForMember(dest => dest.LegalName, opt => opt.MapFrom(src => src.LegalName))
+				.ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
+				.ForMember(dest => dest.TaxOffice, opt => opt.MapFrom(src => src.TaxOffice))
+				.ForMember(dest => dest.TaxNumber, opt => opt.MapFrom(src => src.TaxNumber))
+				.ForMember(dest => dest.IsReferenceCustomer, opt => opt.MapFrom(src => src.IsReferenceCustomer))
+				.ForMember(dest => dest.LogoFilePath, opt => opt.MapFrom(src => src.LogoFilePath))
+				.ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.Note))
+				.ForMember(dest => dest.Website, opt => opt.MapFrom(src => src.Website))
+				.ForMember(dest => dest.TwitterUrl, opt => opt.MapFrom(src => src.TwitterUrl))
+				.ForMember(dest => dest.FacebookUrl, opt => opt.MapFrom(src => src.FacebookUrl))
+				.ForMember(dest => dest.LinkedinUrl, opt => opt.MapFrom(src => src.LinkedinUrl))
+				.ForMember(dest => dest.InstagramUrl, opt => opt.MapFrom(src => src.InstagramUrl))
+				.ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
+				.ForMember(dest => dest.LifecycleStage, opt => opt.MapFrom(src => (int)src.LifecycleStage))
+				.ForMember(dest => dest.NextActivityDate, opt => opt.MapFrom(src => src.NextActivityDate))
+				.ForMember(dest => dest.CustomerTypeId, opt => opt.MapFrom(src => src.CustomerTypeId))
+				.ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Status) ? int.Parse(src.Status) : 0))
+				.ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
 
 			// Insert/Update: DTO -> Entity
 			CreateMap<CustomerInsertDto, vesa.core.Models.CRM.Customer>()
 				.ForMember(dest => dest.CustomerTypeId, opt => opt.MapFrom(src => src.CustomerTypeId));
 
 			CreateMap<CustomerUpdateDto, vesa.core.Models.CRM.Customer>()
-				.ForMember(dest => dest.CustomerTypeId, opt => opt.MapFrom(src => src.CustomerTypeId));
+				.ForMember(dest => dest.CustomerTypeId, opt => opt.MapFrom(src => src.CustomerTypeId))
+				.ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId));
 
 			CreateMap<CustomerEmail, string>().ConvertUsing(x => x.Email);
 			CreateMap<string, CustomerEmail>().ForMember(dest => dest.Email, opt => opt.MapFrom(src => src));
@@ -361,6 +383,29 @@ namespace vesa.service.Mapping
 				.ForMember(dest => dest.FieldType, opt => opt.MapFrom(src => src.Type))
 				.ForMember(dest => dest.Label, opt => opt.MapFrom(src => src.Label))
 				.ForMember(dest => dest.ValueJson, opt => opt.MapFrom(src => src.ValueJson));
+
+			// Performans için optimize edilmiş mapping'ler
+			CreateMap<vesa.core.Models.CRM.Customer, CustomerBasicDto>()
+				.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+				.ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+				.ForMember(dest => dest.LegalName, opt => opt.MapFrom(src => src.LegalName))
+				.ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
+				.ForMember(dest => dest.TaxNumber, opt => opt.MapFrom(src => src.TaxNumber))
+				.ForMember(dest => dest.IsReferenceCustomer, opt => opt.MapFrom(src => src.IsReferenceCustomer))
+				.ForMember(dest => dest.LogoFilePath, opt => opt.MapFrom(src => src.LogoFilePath))
+				.ForMember(dest => dest.Website, opt => opt.MapFrom(src => src.Website))
+				.ForMember(dest => dest.TwitterUrl, opt => opt.MapFrom(src => src.TwitterUrl))
+				.ForMember(dest => dest.FacebookUrl, opt => opt.MapFrom(src => src.FacebookUrl))
+				.ForMember(dest => dest.LinkedinUrl, opt => opt.MapFrom(src => src.LinkedinUrl))
+				.ForMember(dest => dest.InstagramUrl, opt => opt.MapFrom(src => src.InstagramUrl))
+				.ForMember(dest => dest.LifecycleStage, opt => opt.MapFrom(src => (int)src.LifecycleStage))
+				.ForMember(dest => dest.NextActivityDate, opt => opt.MapFrom(src => src.NextActivityDate))
+				.ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
+				.ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+				.ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => src.UpdatedDate))
+				.ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
+			
+			CreateMap<CustomerBasicDto, vesa.core.Models.CRM.Customer>();
 
 			// CRM Extras
 			CreateMap<Opportunity, OpportunityDto>().ReverseMap();

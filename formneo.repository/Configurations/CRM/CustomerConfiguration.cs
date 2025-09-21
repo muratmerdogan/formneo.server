@@ -17,6 +17,11 @@ namespace vesa.repository.Configurations.CRM
 			builder.Property(p => p.IsReferenceCustomer).IsRequired();
 			builder.Property(p => p.LogoFilePath).HasMaxLength(512).IsRequired(false);
 			builder.Property(p => p.Note).IsRequired(false);
+			builder.Property(p => p.Website).HasMaxLength(512).IsRequired(false);
+			builder.Property(p => p.TwitterUrl).HasMaxLength(512).IsRequired(false);
+			builder.Property(p => p.FacebookUrl).HasMaxLength(512).IsRequired(false);
+			builder.Property(p => p.LinkedinUrl).HasMaxLength(512).IsRequired(false);
+			builder.Property(p => p.InstagramUrl).HasMaxLength(512).IsRequired(false);
 
 			// Yeni alanlar
 			builder.Property(p => p.OwnerId).HasMaxLength(256).IsRequired(false);

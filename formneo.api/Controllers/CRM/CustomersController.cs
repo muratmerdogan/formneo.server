@@ -25,6 +25,36 @@ namespace vesa.api.Controllers.CRM
 			return Ok(data);
 		}
 
+		// Optimize edilmiş liste metodu - sayfalama ile
+		[HttpGet("paged")]
+		public async Task<IActionResult> GetListPaged(int page = 1, int pageSize = 50, bool includeDetails = false)
+		{
+			if (page < 1) page = 1;
+			if (pageSize < 1 || pageSize > 100) pageSize = 50; // Maksimum 100 kayıt
+
+			var result = await _customerService.GetListPagedAsync(page, pageSize, includeDetails);
+			return Ok(result);
+		}
+
+		// Hızlı liste - sadece temel bilgiler
+		[HttpGet("basic")]
+		public async Task<IActionResult> GetListBasic(int skip = 0, int take = 50)
+		{
+			if (skip < 0) skip = 0;
+			if (take < 1 || take > 100) take = 50;
+
+			var data = await _customerService.GetListBasicAsync(skip, take);
+			return Ok(data);
+		}
+
+		// Toplam kayıt sayısı
+		[HttpGet("count")]
+		public async Task<IActionResult> GetCount()
+		{
+			var count = await _customerService.GetTotalCountAsync();
+			return Ok(new { totalCount = count });
+		}
+
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetById2(Guid id)
 		{
@@ -32,8 +62,6 @@ namespace vesa.api.Controllers.CRM
 			if (data == null) return NotFound();
 			return Ok(data);
 		}
-
-
         //[HttpGet("{id}")]
         //public async Task<IActionResult> GetById2(Guid id)
         //{

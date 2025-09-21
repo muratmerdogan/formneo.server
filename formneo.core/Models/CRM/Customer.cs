@@ -38,7 +38,9 @@ namespace vesa.core.Models.CRM
 		public bool IsReferenceCustomer { get; set; }
 		public string? LogoFilePath { get; set; }
 		public string? Note { get; set; }
+		public string? Website { get; set; }
 		public string? TwitterUrl { get; set; }
+		public string? FacebookUrl { get; set; }
 		public string? LinkedinUrl { get; set; }
 		public string? InstagramUrl { get; set; }
 

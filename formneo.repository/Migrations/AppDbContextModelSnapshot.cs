@@ -1286,8 +1286,13 @@ namespace formneo.repository.Migrations
                     b.Property<Guid?>("CustomerTypeId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("FacebookUrl")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
                     b.Property<string>("InstagramUrl")
-                        .HasColumnType("text");
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnType("boolean");
@@ -1303,7 +1308,8 @@ namespace formneo.repository.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("LinkedinUrl")
-                        .HasColumnType("text");
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
 
                     b.Property<string>("LogoFilePath")
                         .HasMaxLength(512)
@@ -1352,7 +1358,8 @@ namespace formneo.repository.Migrations
                         .HasColumnType("character varying(128)");
 
                     b.Property<string>("TwitterUrl")
-                        .HasColumnType("text");
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
 
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
@@ -1366,6 +1373,10 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Website")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
 
                     b.HasKey("Id");
 
@@ -2715,7 +2726,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 9, 15, 21, 11, 55, 793, DateTimeKind.Utc).AddTicks(8352),
+                            CreatedDate = new DateTime(2025, 9, 21, 17, 38, 2, 312, DateTimeKind.Utc).AddTicks(8660),
                             Name = "RonesansHolding"
                         });
                 });
@@ -3743,7 +3754,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 9, 15, 21, 11, 55, 794, DateTimeKind.Utc).AddTicks(530),
+                            CreatedDate = new DateTime(2025, 9, 21, 17, 38, 2, 312, DateTimeKind.Utc).AddTicks(9370),
                             DomainVerified = false,
                             Email = "info@vesacons.com",
                             FeatureFlags = "{}",
@@ -4026,7 +4037,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 9, 15, 21, 11, 55, 794, DateTimeKind.Utc).AddTicks(721),
+                            CreatedDate = new DateTime(2025, 9, 21, 17, 38, 2, 312, DateTimeKind.Utc).AddTicks(9440),
                             Name = "RonesansHoldingTurkey"
                         });
                 });

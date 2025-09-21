@@ -43,6 +43,45 @@ namespace vesa.repository.Repositories
 				.AsNoTracking()
 				.ToListAsync();
 		}
+
+		// Sadece temel bilgileri getiren optimize edilmiş metod
+		public async Task<List<Customer>> GetListBasicAsync(int skip = 0, int take = 50)
+		{
+			return await _context.Customers
+				.AsNoTracking()
+				.OrderBy(x => x.Name)
+				.Skip(skip)
+				.Take(take)
+				.ToListAsync();
+		}
+
+		// Seçici detay yükleme - sadece gerekli ilişkileri yükler
+		public async Task<List<Customer>> GetListWithSelectedDetailsAsync(int skip = 0, int take = 50, bool includeAddresses = false, bool includeOfficials = false, bool includeEmails = false, bool includePhones = false)
+		{
+			var query = _context.Customers.AsQueryable();
+
+			if (includeAddresses)
+				query = query.Include(x => x.Addresses);
+			if (includeOfficials)
+				query = query.Include(x => x.Officials);
+			if (includeEmails)
+				query = query.Include(x => x.SecondaryEmails);
+			if (includePhones)
+				query = query.Include(x => x.Phones);
+
+			return await query
+				.AsNoTracking()
+				.OrderBy(x => x.Name)
+				.Skip(skip)
+				.Take(take)
+				.ToListAsync();
+		}
+
+		// Toplam kayıt sayısını getir
+		public async Task<int> GetTotalCountAsync()
+		{
+			return await _context.Customers.CountAsync();
+		}
 	}
 }
 

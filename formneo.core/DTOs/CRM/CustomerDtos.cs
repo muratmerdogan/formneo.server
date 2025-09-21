@@ -179,20 +179,19 @@ namespace vesa.core.DTOs.CRM
 
 	public class CustomerUpdateDto
 	{
-        public string LogoFilePath { get; set; }
+        public string? LogoFilePath { get; set; }
         public Guid Id { get; set; }
 		public byte[] RowVersion { get; set; }
 		public string Name { get; set; }
 		public string LegalName { get; set; }
 		public string Code { get; set; }
-		public int CustomerTypeId { get; set; }
-		public int CategoryId { get; set; }
+		public Guid? CustomerTypeId { get; set; }
+		public Guid? CategoryId { get; set; }
 		public int Status { get; set; }
 		public string Website { get; set; }
 		public string TaxOffice { get; set; }
 		public string TaxNumber { get; set; }
 		public bool IsReferenceCustomer { get; set; }
-		public string DefaultNotificationEmail { get; set; }
 		public string? TwitterUrl { get; set; }
 		public string? FacebookUrl { get; set; }
 		public string? LinkedinUrl { get; set; }
@@ -202,12 +201,11 @@ namespace vesa.core.DTOs.CRM
 		public DateTime? NextActivityDate { get; set; }
 
 	}
-
 	public class CustomerListDto
 	{
 		public Guid Id { get; set; }
-		public int CustomerType { get; set; }
-		public int Category { get; set; }
+		public Guid? CustomerTypeId { get; set; }
+		public Guid? CategoryId { get; set; }
 		public int Status { get; set; }
 		public string Name { get; set; }
 		public string LegalName { get; set; }
@@ -215,9 +213,17 @@ namespace vesa.core.DTOs.CRM
 		public string TaxOffice { get; set; }
 		public string TaxNumber { get; set; }
 		public bool IsReferenceCustomer { get; set; }
+		public string? LogoFilePath { get; set; }
+		public string? Note { get; set; }
+		public string? Website { get; set; }
+		public string? TwitterUrl { get; set; }
+		public string? FacebookUrl { get; set; }
+		public string? LinkedinUrl { get; set; }
+		public string? InstagramUrl { get; set; }
 		public string OwnerId { get; set; }
 		public int LifecycleStage { get; set; }
 		public DateTime? NextActivityDate { get; set; }
+		public byte[] RowVersion { get; set; }
 
 		// İlişkili tablolar
 		public List<CustomerAddressDto> Addresses { get; set; }
@@ -277,6 +283,40 @@ namespace vesa.core.DTOs.CRM
 		public Guid CustomerId { get; set; }
 		public string Description { get; set; }
 		public string Category { get; set; }
+	}
+
+	// Performans için optimize edilmiş DTO'lar
+	public class CustomerBasicDto
+	{
+		public Guid Id { get; set; }
+		public string Name { get; set; }
+		public string LegalName { get; set; }
+		public string Code { get; set; }
+		public string TaxNumber { get; set; }
+		public bool IsReferenceCustomer { get; set; }
+		public string? LogoFilePath { get; set; }
+		public string? Website { get; set; }
+		public string? TwitterUrl { get; set; }
+		public string? FacebookUrl { get; set; }
+		public string? LinkedinUrl { get; set; }
+		public string? InstagramUrl { get; set; }
+		public int LifecycleStage { get; set; }
+		public DateTime? NextActivityDate { get; set; }
+		public string OwnerId { get; set; }
+		public DateTime CreatedDate { get; set; }
+		public DateTime? UpdatedDate { get; set; }
+		public byte[] RowVersion { get; set; }
+	}
+
+	public class CustomerPagedResultDto
+	{
+		public List<CustomerBasicDto> Items { get; set; }
+		public int TotalCount { get; set; }
+		public int Page { get; set; }
+		public int PageSize { get; set; }
+		public int TotalPages { get; set; }
+		public bool HasNextPage { get; set; }
+		public bool HasPreviousPage { get; set; }
 	}
 }
 

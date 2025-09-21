@@ -85,6 +85,47 @@ namespace vesa.service.Services
 			await _unitOfWork.CommitAsync();
 			return _mapper.Map<CustomerListDto>(entity);
 		}
+
+		// Optimize edilmiş metodlar
+		public async Task<CustomerPagedResultDto> GetListPagedAsync(int page = 1, int pageSize = 50, bool includeDetails = false)
+		{
+			var skip = (page - 1) * pageSize;
+			var totalCount = await _customerRepository.GetTotalCountAsync();
+			
+			List<Customer> customers;
+			if (includeDetails)
+			{
+				customers = await _customerRepository.GetListWithSelectedDetailsAsync(skip, pageSize, true, true, true, true);
+			}
+			else
+			{
+				customers = await _customerRepository.GetListBasicAsync(skip, pageSize);
+			}
+
+			var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+			return new CustomerPagedResultDto
+			{
+				Items = _mapper.Map<List<CustomerBasicDto>>(customers),
+				TotalCount = totalCount,
+				Page = page,
+				PageSize = pageSize,
+				TotalPages = totalPages,
+				HasNextPage = page < totalPages,
+				HasPreviousPage = page > 1
+			};
+		}
+
+		public async Task<IEnumerable<CustomerBasicDto>> GetListBasicAsync(int skip = 0, int take = 50)
+		{
+			var customers = await _customerRepository.GetListBasicAsync(skip, take);
+			return _mapper.Map<List<CustomerBasicDto>>(customers);
+		}
+
+		public async Task<int> GetTotalCountAsync()
+		{
+			return await _customerRepository.GetTotalCountAsync();
+		}
 	}
 }
 
