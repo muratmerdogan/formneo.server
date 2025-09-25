@@ -45,9 +45,20 @@ namespace vesa.repository.Repositories
 		}
 
 		// Sadece temel bilgileri getiren optimize edilmiş metod
-		public async Task<List<Customer>> GetListBasicAsync(int skip = 0, int take = 50)
+		public async Task<List<Customer>> GetListBasicAsync(int skip = 0, int take = 50, string search = "")
 		{
-			return await _context.Customers
+			var query = _context.Customers
+				.Include(x => x.CustomerTypeItem)
+				.Include(x => x.CategoryItem)
+				.AsQueryable();
+			
+			// Arama filtresi - sadece Name alanında (büyük-küçük harf duyarsız)
+			if (!string.IsNullOrEmpty(search))
+			{
+				query = query.Where(x => x.Name.ToLower().Contains(search.ToLower()));
+			}
+			
+			return await query
 				.AsNoTracking()
 				.OrderBy(x => x.Name)
 				.Skip(skip)
@@ -56,9 +67,18 @@ namespace vesa.repository.Repositories
 		}
 
 		// Seçici detay yükleme - sadece gerekli ilişkileri yükler
-		public async Task<List<Customer>> GetListWithSelectedDetailsAsync(int skip = 0, int take = 50, bool includeAddresses = false, bool includeOfficials = false, bool includeEmails = false, bool includePhones = false)
+		public async Task<List<Customer>> GetListWithSelectedDetailsAsync(int skip = 0, int take = 50, bool includeAddresses = false, bool includeOfficials = false, bool includeEmails = false, bool includePhones = false, string search = "")
 		{
-			var query = _context.Customers.AsQueryable();
+			var query = _context.Customers
+				.Include(x => x.CustomerTypeItem)
+				.Include(x => x.CategoryItem)
+				.AsQueryable();
+			
+			// Arama filtresi - sadece Name alanında (büyük-küçük harf duyarsız)
+			if (!string.IsNullOrEmpty(search))
+			{
+				query = query.Where(x => x.Name.ToLower().Contains(search.ToLower()));
+			}
 
 			if (includeAddresses)
 				query = query.Include(x => x.Addresses);
@@ -78,9 +98,17 @@ namespace vesa.repository.Repositories
 		}
 
 		// Toplam kayıt sayısını getir
-		public async Task<int> GetTotalCountAsync()
+		public async Task<int> GetTotalCountAsync(string search = "")
 		{
-			return await _context.Customers.CountAsync();
+			var query = _context.Customers.AsQueryable();
+			
+			// Arama filtresi - sadece Name alanında (büyük-küçük harf duyarsız)
+			if (!string.IsNullOrEmpty(search))
+			{
+				query = query.Where(x => x.Name.ToLower().Contains(search.ToLower()));
+			}
+			
+			return await query.CountAsync();
 		}
 	}
 }

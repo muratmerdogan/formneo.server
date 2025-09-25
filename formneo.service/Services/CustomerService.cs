@@ -87,19 +87,19 @@ namespace vesa.service.Services
 		}
 
 		// Optimize edilmiş metodlar
-		public async Task<CustomerPagedResultDto> GetListPagedAsync(int page = 1, int pageSize = 50, bool includeDetails = false)
+		public async Task<CustomerPagedResultDto> GetListPagedAsync(int page = 1, int pageSize = 50, bool includeDetails = false, string search = "")
 		{
 			var skip = (page - 1) * pageSize;
-			var totalCount = await _customerRepository.GetTotalCountAsync();
+			var totalCount = await _customerRepository.GetTotalCountAsync(search);
 			
 			List<Customer> customers;
 			if (includeDetails)
 			{
-				customers = await _customerRepository.GetListWithSelectedDetailsAsync(skip, pageSize, true, true, true, true);
+				customers = await _customerRepository.GetListWithSelectedDetailsAsync(skip, pageSize, true, true, true, true, search);
 			}
 			else
 			{
-				customers = await _customerRepository.GetListBasicAsync(skip, pageSize);
+				customers = await _customerRepository.GetListBasicAsync(skip, pageSize, search);
 			}
 
 			var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);

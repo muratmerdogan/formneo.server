@@ -25,17 +25,16 @@ namespace vesa.api.Controllers.CRM
 			return Ok(data);
 		}
 
-		// Optimize edilmiş liste metodu - sayfalama ile
+		// Optimize edilmiş liste metodu - sayfalama ve arama ile
 		[HttpGet("paged")]
-		public async Task<IActionResult> GetListPaged(int page = 1, int pageSize = 50, bool includeDetails = false)
+		public async Task<IActionResult> GetListPaged(int page = 1, int pageSize = 50, bool includeDetails = false, string search = "")
 		{
 			if (page < 1) page = 1;
 			if (pageSize < 1 || pageSize > 100) pageSize = 50; // Maksimum 100 kayıt
 
-			var result = await _customerService.GetListPagedAsync(page, pageSize, includeDetails);
+			var result = await _customerService.GetListPagedAsync(page, pageSize, includeDetails, search);
 			return Ok(result);
 		}
-
 		// Hızlı liste - sadece temel bilgiler
 		[HttpGet("basic")]
 		public async Task<IActionResult> GetListBasic(int skip = 0, int take = 50)
@@ -46,7 +45,6 @@ namespace vesa.api.Controllers.CRM
 			var data = await _customerService.GetListBasicAsync(skip, take);
 			return Ok(data);
 		}
-
 		// Toplam kayıt sayısı
 		[HttpGet("count")]
 		public async Task<IActionResult> GetCount()
@@ -54,7 +52,6 @@ namespace vesa.api.Controllers.CRM
 			var count = await _customerService.GetTotalCountAsync();
 			return Ok(new { totalCount = count });
 		}
-
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetById2(Guid id)
 		{
@@ -69,14 +66,12 @@ namespace vesa.api.Controllers.CRM
         //    if (data == null) return NotFound();
         //    return Ok(data);
         //}
-
         [HttpPost]
 		public async Task<IActionResult> Create([FromBody] CustomerInsertDto dto)
 		{
 			var created = await _customerService.CreateAsync(dto);
 			return Ok(created);
 		}
-
 		[HttpPut]
 		public async Task<IActionResult> Update([FromBody] CustomerUpdateDto dto)
 		{
@@ -84,7 +79,6 @@ namespace vesa.api.Controllers.CRM
 			if (updated == null) return NotFound();
 			return Ok(updated);
 		}
-
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete(Guid id)
 		{

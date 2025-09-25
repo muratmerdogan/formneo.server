@@ -145,7 +145,7 @@ namespace vesa.core.DTOs.CRM
 
 	public class CustomerInsertDto
 	{
-        public string LogoFilePath { get; set; }
+        public string? LogoFilePath { get; set; }
         public string Name { get; set; }
 		public string LegalName { get; set; }
 		public string Code { get; set; }
@@ -160,19 +160,19 @@ namespace vesa.core.DTOs.CRM
 		public string? FacebookUrl { get; set; }
 		public string? LinkedinUrl { get; set; }
 		public string? InstagramUrl { get; set; }
-		public string OwnerId { get; set; }
+		public string? OwnerId { get; set; }
 		public int LifecycleStage { get; set; }
 		public DateTime? NextActivityDate { get; set; }
 
-		public List<CustomerOfficialDto> Officials { get; set; }
+		public List<CustomerOfficialDto>? Officials { get; set; }
 
-		public List<CustomFieldDto> CustomFields { get; set; }
-        public List<CustomerEmailDto> Emails { get; set; }
-        public List<CustomerAddressDto> Addresses { get; set; }
-        public List<CustomerPhoneDto> Phones { get; set; }
-        public List<CustomerNoteDto> Notes { get; set; }
+		public List<CustomFieldDto>? CustomFields { get; set; }
+        public List<CustomerEmailDto>? Emails { get; set; }
+        public List<CustomerAddressDto>? Addresses { get; set; }
+        public List<CustomerPhoneDto>? Phones { get; set; }
+        public List<CustomerNoteDto>? Notes { get; set; }
 
-        public List<CustomerDocument> Documents { get; set; }
+        public List<CustomerDocument>? Documents { get; set; }
 
 
     }
@@ -196,7 +196,7 @@ namespace vesa.core.DTOs.CRM
 		public string? FacebookUrl { get; set; }
 		public string? LinkedinUrl { get; set; }
 		public string? InstagramUrl { get; set; }
-		public string OwnerId { get; set; }
+		public string? OwnerId { get; set; }
 		public int LifecycleStage { get; set; }
 		public DateTime? NextActivityDate { get; set; }
 
@@ -205,7 +205,9 @@ namespace vesa.core.DTOs.CRM
 	{
 		public Guid Id { get; set; }
 		public Guid? CustomerTypeId { get; set; }
+		public string? CustomerTypeText { get; set; }
 		public Guid? CategoryId { get; set; }
+		public string? CategoryText { get; set; }
 		public int Status { get; set; }
 		public string Name { get; set; }
 		public string LegalName { get; set; }
@@ -220,7 +222,7 @@ namespace vesa.core.DTOs.CRM
 		public string? FacebookUrl { get; set; }
 		public string? LinkedinUrl { get; set; }
 		public string? InstagramUrl { get; set; }
-		public string OwnerId { get; set; }
+		public string? OwnerId { get; set; }
 		public int LifecycleStage { get; set; }
 		public DateTime? NextActivityDate { get; set; }
 		public byte[] RowVersion { get; set; }
@@ -289,6 +291,10 @@ namespace vesa.core.DTOs.CRM
 	public class CustomerBasicDto
 	{
 		public Guid Id { get; set; }
+		public Guid? CustomerTypeId { get; set; }
+		public string? CustomerTypeText { get; set; }
+		public Guid? CategoryId { get; set; }
+		public string? CategoryText { get; set; }
 		public string Name { get; set; }
 		public string LegalName { get; set; }
 		public string Code { get; set; }
@@ -302,7 +308,7 @@ namespace vesa.core.DTOs.CRM
 		public string? InstagramUrl { get; set; }
 		public int LifecycleStage { get; set; }
 		public DateTime? NextActivityDate { get; set; }
-		public string OwnerId { get; set; }
+		public string? OwnerId { get; set; }
 		public DateTime CreatedDate { get; set; }
 		public DateTime? UpdatedDate { get; set; }
 		public byte[] RowVersion { get; set; }

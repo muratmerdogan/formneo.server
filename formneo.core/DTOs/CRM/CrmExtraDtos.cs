@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace vesa.core.DTOs.CRM
 {
+	// Base DTO for common fields
 	public class OpportunityDto
 	{
 		public Guid Id { get; set; }
 		public Guid CustomerId { get; set; }
 		public string Title { get; set; }
 		public int Stage { get; set; }
+		public string StageText { get; set; }
 		public decimal? Amount { get; set; }
 		public string Currency { get; set; }
 		public int? Probability { get; set; }
@@ -17,6 +20,162 @@ namespace vesa.core.DTOs.CRM
 		public string OwnerUserId { get; set; }
 		public string Description { get; set; }
 		public byte[] RowVersion { get; set; }
+		public DateTime CreatedDate { get; set; }
+		public DateTime? UpdatedDate { get; set; }
+	}
+
+	public class OpportunityListDto
+	{
+		public Guid Id { get; set; }
+		public Guid CustomerId { get; set; }
+		public string CustomerName { get; set; }
+		public string Title { get; set; }
+		public int Stage { get; set; }
+		public string StageText { get; set; }
+		public decimal? Amount { get; set; }
+		public string Currency { get; set; }
+		public int? Probability { get; set; }
+		public DateTime? ExpectedCloseDate { get; set; }
+		public string OwnerUserId { get; set; }
+		public DateTime CreatedDate { get; set; }
+		public byte[] RowVersion { get; set; }
+	}
+
+	public class OpportunityInsertDto
+	{
+		[Required]
+		public Guid CustomerId { get; set; }
+		
+		[Required]
+		[StringLength(256, ErrorMessage = "Title cannot exceed 256 characters")]
+		public string Title { get; set; }
+		
+		[Range(0, 5, ErrorMessage = "Stage must be between 0-5")]
+		public int Stage { get; set; } = 0; // Default: New
+		
+		[Range(0, double.MaxValue, ErrorMessage = "Amount must be positive")]
+		public decimal? Amount { get; set; }
+		
+		[StringLength(8, ErrorMessage = "Currency code cannot exceed 8 characters")]
+		public string Currency { get; set; } = "TRY";
+		
+		[Range(0, 100, ErrorMessage = "Probability must be between 0-100")]
+		public int? Probability { get; set; }
+		
+		public DateTime? ExpectedCloseDate { get; set; }
+		
+		[StringLength(128, ErrorMessage = "Source cannot exceed 128 characters")]
+		public string? Source { get; set; }
+		
+		[Required]
+		public string OwnerUserId { get; set; }
+		
+		[StringLength(2000, ErrorMessage = "Description cannot exceed 2000 characters")]
+		public string? Description { get; set; }
+	}
+
+	public class OpportunityUpdateDto
+	{
+		[Required]
+		public Guid Id { get; set; }
+		
+		[Required]
+		public Guid CustomerId { get; set; }
+		
+		[Required]
+		[StringLength(256, ErrorMessage = "Title cannot exceed 256 characters")]
+		public string Title { get; set; }
+		
+		[Range(0, 5, ErrorMessage = "Stage must be between 0-5")]
+		public int Stage { get; set; }
+		
+		[Range(0, double.MaxValue, ErrorMessage = "Amount must be positive")]
+		public decimal? Amount { get; set; }
+		
+		[StringLength(8, ErrorMessage = "Currency code cannot exceed 8 characters")]
+		public string Currency { get; set; }
+		
+		[Range(0, 100, ErrorMessage = "Probability must be between 0-100")]
+		public int? Probability { get; set; }
+		
+		public DateTime? ExpectedCloseDate { get; set; }
+		
+		[StringLength(128, ErrorMessage = "Source cannot exceed 128 characters")]
+		public string? Source { get; set; }
+		
+		[Required]
+		public string OwnerUserId { get; set; }
+		
+		[StringLength(2000, ErrorMessage = "Description cannot exceed 2000 characters")]
+		public string? Description { get; set; }
+		
+		[Required]
+		public byte[] RowVersion { get; set; }
+	}
+
+	public class OpportunityPagedResultDto
+	{
+		public List<OpportunityListDto> Items { get; set; }
+		public int TotalCount { get; set; }
+		public int Page { get; set; }
+		public int PageSize { get; set; }
+		public int TotalPages { get; set; }
+		public bool HasNextPage { get; set; }
+		public bool HasPreviousPage { get; set; }
+	}
+
+	public class OpportunityDashboardDto
+	{
+		public OpportunityMetricsDto Metrics { get; set; }
+		public List<OpportunityStageStatsDto> StageStats { get; set; }
+		public List<OpportunityTrendDto> MonthlyTrends { get; set; }
+		public List<OpportunityTopCustomerDto> TopCustomers { get; set; }
+	}
+
+	public class OpportunityMetricsDto
+	{
+		public int TotalOpportunities { get; set; }
+		public decimal TotalAmount { get; set; }
+		public decimal AverageAmount { get; set; }
+		public decimal WeightedAmount { get; set; } // Amount * Probability
+		public int WonCount { get; set; }
+		public int LostCount { get; set; }
+		public decimal WinRate { get; set; } // Win percentage
+		public decimal AverageDaysToClose { get; set; }
+	}
+
+	public class OpportunityStageStatsDto
+	{
+		public int Stage { get; set; }
+		public string StageName { get; set; }
+		public int Count { get; set; }
+		public decimal TotalAmount { get; set; }
+		public decimal AverageAmount { get; set; }
+		public decimal Percentage { get; set; }
+	}
+
+	public class OpportunityTrendDto
+	{
+		public int Year { get; set; }
+		public int Month { get; set; }
+		public string MonthName { get; set; }
+		public int CreatedCount { get; set; }
+		public int WonCount { get; set; }
+		public int LostCount { get; set; }
+		public decimal CreatedAmount { get; set; }
+		public decimal WonAmount { get; set; }
+		public decimal LostAmount { get; set; }
+	}
+
+	public class OpportunityTopCustomerDto
+	{
+		public Guid CustomerId { get; set; }
+		public string CustomerName { get; set; }
+		public int OpportunityCount { get; set; }
+		public decimal TotalAmount { get; set; }
+		public decimal WonAmount { get; set; }
+		public int WonCount { get; set; }
+		public decimal WinRate { get; set; }
 	}
 
 	public class ActivityDto

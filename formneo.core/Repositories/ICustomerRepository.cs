@@ -11,9 +11,9 @@ namespace vesa.core.Repositories
 		Task<List<Customer>> GetListWithDetailsAsync();
 		
 		// Optimize edilmiş metodlar
-		Task<List<Customer>> GetListBasicAsync(int skip = 0, int take = 50);
-		Task<List<Customer>> GetListWithSelectedDetailsAsync(int skip = 0, int take = 50, bool includeAddresses = false, bool includeOfficials = false, bool includeEmails = false, bool includePhones = false);
-		Task<int> GetTotalCountAsync();
+		Task<List<Customer>> GetListBasicAsync(int skip = 0, int take = 50, string search = "");
+		Task<List<Customer>> GetListWithSelectedDetailsAsync(int skip = 0, int take = 50, bool includeAddresses = false, bool includeOfficials = false, bool includeEmails = false, bool includePhones = false, string search = "");
+		Task<int> GetTotalCountAsync(string search = "");
 	}
 }
 

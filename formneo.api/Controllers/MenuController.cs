@@ -490,17 +490,29 @@ namespace vesa.api.Controllers
                     return new List<Menu>();
                 }
                 
-                var globalCacheKey = $"{User.Identity.Name}:global:menus";
-                if (_memoryCache.TryGetValue(globalCacheKey, out var cachedGlobal))
+                
+                
+                // User.Identity.Name null ise cache kullanma
+                var currentUserName = User.Identity?.Name;
+                if (!string.IsNullOrEmpty(currentUserName))
                 {
-                    return cachedGlobal as List<Menu> ?? new List<Menu>();
+                    var globalCacheKey = $"{currentUserName}:global:menus";
+                    if (_memoryCache.TryGetValue(globalCacheKey, out var cachedGlobal))
+                    {
+                        return cachedGlobal as List<Menu> ?? new List<Menu>();
+                    }
                 }
                 var menusQueryGlobal = await _menuService.Include();
                 var allMenusGlobal = menusQueryGlobal
                     .Where(m => m.IsDelete == false && m.IsTenantOnly==false)
                     .ToList();
                 
-                _memoryCache.Set(globalCacheKey, allMenusGlobal, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+                // Cache'e kaydet (sadece currentUserName varsa)
+                if (!string.IsNullOrEmpty(currentUserName))
+                {
+                    var globalCacheKey = $"{currentUserName}:global:menus";
+                    _memoryCache.Set(globalCacheKey, allMenusGlobal, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+                }
                 return allMenusGlobal;
             }
             var cacheKey = $"{User.Identity.Name}:{tenantId}:menus";
