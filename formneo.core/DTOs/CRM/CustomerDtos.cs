@@ -163,7 +163,7 @@ namespace vesa.core.DTOs.CRM
 		public string? OwnerId { get; set; }
 		public int LifecycleStage { get; set; }
 		public DateTime? NextActivityDate { get; set; }
-
+		public int Status { get; set; }
 		public List<CustomerOfficialDto>? Officials { get; set; }
 
 		public List<CustomFieldDto>? CustomFields { get; set; }

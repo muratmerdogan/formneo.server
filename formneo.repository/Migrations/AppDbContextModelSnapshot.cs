@@ -181,10 +181,6 @@ namespace formneo.repository.Migrations
                     b.Property<int>("ApproverStatus")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -196,10 +192,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -225,11 +217,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("WorkflowItemId");
 
@@ -365,87 +353,10 @@ namespace formneo.repository.Migrations
                     b.ToTable("AspNetRolesTenantMenu");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetAdminUser", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("AdminLevel")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDoProxy")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Mail")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ProxyUser")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("UniqNumber")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
-
-                    b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
-
-                    b.ToTable("BudgetAdminUser");
-                });
-
             modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetJobCodeRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -565,10 +476,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("PositionLevel")
                         .IsRequired()
                         .HasColumnType("text");
@@ -602,11 +509,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("WorkflowHeadId");
 
@@ -617,10 +520,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -649,10 +548,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -852,11 +747,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("WorkflowHeadId");
 
@@ -874,10 +765,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text")
                         .HasColumnOrder(0);
 
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -889,10 +776,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -928,14 +811,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("BudgetPeriodCode");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
-
-                    b.HasIndex("BudgetPeriodCode", "UserName", "requestType")
-                        .IsUnique();
 
                     b.ToTable("BudgetPeriodUser");
                 });
@@ -944,10 +822,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -979,10 +853,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("PositionCode")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1012,11 +882,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("WorkflowHeadId");
 
@@ -1027,10 +893,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<string>("PeriodCode")
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -1060,10 +922,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
@@ -1082,11 +940,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("PeriodCode");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("BudgetPeriod");
                 });
@@ -1100,10 +954,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("AssignedToUserId")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -1133,10 +983,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("OpportunityId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1175,15 +1021,11 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
 
                     b.HasIndex("OpportunityId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("Activities");
                 });
@@ -1268,10 +1110,6 @@ namespace formneo.repository.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CompanyType")
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
@@ -1334,10 +1172,6 @@ namespace formneo.repository.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .IsRequired()
@@ -1382,14 +1216,7 @@ namespace formneo.repository.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerTypeId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("MainClientId", "Code")
                         .IsUnique();
@@ -1406,10 +1233,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("Country")
                         .IsRequired()
@@ -1459,10 +1282,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1492,13 +1311,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("CustomerAddresses");
                 });
@@ -1507,10 +1322,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -1542,10 +1353,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .IsRequired()
@@ -1572,13 +1379,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("CustomerCustomFields");
                 });
@@ -1592,10 +1395,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("Category")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("ContentType")
                         .IsRequired()
@@ -1633,10 +1432,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .IsRequired()
@@ -1659,13 +1454,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("CustomerDocuments");
                 });
@@ -1678,10 +1469,6 @@ namespace formneo.repository.Migrations
 
                     b.Property<bool>("Bulk")
                         .HasColumnType("boolean");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -1717,10 +1504,6 @@ namespace formneo.repository.Migrations
                     b.Property<bool>("Notify")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .IsRequired()
@@ -1743,13 +1526,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("CustomerEmails");
                 });
@@ -1758,10 +1537,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Content")
@@ -1785,10 +1560,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1818,13 +1589,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("CustomerNotes");
                 });
@@ -1833,10 +1600,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -1878,10 +1641,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 
@@ -1911,13 +1670,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("CustomerOfficials");
                 });
@@ -1926,10 +1681,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -1963,10 +1714,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .IsRequired()
@@ -1989,13 +1736,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("CustomerPhones");
                 });
@@ -2004,10 +1747,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -2024,10 +1763,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2057,13 +1792,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("CustomerSectors");
                 });
@@ -2072,10 +1803,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -2092,10 +1819,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2125,13 +1848,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("CustomerTags");
                 });
@@ -2145,10 +1864,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("AttendeesJson")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -2185,10 +1900,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .IsRequired()
@@ -2217,15 +1928,11 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
 
                     b.HasIndex("OpportunityId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("Meetings");
                 });
@@ -2238,10 +1945,6 @@ namespace formneo.repository.Migrations
 
                     b.Property<decimal?>("Amount")
                         .HasColumnType("numeric");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -2275,10 +1978,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("OwnerUserId")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<int?>("Probability")
                         .HasColumnType("integer");
@@ -2316,13 +2015,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("Opportunities");
                 });
@@ -2331,10 +2026,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -2370,10 +2061,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid?>("OpportunityId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("QuoteDate")
@@ -2417,17 +2104,11 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
-
-                    b.HasIndex("MainClientId");
 
                     b.HasIndex("OpportunityId");
 
-                    b.HasIndex("PlantId");
-
-                    b.HasIndex("QuoteNo")
+                    b.HasIndex("MainClientId", "QuoteNo")
                         .IsUnique();
 
                     b.ToTable("Quotes");
@@ -2437,10 +2118,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -2470,10 +2147,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2515,11 +2188,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("QuoteId");
 
@@ -2538,10 +2207,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("Channel")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -2566,10 +2231,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("RemindAt")
                         .HasColumnType("timestamp without time zone");
@@ -2597,13 +2258,9 @@ namespace formneo.repository.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("Reminders");
                 });
@@ -2621,10 +2278,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -2654,10 +2307,6 @@ namespace formneo.repository.Migrations
                         .HasMaxLength(1024)
                         .HasColumnType("character varying(1024)");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .IsRequired()
@@ -2684,13 +2333,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("SpecialDays");
                 });
@@ -2726,7 +2371,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 9, 21, 17, 38, 2, 312, DateTimeKind.Utc).AddTicks(8660),
+                            CreatedDate = new DateTime(2025, 9, 25, 21, 45, 54, 940, DateTimeKind.Utc).AddTicks(1640),
                             Name = "RonesansHolding"
                         });
                 });
@@ -2740,10 +2385,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -2764,10 +2405,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -2783,11 +2420,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("Departments", (string)null);
                 });
@@ -2803,10 +2436,6 @@ namespace formneo.repository.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -2821,10 +2450,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2846,11 +2471,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("EmployeeId", "StartDate", "EndDate");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("EmpSalary", (string)null);
                 });
@@ -2882,10 +2503,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -2939,10 +2556,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("Photo")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("RelatedPerson")
                         .HasColumnType("text");
 
@@ -2980,13 +2593,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("DepartmentsId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("Employee", (string)null);
                 });
@@ -2999,9 +2608,6 @@ namespace formneo.repository.Migrations
 
                     b.Property<bool>("CanEdit")
                         .HasColumnType("boolean");
-
-                    b.Property<Guid?>("CompanyId")
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -3048,10 +2654,6 @@ namespace formneo.repository.Migrations
                     b.Property<Guid?>("ParentFormId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<int>("Revision")
                         .HasColumnType("integer");
 
@@ -3076,13 +2678,10 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
-
                     b.HasIndex("WorkFlowDefinationId")
+                        .IsUnique();
+
+                    b.HasIndex("MainClientId", "WorkFlowDefinationId")
                         .IsUnique();
 
                     b.ToTable("Form", (string)null);
@@ -3092,10 +2691,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -3115,10 +2710,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -3144,13 +2735,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("FormId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("UserAppId");
 
@@ -3161,10 +2748,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -3181,10 +2764,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -3206,13 +2785,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("FormId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("FormAuth");
                 });
@@ -3221,10 +2796,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -3242,10 +2813,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("NodeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Rulejson")
@@ -3270,11 +2837,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("WorkFlowDefinationId");
 
@@ -3285,10 +2848,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -3305,10 +2864,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -3338,13 +2893,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("FormId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("FormRuntime");
                 });
@@ -3367,10 +2918,6 @@ namespace formneo.repository.Migrations
 
                     b.Property<string>("CPU")
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -3426,10 +2973,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("OperatingSystem")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("PurchaseDate")
                         .HasColumnType("timestamp without time zone");
 
@@ -3475,11 +3018,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("TicketDepartmentId");
 
@@ -3754,7 +3293,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 9, 21, 17, 38, 2, 312, DateTimeKind.Utc).AddTicks(9370),
+                            CreatedDate = new DateTime(2025, 9, 25, 21, 45, 54, 940, DateTimeKind.Utc).AddTicks(2370),
                             DomainVerified = false,
                             Email = "info@vesacons.com",
                             FeatureFlags = "{}",
@@ -3854,10 +3393,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -3873,10 +3408,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -3921,11 +3452,7 @@ namespace formneo.repository.Migrations
 
                     b.HasIndex("AssigneeId");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("Kanban");
                 });
@@ -3934,10 +3461,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -3966,10 +3489,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("PCname")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("ProcessTime")
                         .HasColumnType("timestamp without time zone");
 
@@ -3997,11 +3516,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("PCTrack");
                 });
@@ -4037,7 +3552,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 9, 21, 17, 38, 2, 312, DateTimeKind.Utc).AddTicks(9440),
+                            CreatedDate = new DateTime(2025, 9, 25, 21, 45, 54, 940, DateTimeKind.Utc).AddTicks(2450),
                             Name = "RonesansHoldingTurkey"
                         });
                 });
@@ -4046,10 +3561,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -4076,10 +3587,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -4095,13 +3602,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerRefId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("Positions");
                 });
@@ -4117,10 +3620,6 @@ namespace formneo.repository.Migrations
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -4150,10 +3649,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("Photo")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("ProjectGain")
                         .IsRequired()
@@ -4189,11 +3684,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("UserId");
 
@@ -4204,10 +3695,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -4228,10 +3715,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -4247,11 +3730,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("ProjectCategories");
                 });
@@ -4260,10 +3739,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -4299,10 +3774,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("ParentId")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Predecessor")
                         .HasColumnType("text");
 
@@ -4336,11 +3807,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("ProjectId");
 
@@ -4409,10 +3876,6 @@ namespace formneo.repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -4445,10 +3908,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("Percentage")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
@@ -4474,13 +3933,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerRefId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("UserAppId");
 
@@ -4491,10 +3946,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -4508,10 +3959,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4537,11 +3984,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("TicketDepartmentId");
 
@@ -4556,9 +3999,6 @@ namespace formneo.repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CompanyId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -4570,11 +4010,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("TicketsId")
@@ -4598,16 +4033,13 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
-
                     b.HasIndex("TicketsId")
                         .IsUnique();
 
                     b.HasIndex("UserAppId");
+
+                    b.HasIndex("MainClientId", "TicketsId")
+                        .IsUnique();
 
                     b.ToTable("TicketApprove");
                 });
@@ -4616,9 +4048,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -4636,11 +4065,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<int>("Status")
@@ -4673,18 +4097,15 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
-
                     b.HasIndex("TicketTeamID");
 
                     b.HasIndex("TicketsId")
                         .IsUnique();
 
                     b.HasIndex("UserAppId");
+
+                    b.HasIndex("MainClientId", "TicketsId")
+                        .IsUnique();
 
                     b.ToTable("TicketAssigne");
                 });
@@ -4698,10 +4119,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("Body")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -4717,10 +4134,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4742,11 +4155,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("TicketId");
 
@@ -4757,10 +4166,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -4797,10 +4202,6 @@ namespace formneo.repository.Migrations
                     b.Property<Guid?>("ParentDepartmentId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -4819,15 +4220,11 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
 
                     b.HasIndex("ManagerId");
 
                     b.HasIndex("ParentDepartmentId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("WorkCompanyId");
 
@@ -4843,10 +4240,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("Base64")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -4873,10 +4266,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("TicketCommentId")
                         .HasColumnType("uuid");
 
@@ -4895,11 +4284,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("TicketCommentId");
 
@@ -4910,10 +4295,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -4927,10 +4308,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4955,11 +4332,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("TicketId");
 
@@ -4983,10 +4356,6 @@ namespace formneo.repository.Migrations
                     b.Property<Guid>("AssignedUserId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -5006,10 +4375,6 @@ namespace formneo.repository.Migrations
 
                     b.Property<int>("Order")
                         .HasColumnType("integer");
-
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("RuleJson")
                         .IsRequired()
@@ -5041,11 +4406,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("TicketRuleEngine");
                 });
@@ -5054,10 +4415,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -5085,10 +4442,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -5107,15 +4460,11 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("MainClientId");
 
                     b.HasIndex("ManagerId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("WorkCompanyId");
 
@@ -5126,10 +4475,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -5143,10 +4488,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -5172,15 +4513,12 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
-
                     b.HasIndex("UserAppId");
 
                     b.HasIndex("TicketTeamId", "UserAppId")
+                        .IsUnique();
+
+                    b.HasIndex("MainClientId", "TicketTeamId", "UserAppId")
                         .IsUnique();
 
                     b.ToTable("TicketTeamUserApp");
@@ -5203,10 +4541,6 @@ namespace formneo.repository.Migrations
 
                     b.Property<int>("ApproveStatus")
                         .HasColumnType("integer");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -5241,10 +4575,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -5319,13 +4649,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("CustomerRefId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("TicketDepartmentId");
 
@@ -5346,10 +4672,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -5378,10 +4700,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("ProjectCategoryId")
                         .HasColumnType("uuid");
@@ -5416,13 +4734,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
 
                     b.HasIndex("ManagerId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("ProjectCategoryId");
 
@@ -5762,10 +5076,6 @@ namespace formneo.repository.Migrations
                     b.Property<int>("ApproveWorkDesign")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("CreatedBy")
                         .IsRequired()
                         .HasColumnType("text");
@@ -5786,10 +5096,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
 
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
@@ -5815,11 +5121,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("WorkCompanyTicketMatrisId");
 
@@ -5832,10 +5134,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -5856,10 +5154,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -5878,11 +5172,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("WorkCompanyId");
 
@@ -5893,10 +5183,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -5913,10 +5199,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -5938,13 +5220,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("FromCompanyId");
 
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("WorkCompanyTicketMatris");
                 });
@@ -5953,9 +5231,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -5982,10 +5257,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<int>("Revision")
                         .HasColumnType("integer");
 
@@ -6007,11 +5278,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.ToTable("WorkFlowDefination");
                 });
@@ -6020,10 +5287,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreateUser")
@@ -6047,10 +5310,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantId")
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -6085,11 +5344,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("WorkFlowDefinationId");
 
@@ -6100,10 +5355,6 @@ namespace formneo.repository.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CompanyId")
-                        .IsRequired()
                         .HasColumnType("uuid");
 
                     b.Property<string>("CreatedBy")
@@ -6136,10 +5387,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("PlantId")
-                        .IsRequired()
-                        .HasColumnType("uuid");
-
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -6161,11 +5408,7 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("MainClientId");
-
-                    b.HasIndex("PlantId");
 
                     b.HasIndex("WorkflowHeadId");
 
@@ -6225,21 +5468,9 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.ApproveItems", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -6249,11 +5480,7 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("WorkflowItem");
                 });
@@ -6304,50 +5531,11 @@ namespace formneo.repository.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetAdminUser", b =>
-                {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
-                        .WithMany()
-                        .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
-                });
-
             modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetJobCodeRequest", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -6356,32 +5544,16 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("WorkflowHeadId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("WorkflowHead");
                 });
 
             modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetNormCodeRequest", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -6390,11 +5562,7 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("WorkflowHeadId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("WorkflowHead");
                 });
@@ -6407,50 +5575,22 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("BudgetPeriod");
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetPromotionRequest", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -6459,50 +5599,24 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("WorkflowHeadId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("WorkflowHead");
                 });
 
             modelBuilder.Entity("vesa.core.Models.BudgetPeriod", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.Activity", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
@@ -6521,21 +5635,11 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
 
                     b.Navigation("Opportunity");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.Customer", b =>
@@ -6544,12 +5648,6 @@ namespace formneo.repository.Migrations
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
 
                     b.HasOne("vesa.core.Models.Lookup.LookupItem", "CustomerTypeItem")
                         .WithMany()
@@ -6562,31 +5660,15 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("CategoryItem");
-
-                    b.Navigation("Company");
 
                     b.Navigation("CustomerTypeItem");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.CustomerAddress", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany("Addresses")
                         .HasForeignKey("CustomerId")
@@ -6599,29 +5681,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.CustomerCustomField", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany("CustomFields")
                         .HasForeignKey("CustomerId")
@@ -6634,29 +5700,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.CustomerDocument", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany("Documents")
                         .HasForeignKey("CustomerId")
@@ -6669,29 +5719,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.CustomerEmail", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany("SecondaryEmails")
                         .HasForeignKey("CustomerId")
@@ -6704,29 +5738,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.CustomerNote", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany("Notes")
                         .HasForeignKey("CustomerId")
@@ -6739,29 +5757,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.CustomerOfficial", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany("Officials")
                         .HasForeignKey("CustomerId")
@@ -6774,29 +5776,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.CustomerPhone", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany("Phones")
                         .HasForeignKey("CustomerId")
@@ -6809,29 +5795,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.CustomerSector", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany("Sectors")
                         .HasForeignKey("CustomerId")
@@ -6844,29 +5814,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.CustomerTag", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany("Tags")
                         .HasForeignKey("CustomerId")
@@ -6879,29 +5833,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.Meeting", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
@@ -6919,31 +5857,15 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("OpportunityId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
 
                     b.Navigation("Opportunity");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.Opportunity", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
@@ -6956,29 +5878,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.Quote", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
@@ -6996,40 +5902,18 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("OpportunityId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
 
                     b.Navigation("Opportunity");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.QuoteLine", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -7039,11 +5923,7 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("Quote");
                 });
@@ -7055,12 +5935,6 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
@@ -7070,34 +5944,18 @@ namespace formneo.repository.Migrations
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Activity");
 
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.CRM.SpecialDay", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
@@ -7110,19 +5968,9 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Customer");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Company", b =>
@@ -7138,39 +5986,17 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.Departments", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.EmpSalary", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.Employee", "Employee")
                         .WithMany("empSalary")
                         .HasForeignKey("EmployeeId")
@@ -7183,29 +6009,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Employee");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Employee", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.Departments", "Departments")
                         .WithMany()
                         .HasForeignKey("DepartmentsId")
@@ -7218,37 +6028,16 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Departments");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Form", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -7257,23 +6046,13 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("vesa.core.Models.Form", "WorkFlowDefinationId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("WorkFlowDefination");
                 });
 
             modelBuilder.Entity("vesa.core.Models.FormAssign", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.Form", "Form")
                         .WithMany()
                         .HasForeignKey("FormId")
@@ -7283,12 +6062,6 @@ namespace formneo.repository.Migrations
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -7298,25 +6071,15 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("Form");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("UserApp");
                 });
 
             modelBuilder.Entity("vesa.core.Models.FormAuth", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.Form", "Form")
                         .WithMany()
                         .HasForeignKey("FormId")
@@ -7328,38 +6091,16 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Form");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.FormRuleEngine", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -7369,23 +6110,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("WorkFlowDefination");
                 });
 
             modelBuilder.Entity("vesa.core.Models.FormRuntime", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.Form", "Form")
                         .WithMany()
                         .HasForeignKey("FormId")
@@ -7398,38 +6129,16 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("Form");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Inventory.Inventory", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -7443,11 +6152,7 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("TicketDepartment");
 
@@ -7503,58 +6208,26 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Assignee");
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.PCTracking.PCTrack", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Plant", b =>
@@ -7570,12 +6243,6 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.Positions", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.WorkCompany", "CustomerRef")
                         .WithMany()
                         .HasForeignKey("CustomerRefId")
@@ -7587,38 +6254,16 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("CustomerRef");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Project", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -7628,59 +6273,27 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("UserApp");
                 });
 
             modelBuilder.Entity("vesa.core.Models.ProjectCategories", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.ProjectTasks", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -7690,11 +6303,7 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("TicketProjects");
                 });
@@ -7720,12 +6329,6 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.TaskManagement.UserCalendar", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.WorkCompany", "CustomerRef")
                         .WithMany()
                         .HasForeignKey("CustomerRefId")
@@ -7737,46 +6340,24 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.UserApp", "UserApp")
                         .WithMany()
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("CustomerRef");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("UserApp");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Ticket.DepartmentUser", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -7792,11 +6373,7 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("TicketDepartment");
 
@@ -7805,22 +6382,10 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.Ticket.TicketApprove", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("vesa.core.Models.Ticket.Tickets", "Tickets")
                         .WithOne("TicketApprove")
@@ -7833,11 +6398,7 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("Tickets");
 
@@ -7846,22 +6407,10 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.Ticket.TicketAssigne", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("vesa.core.Models.Ticket.TicketTeam", "TicketTeam")
                         .WithMany()
@@ -7879,11 +6428,7 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("TicketTeam");
 
@@ -7894,21 +6439,9 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.Ticket.TicketComment", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -7918,23 +6451,13 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Ticket.TicketDepartment", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
@@ -7951,18 +6474,10 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("ParentDepartmentId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.WorkCompany", "WorkCompany")
                         .WithMany()
                         .HasForeignKey("WorkCompanyId")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Company");
 
                     b.Navigation("MainClient");
 
@@ -7970,28 +6485,14 @@ namespace formneo.repository.Migrations
 
                     b.Navigation("ParentDepartment");
 
-                    b.Navigation("Plant");
-
                     b.Navigation("WorkCompany");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Ticket.TicketFile", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -8001,32 +6502,16 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("TicketComment");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Ticket.TicketNotifications", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -8041,11 +6526,7 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("Ticket");
 
@@ -8054,39 +6535,17 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.Ticket.TicketRuleEngine", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Ticket.TicketTeam", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.Ticket.TicketDepartment", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
@@ -8104,18 +6563,10 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.WorkCompany", "WorkCompany")
                         .WithMany()
                         .HasForeignKey("WorkCompanyId")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Company");
 
                     b.Navigation("Department");
 
@@ -8123,28 +6574,14 @@ namespace formneo.repository.Migrations
 
                     b.Navigation("Manager");
 
-                    b.Navigation("Plant");
-
                     b.Navigation("WorkCompany");
                 });
 
             modelBuilder.Entity("vesa.core.Models.Ticket.TicketTeamUserApp", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -8160,11 +6597,7 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("TicketTeam");
 
@@ -8173,12 +6606,6 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.Ticket.Tickets", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.WorkCompany", "CustomerRef")
                         .WithMany()
                         .HasForeignKey("CustomerRefId")
@@ -8187,12 +6614,6 @@ namespace formneo.repository.Migrations
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -8228,13 +6649,9 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("WorkflowHeadId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Company");
-
                     b.Navigation("CustomerRef");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("TicketDepartment");
 
@@ -8251,12 +6668,6 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.TicketProjects", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
@@ -8268,12 +6679,6 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("ManagerId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.ProjectCategories", "ProjectCategory")
                         .WithMany()
                         .HasForeignKey("ProjectCategoryId")
@@ -8284,13 +6689,9 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("WorkCompanyId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
 
                     b.Navigation("Manager");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("ProjectCategory");
 
@@ -8371,21 +6772,9 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("vesa.core.Models.WorkCompany", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -8399,32 +6788,16 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("WorkFlowDefinationId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("WorkFlowDefination");
                 });
 
             modelBuilder.Entity("vesa.core.Models.WorkCompanySystemInfo", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -8433,23 +6806,13 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("WorkCompanyId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("WorkCompany");
                 });
 
             modelBuilder.Entity("vesa.core.Models.WorkCompanyTicketMatris", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.WorkCompany", "FromCompany")
                         .WithMany()
                         .HasForeignKey("FromCompanyId")
@@ -8461,64 +6824,27 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("FromCompany");
 
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.WorkFlowDefination", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("vesa.core.Models.WorkflowHead", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -8528,32 +6854,16 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("WorkFlowDefination");
                 });
 
             modelBuilder.Entity("vesa.core.Models.WorkflowItem", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("vesa.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("vesa.core.Models.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -8563,11 +6873,7 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
-
                     b.Navigation("MainClient");
-
-                    b.Navigation("Plant");
 
                     b.Navigation("WorkflowHead");
                 });

@@ -46,7 +46,7 @@ namespace vesa.repository.Configurations.CRM
 			//	.HasForeignKey(p => p.CategoryId)
 			//	.OnDelete(DeleteBehavior.SetNull);
 
-			builder.HasIndex(p => p.Code).IsUnique();
+			builder.HasIndex(p => p.Code).IsUnique(); // Otomatik olarak tenant-aware yapılacak
 
 			builder.HasMany(p => p.Addresses)
 				.WithOne(x => x.Customer)

@@ -19,18 +19,7 @@ namespace vesa.core.Models
 
         public Guid? MainClientId { get; set; }
         [ForeignKey("MainClientId")]
-        [Key]
         public MainClient MainClient { get; set; }
-
-        public Guid? CompanyId { get; set; }
-        [ForeignKey("CompanyId")]
-        [Key]
-        public Company Company { get; set; }
-
-        public Guid? PlantId { get; set; }
-        [ForeignKey("PlantId")]
-        [Key]
-        public Plant Plant { get; set; }
 
 
         public string CreatedBy { get; set; }

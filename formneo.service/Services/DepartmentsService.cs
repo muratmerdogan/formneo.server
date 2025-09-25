@@ -38,11 +38,11 @@ namespace vesa.service.Services
             {
             ClientName=x.MainClient.Name,
             Code=x.Code,
-            CompanyName=x.Company.Name,
+
             CreatedDate=x.CreatedDate,
             DepartmentText=x.DepartmentText,
             Id=x.Id,
-            PlantName=x.Plant.Name,
+
             UpdatedDate=x.UpdatedDate,
             }).ToList();
         }
@@ -61,14 +61,7 @@ namespace vesa.service.Services
             {
                 query= query.Where(x => x.MainClientId == dto.ClientId);
             }
-            if (dto.CompanyId.HasValue)
-            {
-                query = query.Where(x => x.CompanyId == dto.CompanyId);
-            }
-            if (dto.PlantId.HasValue)
-            {
-                query = query.Where(x => x.PlantId == dto.PlantId);
-            }
+         
             query = query.Include("MainClient").Include("Company").Include("Plant");
             var values=await query.ToListAsync();
             //var values= await _departmentsRepository.Where(x=>x.MainClientId==dto.ClientId && x.CompanyId==dto.CompanyId && x.PlantId==dto.PlantId).Include("MainClient").Include("Company").Include("Plant").ToListAsync();
@@ -76,11 +69,9 @@ namespace vesa.service.Services
             {
                 ClientName=y.MainClient.Name,
                 Code =y.Code,
-                CompanyName =y.Company.Name,
                 CreatedDate =y.CreatedDate,
                 DepartmentText=y.DepartmentText,
                 Id =y.Id,
-                PlantName =y.Plant.Name,
                 UpdatedDate=y.UpdatedDate,
             }).ToList();
         }

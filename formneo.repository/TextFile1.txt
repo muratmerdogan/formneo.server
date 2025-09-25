@@ -1,2 +1,5 @@
 ﻿add-migration newcol
 update database
+
+dotnet ef migrations add xxx
+dotnet ef database update

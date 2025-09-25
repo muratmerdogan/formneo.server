@@ -164,15 +164,7 @@ namespace vesa.repository
                        .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);  // Güncelleme engellenir
 
 
-            modelBuilder.Entity<BudgetPeriodUser>()
-                   .HasIndex(bp => new { bp.BudgetPeriodCode, bp.UserName, bp.requestType })
-                     .IsUnique();
-
-            modelBuilder.Entity<BudgetAdminUser>()
-            .HasOne(b => b.Company)
-            .WithMany()
-            .HasForeignKey(b => b.CompanyId)
-            .OnDelete(DeleteBehavior.NoAction); // Cascade'i kap
+           
 
 
             // modelBuilder.pro<int>().Where(p => p.Name == "OrderId").Configure(c => c.HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity))
@@ -301,10 +293,8 @@ namespace vesa.repository
                 .HasIndex(i => new { i.CategoryId, i.Code, i.TenantId })
                 .IsUnique();
 
-            // Per-tenant unique constraints (örnek: Customer.Code)
-            modelBuilder.Entity<vesa.core.Models.CRM.Customer>()
-                .HasIndex(c => new { c.MainClientId, c.Code })
-                .IsUnique();
+            // Otomatik tenant-aware unique constraints
+            ConfigureTenantAwareUniqueConstraints(modelBuilder);
             modelBuilder.Entity<CustomerAddress>().HasQueryFilter(e => !e.IsDelete);
             modelBuilder.Entity<CustomerOfficial>().HasQueryFilter(e => !e.IsDelete);
             modelBuilder.Entity<CustomerEmail>().HasQueryFilter(e => !e.IsDelete);
@@ -332,13 +322,45 @@ namespace vesa.repository
 
 
         }
+
+        // Otomatik tenant-aware unique constraints
+        private void ConfigureTenantAwareUniqueConstraints(ModelBuilder modelBuilder)
+        {
+            // BaseEntity'den türeyen tüm tablolardaki unique index'leri tenant-aware yap
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                var clrType = entityType.ClrType;
+                if (clrType == null) continue;
+                if (typeof(GlobalBaseEntity).IsAssignableFrom(clrType)) continue;
+                if (!typeof(BaseEntity).IsAssignableFrom(clrType)) continue;
+
+                // Bu entity'deki tüm unique index'leri bul
+                var uniqueIndexes = entityType.GetIndexes().Where(i => i.IsUnique).ToList();
+                
+                foreach (var index in uniqueIndexes)
+                {
+                    // Eğer MainClientId zaten index'te yoksa, ekle
+                    var propertyNames = index.Properties.Select(p => p.Name).ToList();
+                    if (!propertyNames.Contains("MainClientId"))
+                    {
+                        // Eski index'i kaldır
+                        entityType.RemoveIndex(index);
+                        
+                        // Yeni tenant-aware index ekle
+                        var newPropertyNames = new[] { "MainClientId" }.Concat(propertyNames).ToArray();
+                        modelBuilder.Entity(clrType)
+                            .HasIndex(newPropertyNames)
+                            .IsUnique();
+                    }
+                }
+            }
+        }
+
         // Tenant-aware query filter backing field (reads from ITenantContext)
         private Guid? CurrentTenantIdForFilter => _tenantContext?.CurrentTenantId;
-        private (Guid tenantId, Guid companyId, Guid plantId) ResolveContextIds()
+        private Guid ResolveContextIds()
         {
             Guid tenantId = Guid.Empty;
-            Guid companyId = Guid.Empty;
-            Guid plantId = Guid.Empty;
 
             try
             {
@@ -354,25 +376,15 @@ namespace vesa.repository
                     var cfgTenant = _configuration?["MultiTenancy:DefaultMainClientId"];
                     if (!string.IsNullOrWhiteSpace(cfgTenant) && Guid.TryParse(cfgTenant, out var tid2)) tenantId = tid2;
                 }
-
-                // Company/Plant için de yalnızca HTTP context yoksa fallback uygula
-                if (httpContext == null)
-                {
-                    var cfgCompany = _configuration?["MultiTenancy:DefaultCompanyId"];
-                    if (!string.IsNullOrWhiteSpace(cfgCompany) && Guid.TryParse(cfgCompany, out var cid)) companyId = cid;
-
-                    var cfgPlant = _configuration?["MultiTenancy:DefaultPlantId"];
-                    if (!string.IsNullOrWhiteSpace(cfgPlant) && Guid.TryParse(cfgPlant, out var pid)) plantId = pid;
-                }
             }
             catch { }
 
-            return (tenantId, companyId, plantId);
+            return tenantId;
         }
 
         public override int SaveChanges()
         {
-            var ids = ResolveContextIds();
+            var tenantId = ResolveContextIds();
 
 
             try
@@ -398,13 +410,11 @@ namespace vesa.repository
 
 
                                     entityReference.CreatedDate = DateTime.Now;
-                                    if (_httpContextAccessor?.HttpContext != null && ids.tenantId == Guid.Empty)
+                                    if (_httpContextAccessor?.HttpContext != null && tenantId == Guid.Empty)
                                     {
                                         throw new InvalidOperationException($"Tenant context is required for write operations for entity {item.Entity.GetType().Name}. Provide X-Tenant-Id header.");
                                     }
-                                    if (ids.tenantId != Guid.Empty) entityReference.MainClientId = ids.tenantId;
-                                    if (ids.companyId != Guid.Empty) entityReference.CompanyId = ids.companyId;
-                                    if (ids.plantId != Guid.Empty) entityReference.PlantId = ids.plantId;
+                                    if (tenantId != Guid.Empty) entityReference.MainClientId = tenantId;
                                     if (entityReference.Id == Guid.Empty) entityReference.Id = Guid.NewGuid();
 
 
@@ -441,13 +451,12 @@ namespace vesa.repository
 
 
 
-                                    if (_httpContextAccessor?.HttpContext != null && ids.tenantId == Guid.Empty)
+                                    if (_httpContextAccessor?.HttpContext != null && tenantId == Guid.Empty)
                                     {
                                         throw new InvalidOperationException($"Tenant context is required for write operations for entity {item.Entity.GetType().Name}. Provide X-Tenant-Id header.");
                                     }
-                                    if (ids.tenantId != Guid.Empty) entityReference.MainClientId = ids.tenantId;
-                                    if (ids.companyId != Guid.Empty) entityReference.CompanyId = ids.companyId;
-                                    if (ids.plantId != Guid.Empty) entityReference.PlantId = ids.plantId;
+                                    if (tenantId != Guid.Empty) entityReference.MainClientId = tenantId;
+                                    // CompanyId şu an kullanılmıyor, boş bırakılabilir
                                     entityReference.UpdatedDate = DateTime.Now;
 
                                     if (userName != null)
@@ -512,7 +521,7 @@ namespace vesa.repository
                                     if (!prop.IsModified) continue;
                                     var propName = prop.Metadata.Name;
                                     if (propName == nameof(BaseEntity.UpdatedDate) || propName == nameof(BaseEntity.UpdatedBy) || propName == nameof(BaseEntity.UniqNumber) || propName == nameof(BaseEntity.CreatedBy) || propName == nameof(BaseEntity.CreatedDate)) continue;
-                                    if (propName == nameof(BaseEntity.MainClientId) || propName == nameof(BaseEntity.CompanyId) || propName == nameof(BaseEntity.PlantId)) continue;
+
 
                                     string oldVal = prop.OriginalValue?.ToString();
                                     string newVal = prop.CurrentValue?.ToString();
@@ -649,7 +658,7 @@ namespace vesa.repository
         }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var ids = ResolveContextIds();
+            var tenantId = ResolveContextIds();
 
             try
             {
@@ -672,9 +681,7 @@ namespace vesa.repository
                                     Entry(entityReference).Property(x => x.UpdatedBy).IsModified = false;
 
                                     entityReference.CreatedDate = DateTime.Now;
-                                    if (ids.tenantId != Guid.Empty) entityReference.MainClientId = ids.tenantId;
-                                    if (ids.companyId != Guid.Empty) entityReference.CompanyId = ids.companyId;
-                                    if (ids.plantId != Guid.Empty) entityReference.PlantId = ids.plantId;
+                                    if (tenantId != Guid.Empty) entityReference.MainClientId = tenantId;
                                     entityReference.Id = Guid.NewGuid();
 
                                     if (userName != null)
@@ -709,9 +716,8 @@ namespace vesa.repository
                                     Entry(entityReference).Property(x => x.CreatedBy).IsModified = false;
                                     Entry(entityReference).Property(x => x.UniqNumber).IsModified = false;
 
-                                    if (ids.tenantId != Guid.Empty) entityReference.MainClientId = ids.tenantId;
-                                    if (ids.companyId != Guid.Empty) entityReference.CompanyId = ids.companyId;
-                                    if (ids.plantId != Guid.Empty) entityReference.PlantId = ids.plantId;
+                                    if (tenantId != Guid.Empty) entityReference.MainClientId = tenantId;
+                                    // CompanyId şu an kullanılmıyor, boş bırakılabilir
                                     entityReference.UpdatedDate = DateTime.Now;
 
                                     if (userName != null)
