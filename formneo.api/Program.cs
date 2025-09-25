@@ -97,6 +97,15 @@ builder.Services.AddSwaggerGen(c =>
 
 
 
+// Türkçe localization ayarı
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[] { "tr-TR", "en-US" };
+    options.SetDefaultCulture("tr-TR");
+    options.AddSupportedCultures(supportedCultures);
+    options.AddSupportedUICultures(supportedCultures);
+});
+
 builder.Services.AddControllers(options => options.Filters.Add(new ValidateFilterAttribute())).AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<EmployeeDtoValidator>());
 
 
@@ -414,6 +423,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseCustomException();
 
+// Türkçe localization middleware
+app.UseRequestLocalization();
 
 app.UseAuthentication();
 

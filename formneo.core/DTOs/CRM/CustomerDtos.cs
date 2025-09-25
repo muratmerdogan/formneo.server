@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using vesa.core.Models.CRM;
 
 namespace vesa.core.DTOs.CRM
@@ -145,25 +146,70 @@ namespace vesa.core.DTOs.CRM
 
 	public class CustomerInsertDto
 	{
+		[StringLength(512, ErrorMessage = "Logo dosya yolu en fazla 512 karakter olabilir")]
         public string? LogoFilePath { get; set; }
+
+		[Required(ErrorMessage = "Müşteri adı zorunludur")]
+		[StringLength(256, ErrorMessage = "Müşteri adı en fazla 256 karakter olabilir")]
         public string Name { get; set; }
+
+		[Required(ErrorMessage = "Yasal adı zorunludur")]
+		[StringLength(256, ErrorMessage = "Yasal adı en fazla 256 karakter olabilir")]
 		public string LegalName { get; set; }
+
+		[Required(ErrorMessage = "Müşteri kodu zorunludur")]
+		[StringLength(64, ErrorMessage = "Müşteri kodu en fazla 64 karakter olabilir")]
 		public string Code { get; set; }
 
         public Guid? CustomerTypeId { get; set; }
 		public Guid? CategoryId { get; set; }
+
+		[Required(ErrorMessage = "Vergi dairesi zorunludur")]
+		[StringLength(128, ErrorMessage = "Vergi dairesi en fazla 128 karakter olabilir")]
 		public string TaxOffice { get; set; }
+
+		[Required(ErrorMessage = "Vergi numarası zorunludur")]
+		[StringLength(64, ErrorMessage = "Vergi numarası en fazla 64 karakter olabilir")]
 		public string TaxNumber { get; set; }
+
 		public bool IsReferenceCustomer { get; set; }
+
+		[Required(ErrorMessage = "Web sitesi adresi zorunludur")]
+		[Url(ErrorMessage = "Geçerli bir web sitesi adresi giriniz")]
+		[StringLength(512, ErrorMessage = "Web sitesi adresi en fazla 512 karakter olabilir")]
         public string Website { get; set; }
+
+		[Url(ErrorMessage = "Geçerli bir Twitter URL'si giriniz")]
+		[StringLength(512, ErrorMessage = "Twitter URL'si en fazla 512 karakter olabilir")]
         public string? TwitterUrl { get; set; }
+
+		[Url(ErrorMessage = "Geçerli bir Facebook URL'si giriniz")]
+		[StringLength(512, ErrorMessage = "Facebook URL'si en fazla 512 karakter olabilir")]
 		public string? FacebookUrl { get; set; }
+
+		[Url(ErrorMessage = "Geçerli bir LinkedIn URL'si giriniz")]
+		[StringLength(512, ErrorMessage = "LinkedIn URL'si en fazla 512 karakter olabilir")]
 		public string? LinkedinUrl { get; set; }
+
+		[Url(ErrorMessage = "Geçerli bir Instagram URL'si giriniz")]
+		[StringLength(512, ErrorMessage = "Instagram URL'si en fazla 512 karakter olabilir")]
 		public string? InstagramUrl { get; set; }
+
+
+		[StringLength(256, ErrorMessage = "Sahip ID'si en fazla 256 karakter olabilir")]
 		public string? OwnerId { get; set; }
+
+		[Range(0, 4, ErrorMessage = "Yaşam döngüsü aşaması 0-4 arasında olmalıdır")]
 		public int LifecycleStage { get; set; }
-		public DateTime? NextActivityDate { get; set; }
+
+        public DateTime? NextActivityDate { get; set; }
+
+		[Range(0, int.MaxValue, ErrorMessage = "Durum geçerli bir değer olmalıdır")]
 		public int Status { get; set; }
+
+		[EmailAddress(ErrorMessage = "Geçerli bir e-posta adresi giriniz")]
+		[StringLength(256, ErrorMessage = "E-posta adresi en fazla 256 karakter olabilir")]
+        public string? DefaultNotificationEmail { get; set; }
 		public List<CustomerOfficialDto>? Officials { get; set; }
 
 		public List<CustomFieldDto>? CustomFields { get; set; }
@@ -179,25 +225,70 @@ namespace vesa.core.DTOs.CRM
 
 	public class CustomerUpdateDto
 	{
+		[StringLength(512, ErrorMessage = "Logo dosya yolu en fazla 512 karakter olabilir")]
         public string? LogoFilePath { get; set; }
+
+		[Required(ErrorMessage = "ID zorunludur")]
         public Guid Id { get; set; }
+
+		[Required(ErrorMessage = "RowVersion zorunludur")]
 		public byte[] RowVersion { get; set; }
+
+		[Required(ErrorMessage = "Müşteri adı zorunludur")]
+		[StringLength(256, ErrorMessage = "Müşteri adı en fazla 256 karakter olabilir")]
 		public string Name { get; set; }
+
+		[Required(ErrorMessage = "Yasal adı zorunludur")]
+		[StringLength(256, ErrorMessage = "Yasal adı en fazla 256 karakter olabilir")]
 		public string LegalName { get; set; }
+
+		[Required(ErrorMessage = "Müşteri kodu zorunludur")]
+		[StringLength(64, ErrorMessage = "Müşteri kodu en fazla 64 karakter olabilir")]
 		public string Code { get; set; }
+
 		public Guid? CustomerTypeId { get; set; }
 		public Guid? CategoryId { get; set; }
+
+		[Range(0, int.MaxValue, ErrorMessage = "Durum geçerli bir değer olmalıdır")]
 		public int Status { get; set; }
+
+		[Required(ErrorMessage = "Web sitesi adresi zorunludur")]
+		[Url(ErrorMessage = "Geçerli bir web sitesi adresi giriniz")]
+		[StringLength(512, ErrorMessage = "Web sitesi adresi en fazla 512 karakter olabilir")]
 		public string Website { get; set; }
+
+		[Required(ErrorMessage = "Vergi dairesi zorunludur")]
+		[StringLength(128, ErrorMessage = "Vergi dairesi en fazla 128 karakter olabilir")]
 		public string TaxOffice { get; set; }
+
+		[Required(ErrorMessage = "Vergi numarası zorunludur")]
+		[StringLength(64, ErrorMessage = "Vergi numarası en fazla 64 karakter olabilir")]
 		public string TaxNumber { get; set; }
+
 		public bool IsReferenceCustomer { get; set; }
+
+		[Url(ErrorMessage = "Geçerli bir Twitter URL'si giriniz")]
+		[StringLength(512, ErrorMessage = "Twitter URL'si en fazla 512 karakter olabilir")]
 		public string? TwitterUrl { get; set; }
+
+		[Url(ErrorMessage = "Geçerli bir Facebook URL'si giriniz")]
+		[StringLength(512, ErrorMessage = "Facebook URL'si en fazla 512 karakter olabilir")]
 		public string? FacebookUrl { get; set; }
+
+		[Url(ErrorMessage = "Geçerli bir LinkedIn URL'si giriniz")]
+		[StringLength(512, ErrorMessage = "LinkedIn URL'si en fazla 512 karakter olabilir")]
 		public string? LinkedinUrl { get; set; }
+
+		[Url(ErrorMessage = "Geçerli bir Instagram URL'si giriniz")]
+		[StringLength(512, ErrorMessage = "Instagram URL'si en fazla 512 karakter olabilir")]
 		public string? InstagramUrl { get; set; }
+
+		[StringLength(256, ErrorMessage = "Sahip ID'si en fazla 256 karakter olabilir")]
 		public string? OwnerId { get; set; }
+
+		[Range(0, 4, ErrorMessage = "Yaşam döngüsü aşaması 0-4 arasında olmalıdır")]
 		public int LifecycleStage { get; set; }
+
 		public DateTime? NextActivityDate { get; set; }
 
 	}

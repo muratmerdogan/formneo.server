@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using vesa.core.DTOs.CRM;
 using vesa.core.Services;
+using vesa.api.Helper;
 
 namespace vesa.api.Controllers.CRM
 {
@@ -69,12 +70,18 @@ namespace vesa.api.Controllers.CRM
         [HttpPost]
 		public async Task<IActionResult> Create([FromBody] CustomerInsertDto dto)
 		{
+			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
+				return validationResult;
+
 			var created = await _customerService.CreateAsync(dto);
 			return Ok(created);
 		}
 		[HttpPut]
 		public async Task<IActionResult> Update([FromBody] CustomerUpdateDto dto)
 		{
+			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
+				return validationResult;
+
 			var updated = await _customerService.UpdateAsync(dto);
 			if (updated == null) return NotFound();
 			return Ok(updated);
