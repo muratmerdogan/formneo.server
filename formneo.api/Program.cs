@@ -209,6 +209,7 @@ builder.Services.AddCors(c =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IMinioService, MinioService>();
+builder.Services.AddScoped<IMailService, vesa.service.Services.MailService>();
 builder.Services.AddHttpClient<QuestDBService>();
 
 AppContext.SetSwitch("System.Drawing.EnableUnixSupport", true);

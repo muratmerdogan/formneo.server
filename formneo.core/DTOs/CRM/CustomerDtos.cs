@@ -200,7 +200,7 @@ namespace vesa.core.DTOs.CRM
 		public string? OwnerId { get; set; }
 
 		[Range(0, 4, ErrorMessage = "Yaşam döngüsü aşaması 0-4 arasında olmalıdır")]
-		public int LifecycleStage { get; set; }
+		public int? LifecycleStage { get; set; }
 
         public DateTime? NextActivityDate { get; set; }
 
