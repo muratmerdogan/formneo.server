@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using vesa.core.Models.CRM;
 using vesa.core.Repositories;
@@ -43,6 +44,43 @@ namespace vesa.repository.Repositories
 			return await _context.Customers
 				.AsNoTracking()
 				.FirstOrDefaultAsync(x => x.Code == code);
+		}
+
+		public async Task<CustomerEmail> GetCustomerEmailAsync(Guid id)
+		{
+			var result = await _context.CustomerEmails
+				.AsNoTracking()
+				.Select(e => new
+				{
+					Entity = e,
+					ConcurrencyToken = EF.Property<uint>(e, "xmin")
+				})
+				.FirstOrDefaultAsync(x => x.Entity.Id == id);
+
+			if (result == null) return null;
+
+			result.Entity.ConcurrencyToken = result.ConcurrencyToken;
+			return result.Entity;
+		}
+
+		public async Task<List<CustomerEmail>> GetCustomerEmailsByCustomerAsync(Guid customerId)
+		{
+			var result = await _context.CustomerEmails
+				.Where(x => x.CustomerId == customerId)
+				.AsNoTracking()
+				.Select(e => new
+				{
+					Entity = e,
+					ConcurrencyToken = EF.Property<uint>(e, "xmin")
+				})
+				.ToListAsync();
+
+			foreach (var item in result)
+			{
+				item.Entity.ConcurrencyToken = item.ConcurrencyToken;
+			}
+
+			return result.Select(x => x.Entity).ToList();
 		}
 
 		public async Task<List<Customer>> GetListWithDetailsAsync()

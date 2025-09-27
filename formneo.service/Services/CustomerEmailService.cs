@@ -10,36 +10,34 @@ using vesa.core.Repositories;
 using vesa.core.Services;
 using vesa.core.UnitOfWorks;
 using vesa.repository;
+using vesa.service.Exceptions;
 
 namespace vesa.service.Services
 {
 	public class CustomerEmailService : ICustomerEmailService
 	{
 		private readonly AppDbContext _context;
+		private readonly ICustomerRepository _customerRepository;
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
 
-		public CustomerEmailService(AppDbContext context, IUnitOfWork unitOfWork, IMapper mapper)
+		public CustomerEmailService(AppDbContext context, ICustomerRepository customerRepository, IUnitOfWork unitOfWork, IMapper mapper)
 		{
 			_context = context;
+			_customerRepository = customerRepository;
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
 		}
 
 		public async Task<CustomerEmailDto> GetByIdAsync(Guid id)
 		{
-			var email = await _context.CustomerEmails
-				.AsNoTracking()
-				.FirstOrDefaultAsync(x => x.Id == id);
+			var email = await _customerRepository.GetCustomerEmailAsync(id);
 			return _mapper.Map<CustomerEmailDto>(email);
 		}
 
 		public async Task<IEnumerable<CustomerEmailDto>> GetByCustomerIdAsync(Guid customerId)
 		{
-			var emails = await _context.CustomerEmails
-				.Where(x => x.CustomerId == customerId)
-				.AsNoTracking()
-				.ToListAsync();
+			var emails = await _customerRepository.GetCustomerEmailsByCustomerAsync(customerId);
 			return _mapper.Map<List<CustomerEmailDto>>(emails);
 		}
 
@@ -51,6 +49,7 @@ namespace vesa.service.Services
 			_context.CustomerEmails.Add(entity);
 			await _unitOfWork.CommitAsync();
 
+			entity.ConcurrencyToken = EF.Property<uint>(entity, "xmin");
 			return _mapper.Map<CustomerEmailDto>(entity);
 		}
 
@@ -60,8 +59,19 @@ namespace vesa.service.Services
 			if (entity == null) return null;
 
 			_mapper.Map(dto, entity);
-			await _unitOfWork.CommitAsync();
+			_context.CustomerEmails.Attach(entity);
+			_context.Entry(entity).Property("xmin").OriginalValue = dto.ConcurrencyToken;
 
+			try
+			{
+				await _unitOfWork.CommitAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
+			}
+
+			entity.ConcurrencyToken = EF.Property<uint>(entity, "xmin");
 			return _mapper.Map<CustomerEmailDto>(entity);
 		}
 
@@ -71,32 +81,33 @@ namespace vesa.service.Services
 			if (entity != null)
 			{
 				_context.CustomerEmails.Remove(entity);
-				await _unitOfWork.CommitAsync();
+				try
+				{
+					await _unitOfWork.CommitAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
+				}
 			}
 		}
 
 		public async Task SetPrimaryAsync(Guid customerId, Guid emailId)
 		{
-			// Önce mevcut primary'yi kaldır
-			var currentPrimary = await _context.CustomerEmails
-				.Where(x => x.CustomerId == customerId && x.IsPrimary)
-				.ToListAsync();
-
-			foreach (var email in currentPrimary)
+			var emails = await _context.CustomerEmails.Where(x => x.CustomerId == customerId).ToListAsync();
+			foreach (var email in emails)
 			{
-				email.IsPrimary = false;
+				email.IsPrimary = email.Id == emailId;
 			}
 
-			// Yeni primary'yi ayarla
-			var newPrimary = await _context.CustomerEmails
-				.FirstOrDefaultAsync(x => x.Id == emailId && x.CustomerId == customerId);
-
-			if (newPrimary != null)
+			try
 			{
-				newPrimary.IsPrimary = true;
+				await _unitOfWork.CommitAsync();
 			}
-
-			await _unitOfWork.CommitAsync();
+			catch (DbUpdateConcurrencyException)
+			{
+				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
+			}
 		}
 	}
 }

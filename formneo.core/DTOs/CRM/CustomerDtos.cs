@@ -56,6 +56,7 @@ namespace vesa.core.DTOs.CRM
 		public bool Bulk { get; set; }
 		public bool IsActive { get; set; }
 		public bool IsPrimary { get; set; }
+		public uint ConcurrencyToken { get; set; }
 	}
 
 	public class CustomerEmailInsertDto
@@ -72,6 +73,7 @@ namespace vesa.core.DTOs.CRM
 	public class CustomerEmailUpdateDto : CustomerEmailInsertDto
 	{
 		public Guid Id { get; set; }
+		public uint ConcurrencyToken { get; set; }
 	}
 
 	public class CustomerPhoneDto

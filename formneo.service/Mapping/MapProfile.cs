@@ -307,9 +307,13 @@ namespace vesa.service.Mapping
 
 			CreateMap<CustomerOfficial, CustomerOfficialDto>().ReverseMap();
 
-			CreateMap<CustomerEmail, CustomerEmailDto>().ReverseMap();
+			CreateMap<CustomerEmail, CustomerEmailDto>()
+				.ForMember(dest => dest.ConcurrencyToken, opt => opt.MapFrom(src => src.ConcurrencyToken))
+				.ReverseMap();
 			CreateMap<CustomerEmail, CustomerEmailInsertDto>().ReverseMap();
-			CreateMap<CustomerEmail, CustomerEmailUpdateDto>().ReverseMap();
+			CreateMap<CustomerEmail, CustomerEmailUpdateDto>()
+				.ForMember(dest => dest.ConcurrencyToken, opt => opt.MapFrom(src => src.ConcurrencyToken))
+				.ReverseMap();
 
 			CreateMap<CustomerPhone, CustomerPhoneDto>().ReverseMap();
 			CreateMap<CustomerPhone, CustomerPhoneInsertDto>().ReverseMap();

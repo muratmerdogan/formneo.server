@@ -10,6 +10,8 @@ namespace vesa.core.Repositories
 		Task<Customer> GetDetailAsync(Guid id);
 		Task<List<Customer>> GetListWithDetailsAsync();
 		Task<Customer> GetByCodeAsync(string code);
+		Task<CustomerEmail> GetCustomerEmailAsync(Guid id);
+		Task<List<CustomerEmail>> GetCustomerEmailsByCustomerAsync(Guid customerId);
 		
 		// Optimize edilmiş metodlar
 		Task<List<Customer>> GetListBasicAsync(int skip = 0, int take = 50, string search = "");

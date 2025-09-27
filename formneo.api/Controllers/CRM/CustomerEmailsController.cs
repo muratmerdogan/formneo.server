@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using vesa.api.Helper;
 using vesa.core.DTOs.CRM;
 using vesa.core.Services;
+using vesa.service.Exceptions;
 
 namespace vesa.api.Controllers.CRM
 {
@@ -38,6 +40,9 @@ namespace vesa.api.Controllers.CRM
 		public async Task<IActionResult> Create(Guid customerId, [FromBody] CustomerEmailInsertDto dto)
 		{
 			dto.CustomerId = customerId;
+			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
+				return validationResult;
+
 			var created = await _customerEmailService.CreateAsync(dto);
 			return CreatedAtAction(nameof(GetById), new { customerId, emailId = created.Id }, created);
 		}
@@ -47,23 +52,50 @@ namespace vesa.api.Controllers.CRM
 		{
 			dto.Id = emailId;
 			dto.CustomerId = customerId;
-			var updated = await _customerEmailService.UpdateAsync(dto);
-			if (updated == null) return NotFound();
-			return Ok(updated);
+			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
+				return validationResult;
+
+			try
+			{
+				var updated = await _customerEmailService.UpdateAsync(dto);
+				if (updated == null) return NotFound();
+				return Ok(updated);
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 
 		[HttpDelete("{emailId}")]
 		public async Task<IActionResult> Delete(Guid customerId, Guid emailId)
 		{
-			await _customerEmailService.DeleteAsync(emailId);
-			return NoContent();
+			try
+			{
+				await _customerEmailService.DeleteAsync(emailId);
+				return NoContent();
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 
 		[HttpPut("{emailId}/set-primary")]
 		public async Task<IActionResult> SetPrimary(Guid customerId, Guid emailId)
 		{
-			await _customerEmailService.SetPrimaryAsync(customerId, emailId);
-			return NoContent();
+			try
+			{
+				await _customerEmailService.SetPrimaryAsync(customerId, emailId);
+				return NoContent();
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 	}
 }
