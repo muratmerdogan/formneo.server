@@ -17,8 +17,9 @@ namespace vesa.core.Repositories
         Task AddRangeAsync(IEnumerable<T> entities);
         void Update(T entity);
         void Remove(T entity);
-
         void RemoveRange(IEnumerable<T> entities);
+		void Attach(T entity);
+		void SetConcurrencyToken(T entity, uint concurrencyToken);
 
     }
 }

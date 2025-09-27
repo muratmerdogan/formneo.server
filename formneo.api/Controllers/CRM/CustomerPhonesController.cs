@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using vesa.api.Helper;
 using vesa.core.DTOs.CRM;
 using vesa.core.Services;
+using vesa.service.Exceptions;
 
 namespace vesa.api.Controllers.CRM
 {
@@ -45,11 +47,22 @@ namespace vesa.api.Controllers.CRM
 		[HttpPut("{phoneId}")]
 		public async Task<IActionResult> Update(Guid customerId, Guid phoneId, [FromBody] CustomerPhoneUpdateDto dto)
 		{
+			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
+				return validationResult;
+
 			dto.Id = phoneId;
 			dto.CustomerId = customerId;
-			var updated = await _customerPhoneService.UpdateAsync(dto);
-			if (updated == null) return NotFound();
-			return Ok(updated);
+			try
+			{
+				var updated = await _customerPhoneService.UpdateAsync(dto);
+				if (updated == null) return NotFound();
+				return Ok(updated);
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 
 		[HttpDelete("{phoneId}")]
@@ -62,8 +75,16 @@ namespace vesa.api.Controllers.CRM
 		[HttpPut("{phoneId}/set-primary")]
 		public async Task<IActionResult> SetPrimary(Guid customerId, Guid phoneId)
 		{
-			await _customerPhoneService.SetPrimaryAsync(customerId, phoneId);
-			return NoContent();
+			try
+			{
+				await _customerPhoneService.SetPrimaryAsync(customerId, phoneId);
+				return NoContent();
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 	}
 }
