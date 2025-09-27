@@ -34,9 +34,6 @@ namespace vesa.core.Models.CRM
 
 		public Customer Customer { get; set; }
 		public Opportunity Opportunity { get; set; }
-
-		[Timestamp]
-		public byte[] RowVersion { get; set; }
 	}
 }
 

@@ -19,7 +19,6 @@ namespace vesa.core.DTOs.CRM
 		public string Source { get; set; }
 		public string OwnerUserId { get; set; }
 		public string Description { get; set; }
-		public byte[] RowVersion { get; set; }
 		public DateTime CreatedDate { get; set; }
 		public DateTime? UpdatedDate { get; set; }
 	}
@@ -38,7 +37,6 @@ namespace vesa.core.DTOs.CRM
 		public DateTime? ExpectedCloseDate { get; set; }
 		public string OwnerUserId { get; set; }
 		public DateTime CreatedDate { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class OpportunityInsertDto
@@ -109,8 +107,6 @@ namespace vesa.core.DTOs.CRM
 		[StringLength(2000, ErrorMessage = "Description cannot exceed 2000 characters")]
 		public string? Description { get; set; }
 		
-		[Required]
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class OpportunityPagedResultDto
@@ -191,7 +187,6 @@ namespace vesa.core.DTOs.CRM
 		public string AssignedToUserId { get; set; }
 		public DateTime? StartTime { get; set; }
 		public DateTime? EndTime { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class MeetingDto
@@ -206,7 +201,6 @@ namespace vesa.core.DTOs.CRM
 		public string Description { get; set; }
 		public string OrganizerUserId { get; set; }
 		public string AttendeesJson { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class ReminderDto
@@ -218,7 +212,6 @@ namespace vesa.core.DTOs.CRM
 		public string Message { get; set; }
 		public string Channel { get; set; }
 		public bool IsSent { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class QuoteLineDto
@@ -232,7 +225,6 @@ namespace vesa.core.DTOs.CRM
 		public decimal DiscountRate { get; set; }
 		public decimal TaxRate { get; set; }
 		public decimal LineTotal { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class QuoteDto
@@ -251,7 +243,6 @@ namespace vesa.core.DTOs.CRM
 		public decimal GrandTotal { get; set; }
 		public string Notes { get; set; }
 		public List<QuoteLineDto> Lines { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class SpecialDayDto
@@ -264,7 +255,6 @@ namespace vesa.core.DTOs.CRM
 		public int AdvanceNotifyDays { get; set; }
 		public string Channel { get; set; }
 		public string MessageTemplate { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CrmChangeLogDto

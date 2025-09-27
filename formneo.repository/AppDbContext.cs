@@ -187,57 +187,42 @@ namespace vesa.repository
             }
 
             // CRM Enum configurations are handled in CustomerConfiguration.cs
-
-            // PostgreSQL için RowVersion konfigürasyonu
+            // PostgreSQL için xmin Concurrency Token - En iyi çözüm
             modelBuilder.Entity<vesa.core.Models.CRM.Customer>()
-                .Property(p => p.RowVersion)
-                .IsRowVersion()
-                .HasDefaultValue(new byte[8]);
+                .UseXminAsConcurrencyToken();
 
-            modelBuilder.Entity<CustomerAddress>()
-                .Property(p => p.RowVersion)
-                .IsRowVersion()
-                .HasDefaultValue(new byte[8]);
+            modelBuilder.Entity<CustomerAddress>().UseXminAsConcurrencyToken();
 
-            modelBuilder.Entity<CustomerEmail>()
-                .Property(p => p.RowVersion)
-                .IsRowVersion()
-                .HasDefaultValue(new byte[8]);
+            modelBuilder.Entity<CustomerEmail>().UseXminAsConcurrencyToken();
 
-            modelBuilder.Entity<CustomerPhone>()
-                .Property(p => p.RowVersion)
-                .IsRowVersion()
-                .HasDefaultValue(new byte[8]);
+            modelBuilder.Entity<CustomerTag>().UseXminAsConcurrencyToken();
 
-            modelBuilder.Entity<CustomerNote>()
-                .Property(p => p.RowVersion)
-                .IsRowVersion()
-                .HasDefaultValue(new byte[8]);
+            modelBuilder.Entity<CustomerSector>().UseXminAsConcurrencyToken();
 
-            modelBuilder.Entity<CustomerTag>()
-                .Property(p => p.RowVersion)
-                .IsRowVersion()
-                .HasDefaultValue(new byte[8]);
+            modelBuilder.Entity<CustomerDocument>().UseXminAsConcurrencyToken();
 
-            modelBuilder.Entity<CustomerSector>()
-                .Property(p => p.RowVersion)
-                .IsRowVersion()
-                .HasDefaultValue(new byte[8]);
+            modelBuilder.Entity<CustomerCustomField>().UseXminAsConcurrencyToken();
 
-            modelBuilder.Entity<CustomerDocument>()
-                .Property(p => p.RowVersion)
-                .IsRowVersion()
-                .HasDefaultValue(new byte[8]);
-
-            modelBuilder.Entity<CustomerCustomField>()
-                .Property(p => p.RowVersion)
-                .IsRowVersion()
-                .HasDefaultValue(new byte[8]);
-
-            modelBuilder.Entity<CustomerOfficial>()
-                .Property(p => p.RowVersion)
-                .IsRowVersion()
-                .HasDefaultValue(new byte[8]);
+            modelBuilder.Entity<CustomerOfficial>().UseXminAsConcurrencyToken();
+            
+            modelBuilder.Entity<CustomerPhone>().UseXminAsConcurrencyToken();
+            
+            modelBuilder.Entity<CustomerNote>().UseXminAsConcurrencyToken();
+            
+            // Diğer CRM entity'leri
+            modelBuilder.Entity<vesa.core.Models.CRM.Activity>().UseXminAsConcurrencyToken();
+            
+            modelBuilder.Entity<vesa.core.Models.CRM.Meeting>().UseXminAsConcurrencyToken();
+            
+            modelBuilder.Entity<vesa.core.Models.CRM.Reminder>().UseXminAsConcurrencyToken();
+            
+            modelBuilder.Entity<vesa.core.Models.CRM.Quote>().UseXminAsConcurrencyToken();
+            
+            modelBuilder.Entity<vesa.core.Models.CRM.QuoteLine>().UseXminAsConcurrencyToken();
+            
+            modelBuilder.Entity<vesa.core.Models.CRM.Opportunity>().UseXminAsConcurrencyToken();
+            
+            modelBuilder.Entity<vesa.core.Models.CRM.SpecialDay>().UseXminAsConcurrencyToken();
 
             modelBuilder.Entity<CustomerAddress>()
                 .Property(p => p.Type)
@@ -468,7 +453,6 @@ namespace vesa.repository
                                     Entry(entityReference).Property(x => x.UniqNumber).IsModified = false;
                                     Entry(entityReference).Property(x => x.CreatedBy).IsModified = false;
                                     Entry(entityReference).Property(x => x.CreatedDate).IsModified = false;
-
 
                                     // WorkflowHeadId alanını kontrol edip null olarak ayarlama
                                     if (entityReference is BudgetJobCodeRequest budgetJobCodeRequest)

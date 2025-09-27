@@ -7,9 +7,8 @@ using vesa.core.Models.FormEnums;
 
 namespace vesa.core.DTOs.FormDatas
 {
-    public class FormDataGetByIdDto:BaseDto
+    public class FormDataGetByIdDto : BaseDetailDto
     {
-        public Guid Id { get; set; }
         public string? FormName { get; set; }
         public string? FormDescription { get; set; }
         public int Revision { get; set; }

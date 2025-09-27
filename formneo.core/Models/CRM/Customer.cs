@@ -93,9 +93,6 @@ namespace vesa.core.Models.CRM
 		public ICollection<CustomerCustomField> CustomFields { get; set; }
 		public ICollection<CustomerPhone> Phones { get; set; }
 		public ICollection<CustomerNote> Notes { get; set; }
-
-		[Timestamp]
-		public byte[] RowVersion { get; set; }
 	}
 }
 

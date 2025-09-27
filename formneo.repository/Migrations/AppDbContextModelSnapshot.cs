@@ -986,12 +986,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
-
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("timestamp without time zone");
 
@@ -1018,6 +1012,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -1172,16 +1172,10 @@ namespace formneo.repository.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("TaxNumber")
                         .HasMaxLength(64)
@@ -1211,6 +1205,12 @@ namespace formneo.repository.Migrations
                     b.Property<string>("Website")
                         .HasMaxLength(512)
                         .HasColumnType("character varying(512)");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -1286,13 +1286,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 
@@ -1308,6 +1301,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -1353,13 +1352,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -1376,6 +1368,12 @@ namespace formneo.repository.Migrations
                     b.Property<string>("ValueJson")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -1432,13 +1430,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -1451,6 +1442,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -1504,13 +1501,6 @@ namespace formneo.repository.Migrations
                     b.Property<bool>("Notify")
                         .HasColumnType("boolean");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -1523,6 +1513,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -1563,13 +1559,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1586,6 +1575,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -1644,13 +1639,6 @@ namespace formneo.repository.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1667,6 +1655,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -1714,13 +1708,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -1733,6 +1720,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -1766,13 +1759,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-
                     b.Property<string>("Sector")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1789,6 +1775,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -1822,13 +1814,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasDefaultValue(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
-
                     b.Property<string>("Tag")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1845,6 +1830,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -1900,12 +1891,6 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
-
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp without time zone");
 
@@ -1925,6 +1910,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -1982,12 +1973,6 @@ namespace formneo.repository.Migrations
                     b.Property<int?>("Probability")
                         .HasColumnType("integer");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
-
                     b.Property<string>("Source")
                         .IsRequired()
                         .HasColumnType("text");
@@ -2012,6 +1997,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -2071,12 +2062,6 @@ namespace formneo.repository.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
-
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -2101,6 +2086,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("ValidUntil")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -2156,12 +2147,6 @@ namespace formneo.repository.Migrations
                     b.Property<Guid>("QuoteId")
                         .HasColumnType("uuid");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
-
                     b.Property<decimal>("TaxRate")
                         .HasColumnType("numeric");
 
@@ -2185,6 +2170,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -2235,12 +2226,6 @@ namespace formneo.repository.Migrations
                     b.Property<DateTime>("RemindAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea");
-
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
@@ -2253,6 +2238,12 @@ namespace formneo.repository.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.HasKey("Id");
 
@@ -2371,7 +2362,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 9, 25, 21, 45, 54, 940, DateTimeKind.Utc).AddTicks(1640),
+                            CreatedDate = new DateTime(2025, 9, 26, 18, 52, 6, 853, DateTimeKind.Utc).AddTicks(8820),
                             Name = "RonesansHolding"
                         });
                 });
@@ -3293,7 +3284,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 9, 25, 21, 45, 54, 940, DateTimeKind.Utc).AddTicks(2370),
+                            CreatedDate = new DateTime(2025, 9, 26, 18, 52, 6, 853, DateTimeKind.Utc).AddTicks(9640),
                             DomainVerified = false,
                             Email = "info@vesacons.com",
                             FeatureFlags = "{}",
@@ -3552,7 +3543,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 9, 25, 21, 45, 54, 940, DateTimeKind.Utc).AddTicks(2450),
+                            CreatedDate = new DateTime(2025, 9, 26, 18, 52, 6, 853, DateTimeKind.Utc).AddTicks(9720),
                             Name = "RonesansHoldingTurkey"
                         });
                 });

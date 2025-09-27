@@ -81,6 +81,15 @@ namespace vesa.repository.Repositories
         {
             _dbSet.Update(entity);
         }
+        public void Attach(T entity)
+        {
+            _dbSet.Attach(entity);
+        }
+
+        public void SetConcurrencyToken(T entity, uint concurrencyToken)
+        {
+            _context.Entry(entity).Property("xmin").OriginalValue = concurrencyToken;
+        }
         public IQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
             return _dbSet.Where(expression);

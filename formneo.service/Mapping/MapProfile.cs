@@ -349,8 +349,7 @@ namespace vesa.service.Mapping
 				.ForMember(dest => dest.CustomerTypeText, opt => opt.MapFrom(src => src.CustomerTypeItem != null ? src.CustomerTypeItem.Name : null))
 				.ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
 				.ForMember(dest => dest.CategoryText, opt => opt.MapFrom(src => src.CategoryItem != null ? src.CategoryItem.Name : null))
-				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Status) ? int.Parse(src.Status) : 0))
-				.ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
+				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Status) ? int.Parse(src.Status) : 0));
 
 			// Insert/Update: DTO -> Entity
 			CreateMap<CustomerInsertDto, vesa.core.Models.CRM.Customer>()
@@ -391,11 +390,12 @@ namespace vesa.service.Mapping
 
 			// Performans için optimize edilmiş mapping'ler
 			CreateMap<vesa.core.Models.CRM.Customer, CustomerBasicDto>()
-				.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
 				.ForMember(dest => dest.CustomerTypeId, opt => opt.MapFrom(src => src.CustomerTypeId))
-				.ForMember(dest => dest.CustomerTypeText, opt => opt.MapFrom(src => src.CustomerTypeItem != null ? src.CustomerTypeItem.Name : null))
+				.ForMember(dest => dest.CustomerTypeText,
+					opt => opt.MapFrom(src => src.CustomerTypeItem != null ? src.CustomerTypeItem.Name : null))
 				.ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
-				.ForMember(dest => dest.CategoryText, opt => opt.MapFrom(src => src.CategoryItem != null ? src.CategoryItem.Name : null))
+				.ForMember(dest => dest.CategoryText,
+					opt => opt.MapFrom(src => src.CategoryItem != null ? src.CategoryItem.Name : null))
 				.ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
 				.ForMember(dest => dest.LegalName, opt => opt.MapFrom(src => src.LegalName))
 				.ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
@@ -409,11 +409,8 @@ namespace vesa.service.Mapping
 				.ForMember(dest => dest.InstagramUrl, opt => opt.MapFrom(src => src.InstagramUrl))
 				.ForMember(dest => dest.LifecycleStage, opt => opt.MapFrom(src => (int)src.LifecycleStage))
 				.ForMember(dest => dest.NextActivityDate, opt => opt.MapFrom(src => src.NextActivityDate))
-				.ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
-				.ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
-				.ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => src.UpdatedDate))
-				.ForMember(dest => dest.RowVersion, opt => opt.MapFrom(src => src.RowVersion));
-			
+				.ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId));
+	
 			CreateMap<CustomerBasicDto, vesa.core.Models.CRM.Customer>();
 
 			// CRM Extras - Opportunity Mappings
@@ -435,8 +432,8 @@ namespace vesa.service.Mapping
 				.ForMember(dest => dest.Id, opt => opt.Ignore())
 				.ForMember(dest => dest.StageText, opt => opt.MapFrom(src => ((OpportunityStage)src.Stage).ToString()))
 				.ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
-				.ForMember(dest => dest.UpdatedDate, opt => opt.Ignore())
-				.ForMember(dest => dest.RowVersion, opt => opt.Ignore());
+				.ForMember(dest => dest.UpdatedDate, opt => opt.Ignore());
+
 
 			CreateMap<OpportunityUpdateDto, OpportunityDto>()
 				.ForMember(dest => dest.StageText, opt => opt.MapFrom(src => ((OpportunityStage)src.Stage).ToString()))

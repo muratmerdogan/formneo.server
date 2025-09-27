@@ -36,10 +36,11 @@ namespace vesa.core.Models
 
         public bool IsDelete { get; set; }
 
-
-
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Otomatik 
         public int UniqNumber { get; set; }
+
+        [NotMapped]
+        public uint ConcurrencyToken { get; set; }
     }
 
 

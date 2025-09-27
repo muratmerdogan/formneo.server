@@ -31,9 +31,6 @@ namespace vesa.core.Models.CRM
 		public Customer Customer { get; set; }
 		public Opportunity Opportunity { get; set; }
 		public ICollection<QuoteLine> Lines { get; set; }
-
-		[Timestamp]
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class QuoteLine : vesa.core.Models.BaseEntity
@@ -49,9 +46,6 @@ namespace vesa.core.Models.CRM
 		public decimal LineTotal { get; set; }
 
 		public Quote Quote { get; set; }
-
-		[Timestamp]
-		public byte[] RowVersion { get; set; }
 	}
 }
 

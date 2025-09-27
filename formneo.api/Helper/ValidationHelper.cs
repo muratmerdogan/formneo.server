@@ -14,17 +14,14 @@ namespace vesa.api.Helper
         {
             var errors = modelState
                 .Where(x => x.Value.Errors.Count > 0)
-                .Select(x => new { 
-                    Field = x.Key, 
-                    Message = x.Value.Errors.First().ErrorMessage 
-                })
+                .SelectMany(x => x.Value.Errors.Select(e => e.ErrorMessage))
                 .ToList();
 
             return new BadRequestObjectResult(new
             {
-                message = "Doğrulama hatası",
-                errors = errors,
-                statusCode = 400
+                data = (object)null,
+                statusCode = 400,
+                errors = errors
             });
         }
 
@@ -45,6 +42,37 @@ namespace vesa.api.Helper
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Custom validation hatası döndürür (tutarlı format)
+        /// </summary>
+        /// <param name="field">Hata olan alan adı</param>
+        /// <param name="message">Hata mesajı</param>
+        /// <returns>BadRequest result with consistent format</returns>
+        public static IActionResult GetCustomValidationError(string field, string message)
+        {
+            return new BadRequestObjectResult(new
+            {
+                data = (object)null,
+                statusCode = 400,
+                errors = new[] { message }
+            });
+        }
+
+        /// <summary>
+        /// Birden fazla custom validation hatası döndürür
+        /// </summary>
+        /// <param name="errors">Hata listesi (field, message)</param>
+        /// <returns>BadRequest result with consistent format</returns>
+        public static IActionResult GetCustomValidationErrors(IEnumerable<(string Field, string Message)> errors)
+        {
+            return new BadRequestObjectResult(new
+            {
+                data = (object)null,
+                statusCode = 400,
+                errors = errors.Select(e => e.Message)
+            });
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using vesa.core.Models.CRM;
+using vesa.core.DTOs;
 
 namespace vesa.core.DTOs.CRM
 {
@@ -21,7 +22,6 @@ namespace vesa.core.DTOs.CRM
 		public bool IsBilling { get; set; }
 		public bool IsShipping { get; set; }
 		public bool IsActive { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerAddressInsertDto
@@ -44,7 +44,6 @@ namespace vesa.core.DTOs.CRM
 	public class CustomerAddressUpdateDto : CustomerAddressInsertDto
 	{
 		public Guid Id { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerEmailDto
@@ -57,7 +56,6 @@ namespace vesa.core.DTOs.CRM
 		public bool Bulk { get; set; }
 		public bool IsActive { get; set; }
 		public bool IsPrimary { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerEmailInsertDto
@@ -74,7 +72,6 @@ namespace vesa.core.DTOs.CRM
 	public class CustomerEmailUpdateDto : CustomerEmailInsertDto
 	{
 		public Guid Id { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerPhoneDto
@@ -85,7 +82,6 @@ namespace vesa.core.DTOs.CRM
 		public string Number { get; set; }
 		public bool IsPrimary { get; set; }
 		public bool IsActive { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerPhoneInsertDto
@@ -100,7 +96,6 @@ namespace vesa.core.DTOs.CRM
 	public class CustomerPhoneUpdateDto : CustomerPhoneInsertDto
 	{
 		public Guid Id { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerNoteDto
@@ -109,7 +104,6 @@ namespace vesa.core.DTOs.CRM
 		public DateTime Date { get; set; }
 		public string Title { get; set; }
 		public string Content { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerNoteInsertDto
@@ -127,7 +121,6 @@ namespace vesa.core.DTOs.CRM
 		public DateTime Date { get; set; }
 		public string Title { get; set; }
 		public string Content { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerOfficialDto
@@ -141,7 +134,6 @@ namespace vesa.core.DTOs.CRM
 		public int Role { get; set; }
 		public bool IsPrimary { get; set; }
 		public bool KvkkConsent { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerInsertDto
@@ -223,16 +215,10 @@ namespace vesa.core.DTOs.CRM
 
     }
 
-	public class CustomerUpdateDto
+	public class CustomerUpdateDto : BaseUpdateDto
 	{
 		[StringLength(512, ErrorMessage = "Logo dosya yolu en fazla 512 karakter olabilir")]
         public string? LogoFilePath { get; set; }
-
-		[Required(ErrorMessage = "ID zorunludur")]
-        public Guid Id { get; set; }
-
-		[Required(ErrorMessage = "RowVersion zorunludur")]
-		public byte[] RowVersion { get; set; }
 
 		[Required(ErrorMessage = "Müşteri adı zorunludur")]
 		[StringLength(256, ErrorMessage = "Müşteri adı en fazla 256 karakter olabilir")]
@@ -292,9 +278,8 @@ namespace vesa.core.DTOs.CRM
 		public DateTime? NextActivityDate { get; set; }
 
 	}
-	public class CustomerListDto
+	public class CustomerListDto : BaseListDto
 	{
-		public Guid Id { get; set; }
 		public Guid? CustomerTypeId { get; set; }
 		public string? CustomerTypeText { get; set; }
 		public Guid? CategoryId { get; set; }
@@ -316,7 +301,6 @@ namespace vesa.core.DTOs.CRM
 		public string? OwnerId { get; set; }
 		public int LifecycleStage { get; set; }
 		public DateTime? NextActivityDate { get; set; }
-		public byte[] RowVersion { get; set; }
 
 		// İlişkili tablolar
 		public List<CustomerAddressDto> Addresses { get; set; }
@@ -349,7 +333,6 @@ namespace vesa.core.DTOs.CRM
 		public string DownloadUrl { get; set; }
 		public DateTime CreatedDate { get; set; }
 		public string CreatedBy { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerDocumentInsertDto
@@ -368,7 +351,6 @@ namespace vesa.core.DTOs.CRM
 		public string FileName { get; set; }
 		public string Description { get; set; }
 		public string Category { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerDocumentUploadDto
@@ -379,9 +361,8 @@ namespace vesa.core.DTOs.CRM
 	}
 
 	// Performans için optimize edilmiş DTO'lar
-	public class CustomerBasicDto
+	public class CustomerBasicDto : BaseListDto
 	{
-		public Guid Id { get; set; }
 		public Guid? CustomerTypeId { get; set; }
 		public string? CustomerTypeText { get; set; }
 		public Guid? CategoryId { get; set; }
@@ -400,9 +381,6 @@ namespace vesa.core.DTOs.CRM
 		public int LifecycleStage { get; set; }
 		public DateTime? NextActivityDate { get; set; }
 		public string? OwnerId { get; set; }
-		public DateTime CreatedDate { get; set; }
-		public DateTime? UpdatedDate { get; set; }
-		public byte[] RowVersion { get; set; }
 	}
 
 	public class CustomerPagedResultDto

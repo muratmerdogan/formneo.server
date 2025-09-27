@@ -9,7 +9,7 @@ using vesa.core.Models;
 
 namespace vesa.core.DTOs
 {
-    public class EmployeeDto : BaseDto
+    public class EmployeeDto : BaseListDto
     {
 
         public Guid id { get; set; }

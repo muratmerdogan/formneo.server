@@ -25,9 +25,6 @@ namespace vesa.core.Models.CRM
 		public bool KvkkConsent { get; set; }
 
 		public Customer Customer { get; set; }
-
-		[Timestamp]
-		public byte[] RowVersion { get; set; }
 	}
 }
 

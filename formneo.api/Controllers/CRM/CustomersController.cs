@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using vesa.core.DTOs.CRM;
 using vesa.core.Services;
 using vesa.api.Helper;
+using vesa.service.Exceptions;
 
 namespace vesa.api.Controllers.CRM
 {
@@ -73,18 +74,40 @@ namespace vesa.api.Controllers.CRM
 			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
 				return validationResult;
 
-			var created = await _customerService.CreateAsync(dto);
-			return Ok(created);
+			try
+			{
+				var created = await _customerService.CreateAsync(dto);
+				return Ok(created);
+			}
+			catch (InvalidOperationException ex)
+			{
+				return ValidationHelper.GetCustomValidationError("Code", ex.Message);
+			}
 		}
 		[HttpPut]
 		public async Task<IActionResult> Update([FromBody] CustomerUpdateDto dto)
 		{
-			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
-				return validationResult;
+			if (dto.ConcurrencyToken == 0)
+			{
+				ModelState.AddModelError(nameof(dto.ConcurrencyToken), "ConcurrencyToken alanı zorunludur.");
+			}
 
-			var updated = await _customerService.UpdateAsync(dto);
-			if (updated == null) return NotFound();
-			return Ok(updated);
+			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
+			{
+				return validationResult;
+			}
+
+			try
+			{
+				var updated = await _customerService.UpdateAsync(dto);
+				if (updated == null) return NotFound();
+				return Ok(updated);
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete(Guid id)

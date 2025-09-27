@@ -14,7 +14,7 @@ namespace vesa.repository.Repositories
 
 		public async Task<Customer> GetDetailAsync(Guid id)
 		{
-			return await _context.Customers
+			var result = await _context.Customers
 				.Include(x => x.Addresses)
 				.Include(x => x.Officials)
 				.Include(x => x.SecondaryEmails)
@@ -25,7 +25,24 @@ namespace vesa.repository.Repositories
 				.Include(x => x.Sectors)
 				.Include(x => x.CustomFields)
 				.AsNoTracking()
-				.FirstOrDefaultAsync(x => x.Id == id);
+				.Select(c => new
+				{
+					Entity = c,
+					ConcurrencyToken = EF.Property<uint>(c, "xmin")
+				})
+				.FirstOrDefaultAsync(x => x.Entity.Id == id);
+
+			if (result == null) return null;
+
+			result.Entity.ConcurrencyToken = result.ConcurrencyToken;
+			return result.Entity;
+		}
+
+		public async Task<Customer> GetByCodeAsync(string code)
+		{
+			return await _context.Customers
+				.AsNoTracking()
+				.FirstOrDefaultAsync(x => x.Code == code);
 		}
 
 		public async Task<List<Customer>> GetListWithDetailsAsync()
@@ -58,12 +75,24 @@ namespace vesa.repository.Repositories
 				query = query.Where(x => x.Name.ToLower().Contains(search.ToLower()));
 			}
 			
-			return await query
+			var result = await query
 				.AsNoTracking()
 				.OrderBy(x => x.Name)
 				.Skip(skip)
 				.Take(take)
+				.Select(c => new
+				{
+					Entity = c,
+					ConcurrencyToken = EF.Property<uint>(c, "xmin")
+				})
 				.ToListAsync();
+
+			foreach (var item in result)
+			{
+				item.Entity.ConcurrencyToken = item.ConcurrencyToken;
+			}
+
+			return result.Select(x => x.Entity).ToList();
 		}
 
 		// Seçici detay yükleme - sadece gerekli ilişkileri yükler
@@ -89,12 +118,24 @@ namespace vesa.repository.Repositories
 			if (includePhones)
 				query = query.Include(x => x.Phones);
 
-			return await query
+			var result = await query
 				.AsNoTracking()
 				.OrderBy(x => x.Name)
 				.Skip(skip)
 				.Take(take)
+				.Select(c => new
+				{
+					Entity = c,
+					ConcurrencyToken = EF.Property<uint>(c, "xmin")
+				})
 				.ToListAsync();
+
+			foreach (var item in result)
+			{
+				item.Entity.ConcurrencyToken = item.ConcurrencyToken;
+			}
+
+			return result.Select(x => x.Entity).ToList();
 		}
 
 		// Toplam kayıt sayısını getir

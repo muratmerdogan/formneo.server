@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,12 +71,17 @@ namespace vesa.service.Services
 			var entity = await _customerNoteRepository.GetByIdAsync(dto.Id);
 			if (entity == null) return null;
 
-			if (!(dto.RowVersion == null || (entity.RowVersion != null && entity.RowVersion.SequenceEqual(dto.RowVersion))))
-				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
-
 			_mapper.Map(dto, entity);
 			_customerNoteRepository.Update(entity);
-			await _unitOfWork.CommitAsync();
+			try
+			{
+				await _unitOfWork.CommitAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
+			}
+			
 			return _mapper.Map<CustomerNoteDto>(entity);
 		}
 	}

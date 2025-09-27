@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -199,9 +200,6 @@ namespace vesa.service.Services
 			var entity = await _customerDocumentRepository.GetByIdAsync(dto.Id);
 			if (entity == null) return null;
 
-			if (!(dto.RowVersion == null || (entity.RowVersion != null && entity.RowVersion.SequenceEqual(dto.RowVersion))))
-				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
-
 			// Sadece metadata güncellenebilir, dosya değiştirilemez
 			entity.FileName = dto.FileName ?? entity.FileName;
 			entity.Description = dto.Description ?? entity.Description;
@@ -209,7 +207,15 @@ namespace vesa.service.Services
 			entity.UpdatedDate = DateTime.UtcNow;
 
 			_customerDocumentRepository.Update(entity);
-			await _unitOfWork.CommitAsync();
+			
+			try
+			{
+				await _unitOfWork.CommitAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
+			}
 
 			var result = _mapper.Map<CustomerDocumentDto>(entity);
 

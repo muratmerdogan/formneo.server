@@ -29,9 +29,6 @@ namespace vesa.core.Models.CRM
 		public bool IsActive { get; set; } = true;
 
 		public Customer Customer { get; set; }
-
-		[Timestamp]
-		public byte[] RowVersion { get; set; }
 	}
 }
 

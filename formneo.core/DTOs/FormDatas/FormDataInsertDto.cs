@@ -7,7 +7,7 @@ using vesa.core.Models.FormEnums;
 
 namespace vesa.core.DTOs.FormDatas
 {
-    public class FormDataInsertDto:BaseDto
+    public class FormDataInsertDto
     {
         public string? FormName { get; set; }
         public string? FormDescription { get; set; }

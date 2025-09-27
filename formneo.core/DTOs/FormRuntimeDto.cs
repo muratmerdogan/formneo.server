@@ -10,10 +10,9 @@ using vesa.core.Models;
 
 namespace vesa.core.DTOs
 {
-    public class FormRuntimeDto  : BaseDto
+    public class FormRuntimeDto : BaseListDto
     {
-
-        public Guid Id { get; set; }
+        
 
         public Guid FormId { get; set; }
         public string ValuesJson { get; set; }

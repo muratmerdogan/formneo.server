@@ -28,6 +28,13 @@ namespace vesa.service.Services
 
 		public async Task<CustomerListDto> CreateAsync(CustomerInsertDto dto)
 		{
+			// Aynı kod kontrolü (tenant-aware)
+			var existingCustomer = await _customerRepository.GetByCodeAsync(dto.Code);
+			if (existingCustomer != null)
+			{
+				throw new InvalidOperationException($"'{dto.Code}' koduna sahip müşteri zaten mevcut. Lütfen farklı bir kod kullanınız.");
+			}
+
 			var entity = _mapper.Map<Customer>(dto);
 
 			// Collections mapping
@@ -72,17 +79,23 @@ namespace vesa.service.Services
 		{
 			var entity = await _customerRepository.GetDetailAsync(dto.Id);
 			if (entity == null) return null;
-			if (!(dto.RowVersion == null || (entity.RowVersion != null && entity.RowVersion.SequenceEqual(dto.RowVersion))))
-				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
 
-			// primitive fields
 			_mapper.Map(dto, entity);
 
-			// collections: replace with mapped collections
-	
+			_customerRepository.Attach(entity);
+			_customerRepository.SetConcurrencyToken(entity, dto.ConcurrencyToken);
 
 			_customerRepository.Update(entity);
-			await _unitOfWork.CommitAsync();
+			
+			try
+			{
+				await _unitOfWork.CommitAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
+			}
+			
 			return _mapper.Map<CustomerListDto>(entity);
 		}
 
