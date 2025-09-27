@@ -22,6 +22,7 @@ namespace vesa.core.DTOs.CRM
 		public bool IsBilling { get; set; }
 		public bool IsShipping { get; set; }
 		public bool IsActive { get; set; }
+		public uint ConcurrencyToken { get; set; }
 	}
 
 	public class CustomerAddressInsertDto
@@ -44,6 +45,7 @@ namespace vesa.core.DTOs.CRM
 	public class CustomerAddressUpdateDto : CustomerAddressInsertDto
 	{
 		public Guid Id { get; set; }
+		public uint ConcurrencyToken { get; set; }
 	}
 
 	public class CustomerEmailDto
@@ -84,6 +86,7 @@ namespace vesa.core.DTOs.CRM
 		public string Number { get; set; }
 		public bool IsPrimary { get; set; }
 		public bool IsActive { get; set; }
+		public uint ConcurrencyToken { get; set; }
 	}
 
 	public class CustomerPhoneInsertDto
@@ -98,6 +101,7 @@ namespace vesa.core.DTOs.CRM
 	public class CustomerPhoneUpdateDto : CustomerPhoneInsertDto
 	{
 		public Guid Id { get; set; }
+		public uint ConcurrencyToken { get; set; }
 	}
 
 	public class CustomerNoteDto
@@ -106,6 +110,7 @@ namespace vesa.core.DTOs.CRM
 		public DateTime Date { get; set; }
 		public string Title { get; set; }
 		public string Content { get; set; }
+		public uint ConcurrencyToken { get; set; }
 	}
 
 	public class CustomerNoteInsertDto
@@ -123,6 +128,7 @@ namespace vesa.core.DTOs.CRM
 		public DateTime Date { get; set; }
 		public string Title { get; set; }
 		public string Content { get; set; }
+		public uint ConcurrencyToken { get; set; }
 	}
 
 	public class CustomerOfficialDto

@@ -40,6 +40,9 @@ namespace vesa.api.Controllers.CRM
 		public async Task<IActionResult> Create(Guid customerId, [FromBody] CustomerPhoneInsertDto dto)
 		{
 			dto.CustomerId = customerId;
+			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
+				return validationResult;
+
 			var created = await _customerPhoneService.CreateAsync(dto);
 			return CreatedAtAction(nameof(GetById), new { customerId, phoneId = created.Id }, created);
 		}
@@ -47,11 +50,11 @@ namespace vesa.api.Controllers.CRM
 		[HttpPut("{phoneId}")]
 		public async Task<IActionResult> Update(Guid customerId, Guid phoneId, [FromBody] CustomerPhoneUpdateDto dto)
 		{
+			dto.Id = phoneId;
+			dto.CustomerId = customerId;
 			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
 				return validationResult;
 
-			dto.Id = phoneId;
-			dto.CustomerId = customerId;
 			try
 			{
 				var updated = await _customerPhoneService.UpdateAsync(dto);
@@ -68,8 +71,16 @@ namespace vesa.api.Controllers.CRM
 		[HttpDelete("{phoneId}")]
 		public async Task<IActionResult> Delete(Guid customerId, Guid phoneId)
 		{
-			await _customerPhoneService.DeleteAsync(phoneId);
-			return NoContent();
+			try
+			{
+				await _customerPhoneService.DeleteAsync(phoneId);
+				return NoContent();
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 
 		[HttpPut("{phoneId}/set-primary")]

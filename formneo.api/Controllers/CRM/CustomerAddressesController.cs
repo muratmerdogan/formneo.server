@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using vesa.api.Helper;
 using vesa.core.DTOs.CRM;
 using vesa.core.Services;
+using vesa.service.Exceptions;
 
 namespace vesa.api.Controllers.CRM
 {
@@ -38,6 +40,9 @@ namespace vesa.api.Controllers.CRM
 		public async Task<IActionResult> Create(Guid customerId, [FromBody] CustomerAddressInsertDto dto)
 		{
 			dto.CustomerId = customerId;
+			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
+				return validationResult;
+
 			var created = await _customerAddressService.CreateAsync(dto);
 			return CreatedAtAction(nameof(GetById), new { customerId, addressId = created.Id }, created);
 		}
@@ -47,30 +52,65 @@ namespace vesa.api.Controllers.CRM
 		{
 			dto.Id = addressId;
 			dto.CustomerId = customerId;
-			var updated = await _customerAddressService.UpdateAsync(dto);
-			if (updated == null) return NotFound();
-			return Ok(updated);
+			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
+				return validationResult;
+
+			try
+			{
+				var updated = await _customerAddressService.UpdateAsync(dto);
+				if (updated == null) return NotFound();
+				return Ok(updated);
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 
 		[HttpDelete("{addressId}")]
 		public async Task<IActionResult> Delete(Guid customerId, Guid addressId)
 		{
-			await _customerAddressService.DeleteAsync(addressId);
-			return NoContent();
+			try
+			{
+				await _customerAddressService.DeleteAsync(addressId);
+				return NoContent();
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 
 		[HttpPut("{addressId}/set-default-billing")]
 		public async Task<IActionResult> SetDefaultBilling(Guid customerId, Guid addressId)
 		{
-			await _customerAddressService.SetDefaultBillingAsync(customerId, addressId);
-			return NoContent();
+			try
+			{
+				await _customerAddressService.SetDefaultBillingAsync(customerId, addressId);
+				return NoContent();
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 
 		[HttpPut("{addressId}/set-default-shipping")]
 		public async Task<IActionResult> SetDefaultShipping(Guid customerId, Guid addressId)
 		{
-			await _customerAddressService.SetDefaultShippingAsync(customerId, addressId);
-			return NoContent();
+			try
+			{
+				await _customerAddressService.SetDefaultShippingAsync(customerId, addressId);
+				return NoContent();
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 	}
 }

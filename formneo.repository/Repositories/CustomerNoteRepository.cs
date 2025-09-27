@@ -16,19 +16,41 @@ namespace vesa.repository.Repositories
 
 		public async Task<List<CustomerNote>> GetByCustomerIdAsync(Guid customerId)
 		{
-			return await _context.Set<CustomerNote>()
+			var result = await _context.Set<CustomerNote>()
 				.Where(x => x.CustomerId == customerId)
 				.OrderByDescending(x => x.Date)
 				.AsNoTracking()
+				.Select(n => new
+				{
+					Entity = n,
+					ConcurrencyToken = EF.Property<uint>(n, "xmin")
+				})
 				.ToListAsync();
+
+			foreach (var item in result)
+			{
+				item.Entity.ConcurrencyToken = item.ConcurrencyToken;
+			}
+
+			return result.Select(x => x.Entity).ToList();
 		}
 
 		public async Task<CustomerNote> GetDetailAsync(Guid id)
 		{
-			return await _context.Set<CustomerNote>()
+			var result = await _context.Set<CustomerNote>()
 				.Include(x => x.Customer)
 				.AsNoTracking()
-				.FirstOrDefaultAsync(x => x.Id == id);
+				.Select(n => new
+				{
+					Entity = n,
+					ConcurrencyToken = EF.Property<uint>(n, "xmin")
+				})
+				.FirstOrDefaultAsync(x => x.Entity.Id == id);
+
+			if (result == null) return null;
+
+			result.Entity.ConcurrencyToken = result.ConcurrencyToken;
+			return result.Entity;
 		}
 	}
 }

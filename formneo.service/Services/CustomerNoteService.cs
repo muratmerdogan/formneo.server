@@ -33,6 +33,7 @@ namespace vesa.service.Services
 
 			await _customerNoteRepository.AddAsync(entity);
 			await _unitOfWork.CommitAsync();
+			entity.ConcurrencyToken = EF.Property<uint>(entity, "xmin");
 			return _mapper.Map<CustomerNoteDto>(entity);
 		}
 
@@ -41,11 +42,17 @@ namespace vesa.service.Services
 			var entity = await _customerNoteRepository.GetByIdAsync(id);
 			if (entity == null) return;
 
-			// Soft delete
 			entity.IsDelete = true;
 			entity.UpdatedDate = DateTime.UtcNow;
 			_customerNoteRepository.Update(entity);
-			await _unitOfWork.CommitAsync();
+			try
+			{
+				await _unitOfWork.CommitAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
+			}
 		}
 
 		public async Task<CustomerNoteDto> GetByIdAsync(Guid id)
@@ -72,6 +79,8 @@ namespace vesa.service.Services
 			if (entity == null) return null;
 
 			_mapper.Map(dto, entity);
+			_customerNoteRepository.Attach(entity);
+			_customerNoteRepository.SetConcurrencyToken(entity, dto.ConcurrencyToken);
 			_customerNoteRepository.Update(entity);
 			try
 			{
@@ -81,7 +90,8 @@ namespace vesa.service.Services
 			{
 				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
 			}
-			
+
+			entity.ConcurrencyToken = EF.Property<uint>(entity, "xmin");
 			return _mapper.Map<CustomerNoteDto>(entity);
 		}
 	}

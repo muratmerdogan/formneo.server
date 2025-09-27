@@ -29,13 +29,23 @@ namespace vesa.repository.Repositories
 				.Select(c => new
 				{
 					Entity = c,
-					ConcurrencyToken = EF.Property<uint>(c, "xmin")
+					ConcurrencyToken = EF.Property<uint>(c, "xmin"),
+					Emails = c.SecondaryEmails.Select(e => new { Entity = e, Token = EF.Property<uint>(e, "xmin") }).ToList()
 				})
 				.FirstOrDefaultAsync(x => x.Entity.Id == id);
 
 			if (result == null) return null;
 
 			result.Entity.ConcurrencyToken = result.ConcurrencyToken;
+			if (result.Entity.SecondaryEmails != null)
+			{
+				var emailsWithToken = result.Emails;
+				for (int i = 0; i < emailsWithToken.Count; i++)
+				{
+					var emailEntity = result.Entity.SecondaryEmails.First(e => e.Id == emailsWithToken[i].Entity.Id);
+					emailEntity.ConcurrencyToken = emailsWithToken[i].Token;
+				}
+			}
 			return result.Entity;
 		}
 

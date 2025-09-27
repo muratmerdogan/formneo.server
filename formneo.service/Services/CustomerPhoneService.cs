@@ -6,39 +6,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using vesa.core.DTOs.CRM;
 using vesa.core.Models.CRM;
+using vesa.core.Repositories;
 using vesa.core.Services;
 using vesa.core.UnitOfWorks;
-using vesa.repository;
+using vesa.service.Exceptions;
 
 namespace vesa.service.Services
 {
 	public class CustomerPhoneService : ICustomerPhoneService
 	{
-		private readonly AppDbContext _context;
+		private readonly ICustomerPhoneRepository _customerPhoneRepository;
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
 
-		public CustomerPhoneService(AppDbContext context, IUnitOfWork unitOfWork, IMapper mapper)
+		public CustomerPhoneService(ICustomerPhoneRepository customerPhoneRepository, IUnitOfWork unitOfWork, IMapper mapper)
 		{
-			_context = context;
+			_customerPhoneRepository = customerPhoneRepository;
 			_unitOfWork = unitOfWork;
 			_mapper = mapper;
 		}
 
 		public async Task<CustomerPhoneDto> GetByIdAsync(Guid id)
 		{
-			var phone = await _context.CustomerPhones
-				.AsNoTracking()
-				.FirstOrDefaultAsync(x => x.Id == id);
+			var phone = await _customerPhoneRepository.GetDetailAsync(id);
 			return _mapper.Map<CustomerPhoneDto>(phone);
 		}
 
 		public async Task<IEnumerable<CustomerPhoneDto>> GetByCustomerIdAsync(Guid customerId)
 		{
-			var phones = await _context.CustomerPhones
-				.Where(x => x.CustomerId == customerId)
-				.AsNoTracking()
-				.ToListAsync();
+			var phones = await _customerPhoneRepository.GetByCustomerIdAsync(customerId);
 			return _mapper.Map<List<CustomerPhoneDto>>(phones);
 		}
 
@@ -47,55 +43,73 @@ namespace vesa.service.Services
 			var entity = _mapper.Map<CustomerPhone>(dto);
 			entity.Id = Guid.NewGuid();
 
-			_context.CustomerPhones.Add(entity);
+			await _customerPhoneRepository.AddAsync(entity);
 			await _unitOfWork.CommitAsync();
 
+			entity.ConcurrencyToken = EF.Property<uint>(entity, "xmin");
 			return _mapper.Map<CustomerPhoneDto>(entity);
 		}
 
 		public async Task<CustomerPhoneDto> UpdateAsync(CustomerPhoneUpdateDto dto)
 		{
-			var entity = await _context.CustomerPhones.FirstOrDefaultAsync(x => x.Id == dto.Id);
+			var entity = await _customerPhoneRepository.GetByIdAsync(dto.Id);
 			if (entity == null) return null;
 
 			_mapper.Map(dto, entity);
-			await _unitOfWork.CommitAsync();
+			_customerPhoneRepository.Attach(entity);
+			_customerPhoneRepository.SetConcurrencyToken(entity, dto.ConcurrencyToken);
 
+			_customerPhoneRepository.Update(entity);
+
+			try
+			{
+				await _unitOfWork.CommitAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
+			}
+
+			entity.ConcurrencyToken = EF.Property<uint>(entity, "xmin");
 			return _mapper.Map<CustomerPhoneDto>(entity);
 		}
 
 		public async Task DeleteAsync(Guid id)
 		{
-			var entity = await _context.CustomerPhones.FirstOrDefaultAsync(x => x.Id == id);
+			var entity = await _customerPhoneRepository.GetByIdAsync(id);
 			if (entity != null)
 			{
-				_context.CustomerPhones.Remove(entity);
-				await _unitOfWork.CommitAsync();
+				_customerPhoneRepository.Remove(entity);
+				try
+				{
+					await _unitOfWork.CommitAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
+				}
 			}
 		}
 
 		public async Task SetPrimaryAsync(Guid customerId, Guid phoneId)
 		{
-			// Önce mevcut primary'yi kaldır
-			var currentPrimary = await _context.CustomerPhones
-				.Where(x => x.CustomerId == customerId && x.IsPrimary)
-				.ToListAsync();
-
-			foreach (var phone in currentPrimary)
+			var phones = await _customerPhoneRepository.GetByCustomerIdAsync(customerId);
+			foreach (var phone in phones)
 			{
-				phone.IsPrimary = false;
+				phone.IsPrimary = phone.Id == phoneId;
+				_customerPhoneRepository.Attach(phone);
+				_customerPhoneRepository.SetConcurrencyToken(phone, phone.ConcurrencyToken);
+				_customerPhoneRepository.Update(phone);
 			}
 
-			// Yeni primary'yi ayarla
-			var newPrimary = await _context.CustomerPhones
-				.FirstOrDefaultAsync(x => x.Id == phoneId && x.CustomerId == customerId);
-
-			if (newPrimary != null)
+			try
 			{
-				newPrimary.IsPrimary = true;
+				await _unitOfWork.CommitAsync();
 			}
-
-			await _unitOfWork.CommitAsync();
+			catch (DbUpdateConcurrencyException)
+			{
+				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
+			}
 		}
 	}
 }
