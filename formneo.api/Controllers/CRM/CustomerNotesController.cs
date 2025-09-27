@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using vesa.api.Helper;
 using vesa.core.DTOs.CRM;
 using vesa.core.Services;
+using vesa.service.Exceptions;
 
 namespace vesa.api.Controllers.CRM
 {
@@ -43,6 +45,9 @@ namespace vesa.api.Controllers.CRM
 		[HttpPost]
 		public async Task<IActionResult> Create([FromBody] CustomerNoteInsertDto dto)
 		{
+			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
+				return validationResult;
+
 			var created = await _customerNoteService.CreateAsync(dto);
 			return Ok(created);
 		}
@@ -50,16 +55,35 @@ namespace vesa.api.Controllers.CRM
 		[HttpPut]
 		public async Task<IActionResult> Update([FromBody] CustomerNoteUpdateDto dto)
 		{
-			var updated = await _customerNoteService.UpdateAsync(dto);
-			if (updated == null) return NotFound();
-			return Ok(updated);
+			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
+				return validationResult;
+
+			try
+			{
+				var updated = await _customerNoteService.UpdateAsync(dto);
+				if (updated == null) return NotFound();
+				return Ok(updated);
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete(Guid id)
 		{
-			await _customerNoteService.DeleteAsync(id);
-			return NoContent();
+			try
+			{
+				await _customerNoteService.DeleteAsync(id);
+				return NoContent();
+			}
+			catch (ClientSideException ex)
+			{
+				ModelState.AddModelError("Concurrency", ex.Message);
+				return ValidationHelper.GetValidationErrorResponse(ModelState);
+			}
 		}
 	}
 }

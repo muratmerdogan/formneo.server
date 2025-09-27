@@ -49,7 +49,7 @@ namespace vesa.service.Services
 			_context.CustomerEmails.Add(entity);
 			await _unitOfWork.CommitAsync();
 
-			entity.ConcurrencyToken = EF.Property<uint>(entity, "xmin");
+			entity.ConcurrencyToken = _context.Entry(entity).Property<uint>("xmin").CurrentValue;
 			return _mapper.Map<CustomerEmailDto>(entity);
 		}
 
@@ -71,7 +71,7 @@ namespace vesa.service.Services
 				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
 			}
 
-			entity.ConcurrencyToken = EF.Property<uint>(entity, "xmin");
+			entity.ConcurrencyToken = _context.Entry(entity).Property<uint>("xmin").CurrentValue;
 			return _mapper.Map<CustomerEmailDto>(entity);
 		}
 
@@ -98,6 +98,7 @@ namespace vesa.service.Services
 			foreach (var email in emails)
 			{
 				email.IsPrimary = email.Id == emailId;
+				_context.Entry(email).Property("xmin").OriginalValue = email.ConcurrencyToken;
 			}
 
 			try

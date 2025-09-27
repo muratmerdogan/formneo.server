@@ -46,13 +46,13 @@ namespace vesa.service.Services
 			await _customerPhoneRepository.AddAsync(entity);
 			await _unitOfWork.CommitAsync();
 
-			entity.ConcurrencyToken = EF.Property<uint>(entity, "xmin");
+			entity.ConcurrencyToken = _customerPhoneRepository.GetConcurrencyToken(entity);
 			return _mapper.Map<CustomerPhoneDto>(entity);
 		}
 
 		public async Task<CustomerPhoneDto> UpdateAsync(CustomerPhoneUpdateDto dto)
 		{
-			var entity = await _customerPhoneRepository.GetByIdAsync(dto.Id);
+			var entity = await _customerPhoneRepository.GetDetailAsync(dto.Id);
 			if (entity == null) return null;
 
 			_mapper.Map(dto, entity);
@@ -70,15 +70,17 @@ namespace vesa.service.Services
 				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
 			}
 
-			entity.ConcurrencyToken = EF.Property<uint>(entity, "xmin");
+			entity.ConcurrencyToken = _customerPhoneRepository.GetConcurrencyToken(entity);
 			return _mapper.Map<CustomerPhoneDto>(entity);
 		}
 
 		public async Task DeleteAsync(Guid id)
 		{
-			var entity = await _customerPhoneRepository.GetByIdAsync(id);
+			var entity = await _customerPhoneRepository.GetDetailAsync(id);
 			if (entity != null)
 			{
+				_customerPhoneRepository.Attach(entity);
+				_customerPhoneRepository.SetConcurrencyToken(entity, entity.ConcurrencyToken);
 				_customerPhoneRepository.Remove(entity);
 				try
 				{
