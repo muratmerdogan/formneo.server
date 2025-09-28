@@ -99,6 +99,7 @@ namespace vesa.repository
         public DbSet<QuoteLine> QuoteLines { get; set; }
         public DbSet<SpecialDay> SpecialDays { get; set; }
         public DbSet<CrmChangeLog> CrmChangeLogs { get; set; }
+        public DbSet<vesa.core.Models.Onboarding.OnboardingActivation> OnboardingActivations { get; set; }
 
         // Lookup
         public DbSet<LookupCategory> LookupCategories { get; set; }
@@ -297,6 +298,7 @@ namespace vesa.repository
             modelBuilder.Entity<QuoteLine>().HasQueryFilter(e => !e.IsDelete);
             modelBuilder.Entity<SpecialDay>().HasQueryFilter(e => !e.IsDelete);
             modelBuilder.Entity<CrmChangeLog>().HasQueryFilter(e => !e.IsDelete);
+            modelBuilder.Entity<vesa.core.Models.Onboarding.OnboardingActivation>().HasQueryFilter(e => !e.IsDelete);
 
 
             base.OnModelCreating(modelBuilder);

@@ -53,7 +53,7 @@ namespace vesa.core.DTOs.CRM
 		public Guid Id { get; set; }
 		public Guid CustomerId { get; set; }
 		public string Email { get; set; }
-		public string Description { get; set; }
+		public string? Description { get; set; }
 		public bool Notify { get; set; }
 		public bool Bulk { get; set; }
 		public bool IsActive { get; set; }
@@ -65,7 +65,7 @@ namespace vesa.core.DTOs.CRM
 	{
 		public Guid CustomerId { get; set; }
 		public string Email { get; set; }
-		public string Description { get; set; }
+		public string? Description { get; set; }
 		public bool Notify { get; set; } = false;
 		public bool Bulk { get; set; } = false;
 		public bool IsActive { get; set; } = true;
