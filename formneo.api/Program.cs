@@ -210,6 +210,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IMinioService, MinioService>();
 builder.Services.AddScoped<IMailService, vesa.service.Services.MailService>();
+builder.Services.AddScoped<IOnboardingService, OnboardingService>();
 builder.Services.AddHttpClient<QuestDBService>();
 
 AppContext.SetSwitch("System.Drawing.EnableUnixSupport", true);

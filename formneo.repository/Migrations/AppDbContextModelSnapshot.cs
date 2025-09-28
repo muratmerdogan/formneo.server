@@ -2322,6 +2322,12 @@ namespace formneo.repository.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
@@ -2362,7 +2368,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 9, 26, 18, 52, 6, 853, DateTimeKind.Utc).AddTicks(8820),
+                            CreatedDate = new DateTime(2025, 9, 28, 15, 16, 32, 412, DateTimeKind.Utc).AddTicks(720),
                             Name = "RonesansHolding"
                         });
                 });
@@ -3284,7 +3290,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 9, 26, 18, 52, 6, 853, DateTimeKind.Utc).AddTicks(9640),
+                            CreatedDate = new DateTime(2025, 9, 28, 15, 16, 32, 412, DateTimeKind.Utc).AddTicks(1550),
                             DomainVerified = false,
                             Email = "info@vesacons.com",
                             FeatureFlags = "{}",
@@ -3448,6 +3454,104 @@ namespace formneo.repository.Migrations
                     b.ToTable("Kanban");
                 });
 
+            modelBuilder.Entity("vesa.core.Models.Onboarding.OnboardingActivation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ActivatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("AdminEmail")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AdminFirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AdminLastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AdminPhone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("AgreedToTerms")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("CompanyAddress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CompanyEmail")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CompanyPhone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("EmployeeCount")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Plan")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Sector")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TaxNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OnboardingActivations");
+                });
+
             modelBuilder.Entity("vesa.core.Models.PCTracking.PCTrack", b =>
                 {
                     b.Property<Guid>("Id")
@@ -3543,7 +3647,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 9, 26, 18, 52, 6, 853, DateTimeKind.Utc).AddTicks(9720),
+                            CreatedDate = new DateTime(2025, 9, 28, 15, 16, 32, 412, DateTimeKind.Utc).AddTicks(1630),
                             Name = "RonesansHoldingTurkey"
                         });
                 });
