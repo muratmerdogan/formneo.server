@@ -836,10 +836,6 @@ namespace vesa.api.Controllers
 
             var role = await _roleManager.Roles.FirstOrDefaultAsync(r => r.Id == globalAdminRoleId);
             if (role == null) return false;
-            var list = _userManager.GetRolesAsync(user).Result;
-
-
-            return true;
             var inRole = await _userManager.IsInRoleAsync(user, role.Name!.Trim());
             return inRole;
         }

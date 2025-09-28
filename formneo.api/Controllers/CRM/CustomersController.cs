@@ -95,7 +95,7 @@ namespace vesa.api.Controllers.CRM
 			if (!ValidationHelper.IsValidOrReturnError(ModelState, out var validationResult))
 			{
 				return validationResult;
-			}
+			}	
 
 			try
 			{
