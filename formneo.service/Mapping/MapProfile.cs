@@ -413,7 +413,8 @@ namespace vesa.service.Mapping
 				.ForMember(dest => dest.InstagramUrl, opt => opt.MapFrom(src => src.InstagramUrl))
 				.ForMember(dest => dest.LifecycleStage, opt => opt.MapFrom(src => (int)src.LifecycleStage))
 				.ForMember(dest => dest.NextActivityDate, opt => opt.MapFrom(src => src.NextActivityDate))
-				.ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId));
+				.ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
+				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Status) ? int.Parse(src.Status) : 0));
 	
 			CreateMap<CustomerBasicDto, vesa.core.Models.CRM.Customer>();
 

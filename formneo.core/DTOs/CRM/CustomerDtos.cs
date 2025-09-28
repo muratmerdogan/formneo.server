@@ -389,6 +389,7 @@ namespace vesa.core.DTOs.CRM
 		public int LifecycleStage { get; set; }
 		public DateTime? NextActivityDate { get; set; }
 		public string? OwnerId { get; set; }
+		public int Status { get; set; }
 	}
 
 	public class CustomerPagedResultDto
