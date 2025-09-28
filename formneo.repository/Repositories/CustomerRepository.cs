@@ -30,7 +30,10 @@ namespace vesa.repository.Repositories
 				{
 					Entity = c,
 					ConcurrencyToken = EF.Property<uint>(c, "xmin"),
-					Emails = c.SecondaryEmails.Select(e => new { Entity = e, Token = EF.Property<uint>(e, "xmin") }).ToList()
+					Emails = c.SecondaryEmails.Select(e => new { Entity = e, Token = EF.Property<uint>(e, "xmin") }).ToList(),
+					Phones = c.Phones.Select(p => new { Entity = p, Token = EF.Property<uint>(p, "xmin") }).ToList(),
+					Addresses = c.Addresses.Select(a => new { Entity = a, Token = EF.Property<uint>(a, "xmin") }).ToList(),
+					Notes = c.Notes.Select(n => new { Entity = n, Token = EF.Property<uint>(n, "xmin") }).ToList()
 				})
 				.FirstOrDefaultAsync(x => x.Entity.Id == id);
 
@@ -44,6 +47,33 @@ namespace vesa.repository.Repositories
 				{
 					var emailEntity = result.Entity.SecondaryEmails.First(e => e.Id == emailsWithToken[i].Entity.Id);
 					emailEntity.ConcurrencyToken = emailsWithToken[i].Token;
+				}
+			}
+			if (result.Entity.Phones != null)
+			{
+				var phonesWithToken = result.Phones;
+				for (int i = 0; i < phonesWithToken.Count; i++)
+				{
+					var phoneEntity = result.Entity.Phones.First(p => p.Id == phonesWithToken[i].Entity.Id);
+					phoneEntity.ConcurrencyToken = phonesWithToken[i].Token;
+				}
+			}
+			if (result.Entity.Addresses != null)
+			{
+				var addressesWithToken = result.Addresses;
+				for (int i = 0; i < addressesWithToken.Count; i++)
+				{
+					var addrEntity = result.Entity.Addresses.First(a => a.Id == addressesWithToken[i].Entity.Id);
+					addrEntity.ConcurrencyToken = addressesWithToken[i].Token;
+				}
+			}
+			if (result.Entity.Notes != null)
+			{
+				var notesWithToken = result.Notes;
+				for (int i = 0; i < notesWithToken.Count; i++)
+				{
+					var noteEntity = result.Entity.Notes.First(n => n.Id == notesWithToken[i].Entity.Id);
+					noteEntity.ConcurrencyToken = notesWithToken[i].Token;
 				}
 			}
 			return result.Entity;

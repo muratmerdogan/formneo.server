@@ -46,8 +46,8 @@ namespace vesa.service.Services
 			await _customerAddressRepository.AddAsync(entity);
 			await _unitOfWork.CommitAsync();
 
-			entity.ConcurrencyToken = EF.Property<uint>(entity, "xmin");
-			return _mapper.Map<CustomerAddressDto>(entity);
+			var refreshed = await _customerAddressRepository.GetDetailAsync(entity.Id);
+			return _mapper.Map<CustomerAddressDto>(refreshed);
 		}
 
 		public async Task<CustomerAddressDto> UpdateAsync(CustomerAddressUpdateDto dto)
@@ -70,8 +70,8 @@ namespace vesa.service.Services
 				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
 			}
 
-			entity.ConcurrencyToken = EF.Property<uint>(entity, "xmin");
-			return _mapper.Map<CustomerAddressDto>(entity);
+			var refreshed = await _customerAddressRepository.GetDetailAsync(entity.Id);
+			return _mapper.Map<CustomerAddressDto>(refreshed);
 		}
 
 		public async Task DeleteAsync(Guid id)
