@@ -149,8 +149,8 @@ namespace vesa.api.Controllers
         }
 
         // Aktif, test olmayan vesa kullanıcılarını getirir, departmana göre filtreleme yapılabilir
-        [HttpGet("VesaUsersWithoutPhoto")]
-        public async Task<ActionResult<List<UserAppDtoWithoutPhoto>>> VesaUsersWithoutPhoto([FromQuery] string? departmentId)
+
+        private async Task<ActionResult<List<UserAppDtoWithoutPhoto>>> VesaUsersWithoutPhoto([FromQuery] string? departmentId)
         {
             try
             {

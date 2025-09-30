@@ -522,7 +522,7 @@ namespace vesa.api.Controllers
         }
 
         [HttpGet("GetOnlyVesaDepartments")]
-        public async Task<List<TicketDepartmensListDto>> GetOnlyVesaDepartments()
+        private async Task<List<TicketDepartmensListDto>> GetOnlyVesaDepartments()
         {
             var departments = await _ticketDepartments.Include();
             var dto = departments
