@@ -6,6 +6,7 @@ using vesa.core.Services;
 
 namespace vesa.api.Controllers.CRM
 {
+	
 	[Route("api/crm/[controller]")]
 	[ApiController]
 	public class ActivitiesController : ControllerBase
