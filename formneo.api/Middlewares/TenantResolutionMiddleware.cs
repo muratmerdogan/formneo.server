@@ -38,12 +38,14 @@ namespace vesa.api.Middlewares
 
 			// Fast-path: OPTIONS ve statik/health uçlarını atla
 			var path = context.Request.Path.Value ?? string.Empty;
-			if (HttpMethods.IsOptions(context.Request.Method)
+            if (HttpMethods.IsOptions(context.Request.Method)
 				|| path.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase)
 				|| path.StartsWith("/health", StringComparison.OrdinalIgnoreCase)
 				|| path.Equals("/favicon.ico", StringComparison.OrdinalIgnoreCase)
 				|| path.StartsWith("/static", StringComparison.OrdinalIgnoreCase)
 				|| path.StartsWith("/assets", StringComparison.OrdinalIgnoreCase)
+                // Getir webhooks: tenant ve auth akışını baypas et (X-Api-Key ile doğrulanıyor)
+                || path.StartsWith("/webhooks/getir", StringComparison.OrdinalIgnoreCase)
 				// Login/Token uçlarını tenant çözümlemeden baypas et
 				|| path.StartsWith("/api/auth", StringComparison.OrdinalIgnoreCase)
 				|| path.Equals("/connect/token", StringComparison.OrdinalIgnoreCase)

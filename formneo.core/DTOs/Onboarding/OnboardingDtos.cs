@@ -20,7 +20,6 @@ namespace vesa.core.DTOs.Onboarding
 		[Required(ErrorMessage = "Soyad zorunludur")] public string LastName { get; set; }
 		[Required(ErrorMessage = "E-posta zorunludur")] [EmailAddress] public string Email { get; set; }
 		public string Phone { get; set; }
-		[Required(ErrorMessage = "Şifre zorunludur")] [MinLength(8, ErrorMessage = "Şifre en az 8 karakter olmalıdır")] public string Password { get; set; }
 	}
 
 	public class OnboardRegisterRequest

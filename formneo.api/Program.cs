@@ -106,7 +106,12 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.AddSupportedUICultures(supportedCultures);
 });
 
-builder.Services.AddControllers(options => options.Filters.Add(new ValidateFilterAttribute())).AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<EmployeeDtoValidator>());
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(new ValidateFilterAttribute());
+    // SF* controller'ları devre dışı bırak
+    options.Conventions.Add(new vesa.api.Controllers.SF.DisableSfControllersConvention());
+}).AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<EmployeeDtoValidator>());
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

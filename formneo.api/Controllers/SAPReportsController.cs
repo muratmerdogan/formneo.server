@@ -16,9 +16,7 @@ using vesa.core.Models;
 
 namespace vesa.api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
     public class SAPReportsController : ControllerBase
     {
         private readonly IConfiguration _configuration;
