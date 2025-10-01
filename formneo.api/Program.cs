@@ -110,7 +110,6 @@ builder.Services.AddControllers(options =>
 {
     options.Filters.Add(new ValidateFilterAttribute());
     // SF* controller'ları devre dışı bırak
-    options.Conventions.Add(new vesa.api.Controllers.SF.DisableSfControllersConvention());
 }).AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<EmployeeDtoValidator>());
 
 
