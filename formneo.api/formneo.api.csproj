@@ -40,6 +40,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\NewFolder\" />
+    <Folder Include="Controllers\Webhooks\" />
     <Folder Include="LiveConfig\" />
     <!--<Folder Include="Fonts\" />-->
 	  <Content Include="Fonts\Roboto-Regular.ttf">
