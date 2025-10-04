@@ -9,13 +9,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using vesa.core.Configuration;
-using vesa.core.DTOs;
-using vesa.core.Models;
-using vesa.core.Services;
-using vesa.service.SignService;
+using formneo.core.Configuration;
+using formneo.core.DTOs;
+using formneo.core.Models;
+using formneo.core.Services;
+using formneo.service.SignService;
 
-namespace Vesa.service.Services
+namespace formneo.service.Services
 {
     public class TokenService : ITokenService
     {
@@ -70,7 +70,7 @@ namespace Vesa.service.Services
         {
             var accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.AccessTokenExpiration);
             var refreshTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.RefreshTokenExpiration);
-            var securityKey = SignService.GetSymmetricSecurityKey(_tokenOption.SecurityKey);
+            var securityKey = SignService.SignService.GetSymmetricSecurityKey(_tokenOption.SecurityKey);
 
             SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
 
@@ -100,7 +100,7 @@ namespace Vesa.service.Services
         {
             var accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.AccessTokenExpiration);
 
-            var securityKey = SignService.GetSymmetricSecurityKey(_tokenOption.SecurityKey);
+            var securityKey = SignService.SignService.GetSymmetricSecurityKey(_tokenOption.SecurityKey);
 
             SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
 

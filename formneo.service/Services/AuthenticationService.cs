@@ -9,15 +9,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using vesa.core.Configuration;
-using vesa.core.DTOs;
-using vesa.core.Models;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
+using formneo.core.Configuration;
+using formneo.core.DTOs;
+using formneo.core.Models;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
     public class AuthenticationService : IAuthenticationService
     {

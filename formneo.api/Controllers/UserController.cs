@@ -15,17 +15,17 @@ using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-using vesa.api.Controllers;
-using vesa.api.Helper;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Ticket.TicketDepartments;
-using vesa.core.EnumExtensions;
-using vesa.core.Models;
-using vesa.core.Models.TaskManagement;
-using vesa.core.Models.Ticket;
-using vesa.core.Services;
+using formneo.api.Controllers;
+using formneo.api.Helper;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Ticket.TicketDepartments;
+using formneo.core.EnumExtensions;
+using formneo.core.Models;
+using formneo.core.Models.TaskManagement;
+using formneo.core.Models.Ticket;
+using formneo.core.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -89,7 +89,7 @@ namespace vesa.api.Controllers
                 dto.LastName = createUserDto.LastName;
                 dto.Password = createUserDto.Password;
                 mails.Add(dto.Email);
-                await SendUserInfoMail(dto, mails, "Vesa Ticket Sistemine Hoş Geldiniz");
+                await SendUserInfoMail(dto, mails, "formneo Ticket Sistemine Hoş Geldiniz");
             }
             // Gelen fotoğraf formatına göre sadece base64 kaydet
             int commaIndex = createUserDto.photo.IndexOf(",");
@@ -148,9 +148,9 @@ namespace vesa.api.Controllers
             return items;
         }
 
-        // Aktif, test olmayan vesa kullanıcılarını getirir, departmana göre filtreleme yapılabilir
+        // Aktif, test olmayan formneo kullanıcılarını getirir, departmana göre filtreleme yapılabilir
 
-        private async Task<ActionResult<List<UserAppDtoWithoutPhoto>>> VesaUsersWithoutPhoto([FromQuery] string? departmentId)
+        private async Task<ActionResult<List<UserAppDtoWithoutPhoto>>> GetFormneoUsWithoutPhoto([FromQuery] string? departmentId)
         {
             try
             {
@@ -225,19 +225,12 @@ namespace vesa.api.Controllers
             }
 
             var companyId = user.WorkCompanyId.ToString();
-            var company = await _workCompanyMatrisService.Where(e => e.FromCompanyId == Guid.Parse(companyId));
-            var companies = company.Data.Select(e => e.ToCompaniesIds).FirstOrDefault();
-
-            var companyIds = new List<string>();
-            companyIds.Add(companyId);
-            if (companies != null)
+            if (string.IsNullOrWhiteSpace(companyId))
             {
-                foreach (var id in companies)
-                {
-                    companyIds.Add(id.ToString());
-                }
+                return new List<UserAppDtoOnlyNameId>();
             }
 
+            var companyIds = new List<string> { companyId };
             var data = await _userService.GetAllUsersNameIdOnlyCompany(companyIds);
             var items2 = data.Data.OrderBy(e => e.FirstName).ToList();
             if (_tenantContext?.CurrentTenantId != null)
@@ -325,7 +318,7 @@ namespace vesa.api.Controllers
             var user = await _userManager.Users.Where(e => e.Email == loginName).Select(e => new { e.Id, e.isSystemAdmin, e.WorkCompanyId }).FirstOrDefaultAsync();
             var companyIds = new List<string>();
 
-            //Eğer admin ise şirket kontrolü yapma, sadece ticket sahibi şirket ve vesa kullanıcıları gelsin
+            //Eğer admin ise şirket kontrolü yapma, sadece ticket sahibi şirket ve formneo kullanıcıları gelsin
             bool otherCompanyPerm3 = false;
             if (_tenantContext?.CurrentTenantId != null)
             {
@@ -629,10 +622,10 @@ namespace vesa.api.Controllers
                                 <!-- Logo ve Başlık birlikte yer alacak -->
 
                                     <td style=""width: 25%; padding:12px;"">
-                                            <img src=""{VesaLogo.Logo}"" alt=""Logo"" style=""width: 100%; max-width: 150px; height: auto; display: block;"">
+                                            <img src=""{formneoLogo.Logo}"" alt=""Logo"" style=""width: 100%; max-width: 150px; height: auto; display: block;"">
                                     </td>
                                     <td style=""width: 75%; padding:12px;"">
-                                            <img src=""{VesaLogo.ColorImg}"" alt=""Logo"" style=""width: 100%; max-width: 600px; height: auto; display: block;"">
+                                            <img src=""{formneoLogo.ColorImg}"" alt=""Logo"" style=""width: 100%; max-width: 600px; height: auto; display: block;"">
                                     </td>
                             </tr>
                         </table>
@@ -646,7 +639,7 @@ namespace vesa.api.Controllers
                             <p style=""font-size:14px; margin-bottom:10px;"">Kullanıcı Adınız : {dto.Email}</p>
                             <p style=""font-size:14px; margin-bottom:10px;"">Şifreniz : <strong>{dto.Password} </strong></p>
                             <p style=""font-size:14px; margin-bottom:10px;"">Önemli :<strong>Lütfen en kısa zamanda şifrenizi değiştirin. </strong></p>
-                            <p style=""font-size:14px; margin-bottom:10px;"">Giriş yapabilmek için lütfen <a href=""https://support.vesa-tech.com/"">Tıklayınız</a></p>
+                            <p style=""font-size:14px; margin-bottom:10px;"">Giriş yapabilmek için lütfen <a href=""https://support.formneo-tech.com/"">Tıklayınız</a></p>
                         </td>
                     </tr>
                     <!-- FOOTER -->
@@ -685,10 +678,10 @@ namespace vesa.api.Controllers
                                         <tr>
                                             <!-- Logo ve Başlık birlikte yer alacak -->
                                             <td style=""background-color: white; padding:12px; width: auto;"">
-                                                <img src=""{VesaLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
+                                                <img src=""{formneoLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
                                             </td>
                                             <td style=""background-color: white; padding:12px; width: auto;"">
-                                                <img src=""{VesaLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
+                                                <img src=""{formneoLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
                                             </td>
                                         </tr>
                                     </table>
@@ -701,7 +694,7 @@ namespace vesa.api.Controllers
                                         <p style=""font-size:14px; margin-bottom:10px;"">Kullanıcınız oluşturulmuştur.</p>
                                         <p style=""font-size:14px; margin-bottom:10px;"">Kullanıcı Adınız : {dto.Email}</p>
                                         <p style=""font-size:14px; margin-bottom:10px;"">Şifreniz : <strong>{dto.Password} </strong></p>
-                                        <p style=""font-size:14px; margin-bottom:10px;"">Giriş yapabilmek için lütfen <a href=""https://support.vesa-tech.com/"">Tıklayınız</a></p>
+                                        <p style=""font-size:14px; margin-bottom:10px;"">Giriş yapabilmek için lütfen <a href=""https://support.formneo-tech.com/"">Tıklayınız</a></p>
                                     </td>
                                 </tr>
                                 <!-- FOOTER -->

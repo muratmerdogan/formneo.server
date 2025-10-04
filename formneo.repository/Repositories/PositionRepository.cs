@@ -1,7 +1,7 @@
-﻿using vesa.core.Models;
-using vesa.core.Repositories;
+﻿using formneo.core.Models;
+using formneo.core.Repositories;
 
-namespace vesa.repository.Repositories
+namespace formneo.repository.Repositories
 {
     public class PositionRepository : GenericRepository<Positions>, IPositionRepository
     {

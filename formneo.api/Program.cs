@@ -19,27 +19,27 @@ using System.Web.Services.Description;
 using System.Text;
 using System.Text.Json;
 using System.Security.Claims;
-using vesa.api.Controllers.MyApplication.Services;
-using vesa.api.Filters;
-using vesa.api.Helper;
-using vesa.api.Middlewares;
-using vesa.api.Modules;
-using vesa.core.Configuration;
-using vesa.core.Models;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
-using vesa.core.Options;
-using vesa.repository;
-using vesa.repository.Repositories;
-using vesa.repository.UnitOfWorks;
-using vesa.service.Mapping;
-using vesa.service.Services;
-using vesa.service.SignService;
-using vesa.service.Validations;
-using Vesa.service.Services;
+using formneo.api.Controllers.MyApplication.Services;
+using formneo.api.Filters;
+using formneo.api.Helper;
+using formneo.api.Middlewares;
+using formneo.api.Modules;
+using formneo.core.Configuration;
+using formneo.core.Models;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
+using formneo.core.Options;
+using formneo.repository;
+using formneo.repository.Repositories;
+using formneo.repository.UnitOfWorks;
+using formneo.service.Mapping;
+using formneo.service.Services;
+using formneo.service.SignService;
+using formneo.service.Validations;
+using formneo.service.Services;
 using ServiceCollection = Microsoft.Extensions.DependencyInjection.ServiceCollection;
-using vesa.api.Seed;
+using formneo.api.Seed;
 using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -202,7 +202,7 @@ builder.Services.AddCors(c =>
         {
         opt.AddPolicy("CORS", policy =>
         {
-        policy.WithOrigins("http://localhost:8080", "https://api.vesa-tech.com")
+        policy.WithOrigins("http://localhost:8080", "https://api.formneo-tech.com")
         .AllowAnyHeader()
         .AllowCredentials()
         .AllowAnyMethod();
@@ -213,7 +213,7 @@ builder.Services.AddCors(c =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IMinioService, MinioService>();
-builder.Services.AddScoped<IMailService, vesa.service.Services.MailService>();
+builder.Services.AddScoped<IMailService, formneo.service.Services.MailService>();
 builder.Services.AddScoped<IOnboardingService, OnboardingService>();
 builder.Services.AddHttpClient<QuestDBService>();
 
@@ -233,7 +233,7 @@ builder.Services.Configure<RoleScopeOptions>(builder.Configuration.GetSection("R
 //});
 
 
-builder.Services.AddScoped<vesa.api.Filters.GlobalEntityWriteInterceptor>();
+builder.Services.AddScoped<formneo.api.Filters.GlobalEntityWriteInterceptor>();
 
 builder.Services.AddDbContext<AppDbContext>((sp, options) =>
 {
@@ -241,7 +241,7 @@ builder.Services.AddDbContext<AppDbContext>((sp, options) =>
     {
         npgsqlOptions.MigrationsAssembly(Assembly.GetAssembly(typeof(AppDbContext)).GetName().Name);
     });
-    options.AddInterceptors(sp.GetRequiredService<vesa.api.Filters.GlobalEntityWriteInterceptor>());
+    options.AddInterceptors(sp.GetRequiredService<formneo.api.Filters.GlobalEntityWriteInterceptor>());
 });
 IdentityModelEventSource.ShowPII = true; //Add this line
 
@@ -396,7 +396,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<DbNameHelper>();
-builder.Services.AddScoped<vesa.core.Services.ITenantContext, vesa.service.Services.TenantContext>();
+builder.Services.AddScoped<formneo.core.Services.ITenantContext, formneo.service.Services.TenantContext>();
 builder.Host.UseServiceProviderFactory
     (new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new RepoServiceModule()));
@@ -434,7 +434,7 @@ app.UseRequestLocalization();
 
 app.UseAuthentication();
 
-app.UseMiddleware<vesa.api.Middlewares.TenantResolutionMiddleware>();
+app.UseMiddleware<formneo.api.Middlewares.TenantResolutionMiddleware>();
 
 app.UseAuthorization();
 
@@ -445,14 +445,14 @@ app.UseDeveloperExceptionPage();
 app.MapControllers();
 
 // İlk çalıştırmada veritabanını ve admin kullanıcıyı oluştur
-vesa.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = true;
+formneo.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = true;
 //try
 //{
-//    await vesa.api.Seed.DatabaseInitializer.InitializeAsync(app.Services);
+//    await formneo.api.Seed.DatabaseInitializer.InitializeAsync(app.Services);
 //}
 //finally
 //{
-//    vesa.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = false;
+//    formneo.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = false;
 //}
 
 app.Run();

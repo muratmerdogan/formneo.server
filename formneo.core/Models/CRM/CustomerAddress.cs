@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.Models.CRM
+namespace formneo.core.Models.CRM
 {
 	public enum AddressType
 	{
@@ -12,7 +12,7 @@ namespace vesa.core.Models.CRM
 		Diger
 	}
 
-	public class CustomerAddress : vesa.core.Models.BaseEntity
+	public class CustomerAddress : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public AddressType Type { get; set; }

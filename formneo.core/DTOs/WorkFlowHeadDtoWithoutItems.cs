@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using vesa.core.Models;
-namespace vesa.core.DTOs
+using formneo.core.Models;
+namespace formneo.core.DTOs
 {
     public class WorkFlowHeadDtoWithoutItems
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.DepartmentUserDto;
+using formneo.core.DTOs.DepartmentUserDto;
 
-namespace vesa.core.DTOs.Ticket
+namespace formneo.core.DTOs.Ticket
 {
     public class TicketDepartmensUpdateDto
     {

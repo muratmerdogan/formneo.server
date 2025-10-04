@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.Ticket.TicketRuleEngine
+namespace formneo.core.DTOs.Ticket.TicketRuleEngine
 {
     public class TicketRuleEngineInsertDto
     {

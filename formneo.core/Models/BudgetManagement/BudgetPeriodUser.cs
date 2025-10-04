@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 
-namespace vesa.core.Models.BudgetManagement
+namespace formneo.core.Models.BudgetManagement
 {
     public class BudgetPeriodUser : BaseEntity
     {

@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using vesa.core.DTOs.RoleTenants;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
+using formneo.core.DTOs.RoleTenants;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]

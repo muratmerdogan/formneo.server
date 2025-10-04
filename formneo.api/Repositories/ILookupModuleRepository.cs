@@ -1,7 +1,7 @@
-using vesa.core.Models.Lookup;
-using vesa.core.Repositories;
+using formneo.core.Models.Lookup;
+using formneo.core.Repositories;
 
-namespace vesa.core.Repositories
+namespace formneo.core.Repositories
 {
 	public interface ILookupModuleRepository : IGenericRepository<LookupModule>
 	{

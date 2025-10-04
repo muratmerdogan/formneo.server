@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.Ticket.TicketAssigne;
-using vesa.core.DTOs.Ticket.TicketDepartments;
-using vesa.core.DTOs.Ticket.TicketNotifications;
-using vesa.core.Models.Ticket;
+using formneo.core.DTOs.Ticket.TicketAssigne;
+using formneo.core.DTOs.Ticket.TicketDepartments;
+using formneo.core.DTOs.Ticket.TicketNotifications;
+using formneo.core.Models.Ticket;
 
-namespace vesa.core.DTOs.Ticket.Tickets
+namespace formneo.core.DTOs.Ticket.Tickets
 {
     public class TicketDtoResult
     {

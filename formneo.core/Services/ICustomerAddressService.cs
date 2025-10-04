@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using vesa.core.DTOs.CRM;
+using formneo.core.DTOs.CRM;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
 	public interface ICustomerAddressService
 	{

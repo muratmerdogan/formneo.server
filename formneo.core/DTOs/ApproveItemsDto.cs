@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Configuration;
-using vesa.core.Models;
+using formneo.core.Configuration;
+using formneo.core.Models;
 
-namespace vesa.core.DTOs
+namespace formneo.core.DTOs
 {
 
 

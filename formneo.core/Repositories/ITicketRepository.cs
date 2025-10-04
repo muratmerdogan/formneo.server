@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models;
-using vesa.core.Models.Ticket;
+using formneo.core.Models;
+using formneo.core.Models.Ticket;
 
-namespace vesa.core.Repositories
+namespace formneo.core.Repositories
 {
     public interface ITicketRepository : IGenericRepository<Tickets>
     {

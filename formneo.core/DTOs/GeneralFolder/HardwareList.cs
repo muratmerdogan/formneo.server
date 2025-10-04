@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.GeneralFolder
+namespace formneo.core.DTOs.GeneralFolder
 {
     public class HardwareList
     {

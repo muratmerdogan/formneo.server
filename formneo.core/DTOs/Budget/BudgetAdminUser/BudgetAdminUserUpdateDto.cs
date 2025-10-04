@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.BudgetManagement;
+using formneo.core.Models.BudgetManagement;
 
-namespace vesa.core.DTOs.Budget.BudgetAdminUser
+namespace formneo.core.DTOs.Budget.BudgetAdminUser
 {
     public class BudgetAdminUserUpdateDto
     {

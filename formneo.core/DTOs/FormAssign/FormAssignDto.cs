@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models;
-using vesa.core.Models.FormEnums;
-using vesa.core.Models.Ticket;
+using formneo.core.Models;
+using formneo.core.Models.FormEnums;
+using formneo.core.Models.Ticket;
 
-namespace vesa.core.DTOs.FormAssign
+namespace formneo.core.DTOs.FormAssign
 {
     public class FormAssignDto
     {

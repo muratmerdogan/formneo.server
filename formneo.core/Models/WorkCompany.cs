@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 
-namespace vesa.core.Models
+namespace formneo.core.Models
 {
     public class WorkCompany :BaseEntity
     {

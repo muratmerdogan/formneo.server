@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.SystemUserDto
+namespace formneo.core.DTOs.SystemUserDto
 {
     public  class SystemUserDto
     {

@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using vesa.core.DTOs.Lookup;
-using vesa.core.Services;
+using formneo.core.DTOs.Lookup;
+using formneo.core.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]

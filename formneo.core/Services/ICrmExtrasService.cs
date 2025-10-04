@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using vesa.core.DTOs.CRM;
+using formneo.core.DTOs.CRM;
+using formneo.core.Models.CRM;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
 	public interface IOpportunityService 
 	{ 
@@ -15,6 +16,9 @@ namespace vesa.core.Services
 		Task DeleteAsync(Guid id);
 		Task<int> GetTotalCountAsync(string search = "", int? stage = null, Guid? customerId = null);
 		Task<OpportunityDashboardDto> GetDashboardAsync(int months = 12, Guid? customerId = null);
+            Task<OpportunityDto> UpdateStageAsync(Guid id, OpportunityStage stage);
+            Task<OpportunityDto> MarkWonAsync(Guid id);
+            Task<OpportunityDto> MarkLostAsync(Guid id);
 	}
 	public interface IActivityService { Task<IEnumerable<ActivityDto>> ListAsync(Guid customerId); Task<ActivityDto> GetByIdAsync(Guid id); Task<ActivityDto> CreateAsync(ActivityDto dto); Task<ActivityDto> UpdateAsync(ActivityDto dto); Task DeleteAsync(Guid id); }
 	public interface IReminderService { Task<IEnumerable<ReminderDto>> ListAsync(Guid customerId); Task<ReminderDto> GetByIdAsync(Guid id); Task<ReminderDto> CreateAsync(ReminderDto dto); Task<ReminderDto> UpdateAsync(ReminderDto dto); Task DeleteAsync(Guid id); }

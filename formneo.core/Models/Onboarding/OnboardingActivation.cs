@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using vesa.core.Models;
+using formneo.core.Models;
 
-namespace vesa.core.Models.Onboarding
+namespace formneo.core.Models.Onboarding
 {
 	public class OnboardingActivation : GlobalBaseEntity
 	{

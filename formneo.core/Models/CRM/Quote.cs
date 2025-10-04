@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.Models.CRM
+namespace formneo.core.Models.CRM
 {
 	public enum QuoteStatus
 	{
@@ -13,7 +13,7 @@ namespace vesa.core.Models.CRM
 		Expired
 	}
 
-	public class Quote : vesa.core.Models.BaseEntity
+	public class Quote : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public Guid? OpportunityId { get; set; }
@@ -33,7 +33,7 @@ namespace vesa.core.Models.CRM
 		public ICollection<QuoteLine> Lines { get; set; }
 	}
 
-	public class QuoteLine : vesa.core.Models.BaseEntity
+	public class QuoteLine : formneo.core.Models.BaseEntity
 	{
 		public Guid QuoteId { get; set; }
 		public string ItemCode { get; set; }

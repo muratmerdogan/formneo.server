@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.DTOs
+namespace formneo.core.DTOs
 {
     /// <summary>
     /// Tüm Update DTO'lar için base sınıf

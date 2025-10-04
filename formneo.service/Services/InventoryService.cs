@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.Inventory;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
+using formneo.core.Models.Inventory;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
     public class InventoryService : Service<Inventory>, IInventoryService
     {

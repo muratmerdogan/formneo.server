@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
 using System.Linq;
-using vesa.core.Models;
-using vesa.core.Services;
+using formneo.core.Models;
+using formneo.core.Services;
 
-namespace vesa.api.Filters
+namespace formneo.api.Filters
 {
 	public sealed class GlobalEntityWriteInterceptor : SaveChangesInterceptor
 	{
@@ -61,6 +61,57 @@ namespace vesa.api.Filters
 				var entityType = entity.GetType();
 				bool isGlobalEntity = IsGlobalEntityByType(entityType);
 				bool isTenantEntity = IsTenantEntityByType(entityType);
+
+				// Special handling: Some GlobalBaseEntity types carry a nullable TenantId field to allow tenant overlays
+				// Permit tenant writes only to their own overlay records; forbid tenant writes on true-global (TenantId == null)
+				if (isGlobalEntity)
+				{
+					var tenantIdProperty = entityType.GetProperty("TenantId");
+					if (tenantIdProperty != null)
+					{
+						var entityTenantId = (Guid?)tenantIdProperty.GetValue(entity);
+						if (!isGlobalAdmin)
+						{
+							// Added
+							if (entry.State == EntityState.Added)
+							{
+								if (currentTenantId == null || currentTenantId == Guid.Empty)
+								{
+									throw new InvalidOperationException("X-Tenant-Id header required for tenant entity write operations");
+								}
+								if (entityTenantId == null || entityTenantId == Guid.Empty)
+								{
+									// Prevent tenants from creating global records
+									throw new InvalidOperationException("Write to global entity is not allowed for tenant users");
+								}
+								if (entityTenantId != currentTenantId)
+								{
+									throw new InvalidOperationException("Write to a different tenant's entity is not allowed");
+								}
+								continue;
+							}
+
+							// Modified or Deleted
+							if (entry.State == EntityState.Modified || entry.State == EntityState.Deleted)
+							{
+								if (entityTenantId == null || entityTenantId == Guid.Empty)
+								{
+									// Global record: tenants cannot modify/delete
+									throw new InvalidOperationException("Write to global entity is not allowed for tenant users");
+								}
+								if (currentTenantId == null || currentTenantId == Guid.Empty)
+								{
+									throw new InvalidOperationException("X-Tenant-Id header required for tenant entity write operations");
+								}
+								if (entityTenantId != currentTenantId)
+								{
+									throw new InvalidOperationException("Write to a different tenant's entity is not allowed");
+								}
+								continue;
+							}
+						}
+					}
+				}
 
 				// Enforce tenant header for tenant entities (Global Admin dahil)
 				if (isTenantEntity)

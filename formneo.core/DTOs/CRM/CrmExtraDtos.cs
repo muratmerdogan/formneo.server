@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.DTOs.CRM
+namespace formneo.core.DTOs.CRM
 {
 	// Base DTO for common fields
 	public class OpportunityDto

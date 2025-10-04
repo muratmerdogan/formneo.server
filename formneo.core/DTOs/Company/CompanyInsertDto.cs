@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models;
+using formneo.core.Models;
 
-namespace vesa.core.DTOs.Company
+namespace formneo.core.DTOs.Company
 {
     public class CompanyInsertDto
     {

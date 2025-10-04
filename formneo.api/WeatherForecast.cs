@@ -1,4 +1,4 @@
-namespace vesa.api
+namespace formneo.api
 {
     public class WeatherForecast
     {

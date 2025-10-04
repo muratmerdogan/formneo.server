@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using vesa.core.DTOs.Onboarding;
+using formneo.core.DTOs.Onboarding;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
 	public interface IOnboardingService
 	{

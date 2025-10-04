@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 
-namespace vesa.repository
+namespace formneo.repository
 {
     public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
@@ -42,7 +42,7 @@ namespace vesa.repository
         public Microsoft.AspNetCore.Http.HttpContext HttpContext { get; set; } = null!;
     }
 
-    public class MockTenantContext : vesa.core.Services.ITenantContext
+    public class MockTenantContext : formneo.core.Services.ITenantContext
     {
         public Guid? CurrentTenantId { get; set; } = Guid.Parse("00000000-0000-0000-0000-000000000001"); // Default tenant
         public Guid? CurrentCompanyId { get; set; } = Guid.Parse("00000000-0000-0000-0000-000000000002"); // Default company

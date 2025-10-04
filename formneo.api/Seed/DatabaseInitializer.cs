@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using vesa.core.Models;
-using vesa.repository;
-using vesa.core.Models.CRM;
-using vesa.core.Models.Lookup;
+using formneo.core.Models;
+using formneo.repository;
+using formneo.core.Models.CRM;
+using formneo.core.Models.Lookup;
 using Microsoft.Extensions.Configuration;
 using DocumentFormat.OpenXml.Wordprocessing;
 using FluentValidation;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using vesa.core.EnumExtensions;
+using formneo.core.EnumExtensions;
 
-namespace vesa.api.Seed
+namespace formneo.api.Seed
 {
     public static class DatabaseInitializer
     {

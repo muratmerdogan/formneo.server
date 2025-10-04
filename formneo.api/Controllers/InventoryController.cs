@@ -10,19 +10,19 @@ using Microsoft.Kiota.Abstractions;
 using NLayer.Core.Services;
 using System.ComponentModel;
 using System.ServiceProcess;
-using vesa.core.DTOs;
-using vesa.core.DTOs.DepartmentUserDto;
-using vesa.core.DTOs.Inventory;
-using vesa.core.DTOs.Menu;
-using vesa.core.DTOs.Ticket.TicketDepartments;
-using vesa.core.DTOs.TicketProjects;
-using vesa.core.Models;
-using vesa.core.Models.Inventory;
-using vesa.core.Models.Ticket;
-using vesa.core.Services;
-using vesa.service.Services;
+using formneo.core.DTOs;
+using formneo.core.DTOs.DepartmentUserDto;
+using formneo.core.DTOs.Inventory;
+using formneo.core.DTOs.Menu;
+using formneo.core.DTOs.Ticket.TicketDepartments;
+using formneo.core.DTOs.TicketProjects;
+using formneo.core.Models;
+using formneo.core.Models.Inventory;
+using formneo.core.Models.Ticket;
+using formneo.core.Services;
+using formneo.service.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -321,7 +321,7 @@ namespace vesa.api.Controllers
                     typeof(OfficeLocation),
                     typeof(DeviceType),
                     typeof(DeviceStatus),
-                    typeof(vesa.core.Models.Inventory.DiskType),
+                    typeof(formneo.core.Models.Inventory.DiskType),
                     typeof(LicenseStatus)
                 };
 

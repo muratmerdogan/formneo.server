@@ -4,18 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using vesa.core.DTOs.RoleTenants;
-using vesa.core.DTOs;
-using vesa.core.Options;
+using formneo.core.DTOs.RoleTenants;
+using formneo.core.DTOs;
+using formneo.core.Options;
 using Microsoft.Extensions.Options;
-using vesa.core.Models;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
+using formneo.core.Models;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
 using NLayer.Service.Services;
 
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
 	public class RoleTenantService : GlobalServiceWithDto<RoleTenant, RoleTenantListDto>, IRoleTenantService
 	{
@@ -43,7 +43,7 @@ namespace vesa.service.Services
 		{
             if (_globalOnlyRoleIds.Contains(dto.RoleId))
             {
-                throw new vesa.service.Exceptions.ClientSideException("Bu rol globaldir ve tenant'a atanamaz.");
+                throw new formneo.service.Exceptions.ClientSideException("Bu rol globaldir ve tenant'a atanamaz.");
             }
 			var entity = _mapper.Map<RoleTenant>(dto);
 			await _genericRepository.AddAsync(entity);

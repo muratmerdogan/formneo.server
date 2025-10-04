@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.UnitOfWorks
+namespace formneo.core.UnitOfWorks
 {
     public interface IUnitOfWork
     {

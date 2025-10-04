@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
 	public interface IMinioService
 	{

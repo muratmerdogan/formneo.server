@@ -9,19 +9,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using NLayer.Core.Services;
 using System.ComponentModel.Design;
-using vesa.core.DTOs;
-using vesa.core.DTOs.DepartmentUserDto;
-using vesa.core.DTOs.Menu;
-using vesa.core.DTOs.TaskManagement;
-using vesa.core.DTOs.Ticket;
-using vesa.core.DTOs.Ticket.TicketDepartments;
-using vesa.core.DTOs.Ticket.TicketTeams;
-using vesa.core.Models;
-using vesa.core.Models.Ticket;
-using vesa.core.Services;
+using formneo.core.DTOs;
+using formneo.core.DTOs.DepartmentUserDto;
+using formneo.core.DTOs.Menu;
+using formneo.core.DTOs.TaskManagement;
+using formneo.core.DTOs.Ticket;
+using formneo.core.DTOs.Ticket.TicketDepartments;
+using formneo.core.DTOs.Ticket.TicketTeams;
+using formneo.core.Models;
+using formneo.core.Models.Ticket;
+using formneo.core.Services;
 
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
 
     [Route("api/[controller]")]
@@ -37,10 +37,10 @@ namespace vesa.api.Controllers
         private readonly IServiceWithDto<TicketDepartment, TicketDepartmensListDto> _ticketDepartments;
         private readonly IServiceWithDto<DepartmentUser, DepartmentUserListDto> _departmentUserService;
         private readonly UserManager<UserApp> _userManager;
-        private readonly IServiceWithDto<vesa.core.Models.WorkCompanyTicketMatris, WorkCompanyTicketMatrisListDto> _workCompanyMatrisService;
+        private readonly IServiceWithDto<formneo.core.Models.WorkCompanyTicketMatris, WorkCompanyTicketMatrisListDto> _workCompanyMatrisService;
         private readonly ITenantContext _tenantContext;
         private readonly IUserTenantService _userTenantService;
-        public TicketDepartmentsController(IMapper mapper, IServiceWithDto<TicketDepartment, TicketDepartmensListDto> Service, IUserService userService, IMemoryCache memoryCache, IServiceWithDto<DepartmentUser, DepartmentUserListDto> departmentUserService, UserManager<UserApp> userManager, IServiceWithDto<vesa.core.Models.WorkCompanyTicketMatris, WorkCompanyTicketMatrisListDto> workCompanyMatrisService, ITenantContext tenantContext, IUserTenantService userTenantService)
+        public TicketDepartmentsController(IMapper mapper, IServiceWithDto<TicketDepartment, TicketDepartmensListDto> Service, IUserService userService, IMemoryCache memoryCache, IServiceWithDto<DepartmentUser, DepartmentUserListDto> departmentUserService, UserManager<UserApp> userManager, IServiceWithDto<formneo.core.Models.WorkCompanyTicketMatris, WorkCompanyTicketMatrisListDto> workCompanyMatrisService, ITenantContext tenantContext, IUserTenantService userTenantService)
         {
 
             _ticketDepartments = Service;
@@ -521,8 +521,8 @@ namespace vesa.api.Controllers
 
         }
 
-        [HttpGet("GetOnlyVesaDepartments")]
-        private async Task<List<TicketDepartmensListDto>> GetOnlyVesaDepartments()
+        [HttpGet("GetOnlyformneoDepartments")]
+        private async Task<List<TicketDepartmensListDto>> GetOnlyformneoDepartments()
         {
             var departments = await _ticketDepartments.Include();
             var dto = departments

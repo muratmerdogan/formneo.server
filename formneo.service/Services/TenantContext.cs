@@ -1,7 +1,7 @@
 using System;
-using vesa.core.Services;
+using formneo.core.Services;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
 	public class TenantContext : ITenantContext
 	{

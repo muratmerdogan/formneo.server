@@ -4,53 +4,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Budget.BudgetAdminUser;
-using vesa.core.DTOs.Budget.JobCodeRequest;
-using vesa.core.DTOs.Budget.NormCodeRequest;
-using vesa.core.DTOs.Budget.PeriodUserDto;
-using vesa.core.DTOs.Budget.SF;
-using vesa.core.DTOs.Clients;
-using vesa.core.DTOs.Company;
-using vesa.core.Models.CRM;
-using vesa.core.DTOs.DepartmentUserDto;
-using vesa.core.DTOs.FormAssign;
-using vesa.core.DTOs.FormAuth;
-using vesa.core.DTOs.FormDatas;
-using vesa.core.DTOs.Inventory;
-using vesa.core.DTOs.Kanban;
-using vesa.core.DTOs.Menu;
-using vesa.core.DTOs.PCTrack;
-using vesa.core.DTOs.Plants;
-using vesa.core.DTOs.PositionsDtos;
-using vesa.core.DTOs.ProjectDtos;
-using vesa.core.DTOs.ProjectTasks;
-using vesa.core.DTOs.TaskManagement;
-using vesa.core.DTOs.UserTenants;
-using vesa.core.DTOs.Ticket;
-using vesa.core.DTOs.Ticket.TicketAssigne;
-using vesa.core.DTOs.Ticket.TicketComment;
-using vesa.core.DTOs.Ticket.TicketDepartments;
-using vesa.core.DTOs.Ticket.TicketNotifications;
-using vesa.core.DTOs.Ticket.TicketRuleEngine;
-using vesa.core.DTOs.Ticket.Tickets;
-using vesa.core.DTOs.Ticket.TicketTeams;
-using vesa.core.DTOs.TicketProjects;
-using vesa.core.GenericListDto;
-using vesa.core.Models;
-using vesa.core.Models.BudgetManagement;
-using vesa.core.Models.Inventory;
-using vesa.core.Models.NewFolder;
-using vesa.core.Models.PCTracking;
-using vesa.core.Models.TaskManagement;
-using vesa.core.Models.Ticket;
-using vesa.core.Models.CRM;
-using vesa.core.DTOs.CRM;
-using vesa.core.DTOs.Lookup;
-using vesa.core.Models.Lookup;
+using formneo.core;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Budget.BudgetAdminUser;
+using formneo.core.DTOs.Budget.JobCodeRequest;
+using formneo.core.DTOs.Budget.NormCodeRequest;
+using formneo.core.DTOs.Budget.PeriodUserDto;
+using formneo.core.DTOs.Budget.SF;
+using formneo.core.DTOs.Clients;
+using formneo.core.DTOs.Company;
+using formneo.core.Models.CRM;
+using formneo.core.DTOs.DepartmentUserDto;
+using formneo.core.DTOs.FormAssign;
+using formneo.core.DTOs.FormAuth;
+using formneo.core.DTOs.FormDatas;
+using formneo.core.DTOs.Inventory;
+using formneo.core.DTOs.Kanban;
+using formneo.core.DTOs.Menu;
+using formneo.core.DTOs.PCTrack;
+using formneo.core.DTOs.Plants;
+using formneo.core.DTOs.PositionsDtos;
+using formneo.core.DTOs.ProjectDtos;
+using formneo.core.DTOs.ProjectTasks;
+using formneo.core.DTOs.TaskManagement;
+using formneo.core.DTOs.UserTenants;
+using formneo.core.DTOs.Ticket;
+using formneo.core.DTOs.Ticket.TicketAssigne;
+using formneo.core.DTOs.Ticket.TicketComment;
+using formneo.core.DTOs.Ticket.TicketDepartments;
+using formneo.core.DTOs.Ticket.TicketNotifications;
+using formneo.core.DTOs.Ticket.TicketRuleEngine;
+using formneo.core.DTOs.Ticket.Tickets;
+using formneo.core.DTOs.Ticket.TicketTeams;
+using formneo.core.DTOs.TicketProjects;
+using formneo.core.GenericListDto;
+using formneo.core.Models;
+using formneo.core.Models.BudgetManagement;
+using formneo.core.Models.Inventory;
+using formneo.core.Models.NewFolder;
+using formneo.core.Models.PCTracking;
+using formneo.core.Models.TaskManagement;
+using formneo.core.Models.Ticket;
+using formneo.core.Models.CRM;
+using formneo.core.DTOs.CRM;
+using formneo.core.DTOs.Lookup;
+using formneo.core.Models.Lookup;
 
-namespace vesa.service.Mapping
+namespace formneo.service.Mapping
 {
     public class MapProfile : Profile
     {
@@ -293,9 +293,9 @@ namespace vesa.service.Mapping
             CreateMap<UserTenant, UserTenantUpdateDto>().ReverseMap();
 
             // RoleTenant
-            CreateMap<RoleTenant, vesa.core.DTOs.RoleTenants.RoleTenantListDto>().ReverseMap();
-            CreateMap<RoleTenant, vesa.core.DTOs.RoleTenants.RoleTenantInsertDto>().ReverseMap();
-            CreateMap<RoleTenant, vesa.core.DTOs.RoleTenants.RoleTenantUpdateDto>().ReverseMap();
+            CreateMap<RoleTenant, formneo.core.DTOs.RoleTenants.RoleTenantListDto>().ReverseMap();
+            CreateMap<RoleTenant, formneo.core.DTOs.RoleTenants.RoleTenantInsertDto>().ReverseMap();
+            CreateMap<RoleTenant, formneo.core.DTOs.RoleTenants.RoleTenantUpdateDto>().ReverseMap();
 
             // UserTenantRole
             CreateMap<UserTenantRole, UserTenantRole>().ReverseMap();
@@ -322,7 +322,7 @@ namespace vesa.service.Mapping
 			CreateMap<CustomerNote, CustomerNoteDto>().ReverseMap();
 			CreateMap<CustomerNote, CustomerNoteInsertDto>().ReverseMap();
 			CreateMap<CustomerNote, CustomerNoteUpdateDto>().ReverseMap();
-			CreateMap<vesa.core.Models.CRM.Customer, CustomerListDto>()
+			CreateMap<formneo.core.Models.CRM.Customer, CustomerListDto>()
 				.ForMember(dest => dest.Emails, opt => opt.MapFrom(src => src.SecondaryEmails))
 				.ForMember(dest => dest.Addresses, opt => opt.MapFrom(src => src.Addresses))
 				.ForMember(dest => dest.Phones, opt => opt.MapFrom(src => src.Phones))
@@ -356,12 +356,12 @@ namespace vesa.service.Mapping
 				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Status) ? int.Parse(src.Status) : 0));
 
 			// Insert/Update: DTO -> Entity
-			CreateMap<CustomerInsertDto, vesa.core.Models.CRM.Customer>()
+			CreateMap<CustomerInsertDto, formneo.core.Models.CRM.Customer>()
 				.ForMember(dest => dest.CustomerTypeId, opt => opt.MapFrom(src => src.CustomerTypeId))
 				.ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
 				.ForMember(dest => dest.LifecycleStage, opt => opt.MapFrom(src => (LifecycleStage)src.LifecycleStage));
 
-			CreateMap<CustomerUpdateDto, vesa.core.Models.CRM.Customer>()
+			CreateMap<CustomerUpdateDto, formneo.core.Models.CRM.Customer>()
 				.ForMember(dest => dest.CustomerTypeId, opt => opt.MapFrom(src => src.CustomerTypeId))
 				.ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId));
 
@@ -393,7 +393,7 @@ namespace vesa.service.Mapping
 				.ForMember(dest => dest.ValueJson, opt => opt.MapFrom(src => src.ValueJson));
 
 			// Performans için optimize edilmiş mapping'ler
-			CreateMap<vesa.core.Models.CRM.Customer, CustomerBasicDto>()
+			CreateMap<formneo.core.Models.CRM.Customer, CustomerBasicDto>()
 				.ForMember(dest => dest.CustomerTypeId, opt => opt.MapFrom(src => src.CustomerTypeId))
 				.ForMember(dest => dest.CustomerTypeText,
 					opt => opt.MapFrom(src => src.CustomerTypeItem != null ? src.CustomerTypeItem.Name : null))
@@ -416,7 +416,7 @@ namespace vesa.service.Mapping
 				.ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId))
 				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Status) ? int.Parse(src.Status) : 0));
 	
-			CreateMap<CustomerBasicDto, vesa.core.Models.CRM.Customer>();
+			CreateMap<CustomerBasicDto, formneo.core.Models.CRM.Customer>();
 
 			// CRM Extras - Opportunity Mappings
 			CreateMap<Opportunity, OpportunityDto>()

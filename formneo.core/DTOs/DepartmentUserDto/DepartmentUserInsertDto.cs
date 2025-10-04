@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.Ticket;
-using vesa.core.Models;
+using formneo.core.Models.Ticket;
+using formneo.core.Models;
 
-namespace vesa.core.DTOs.DepartmentUserDto
+namespace formneo.core.DTOs.DepartmentUserDto
 {
     public class DepartmentUserInsertDto
     {

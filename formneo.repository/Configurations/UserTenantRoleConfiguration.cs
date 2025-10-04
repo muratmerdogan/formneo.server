@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using vesa.core.Models;
+using formneo.core.Models;
 
-namespace vesa.repository.Configurations
+namespace formneo.repository.Configurations
 {
 	internal class UserTenantRoleConfiguration : IEntityTypeConfiguration<UserTenantRole>
 	{

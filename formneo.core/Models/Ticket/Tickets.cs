@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.ComponentModel;
 
-namespace vesa.core.Models.Ticket
+namespace formneo.core.Models.Ticket
 {
     public class Tickets : BaseEntity
     {

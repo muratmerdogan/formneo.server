@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.PCTrack;
-using vesa.core.Models.PCTracking;
-using vesa.core.Services;
+using formneo.core.DTOs.PCTrack;
+using formneo.core.Models.PCTracking;
+using formneo.core.Services;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
     public class QuestDBService
     {

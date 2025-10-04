@@ -10,17 +10,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph.Models;
 using NLayer.Core.Services;
-using vesa.core.DTOs;
-using vesa.core.DTOs.PositionsDtos;
-using vesa.core.DTOs.Ticket.TicketRuleEngine;
-using vesa.core.DTOs.Ticket.Tickets;
-using vesa.core.Models;
-using vesa.core.Models.Ticket;
-using vesa.core.Services;
+using formneo.core.DTOs;
+using formneo.core.DTOs.PositionsDtos;
+using formneo.core.DTOs.Ticket.TicketRuleEngine;
+using formneo.core.DTOs.Ticket.Tickets;
+using formneo.core.Models;
+using formneo.core.Models.Ticket;
+using formneo.core.Services;
 
 
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

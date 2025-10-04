@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.Ticket.TicketComment
+namespace formneo.core.DTOs.Ticket.TicketComment
 {
     public class TicketFileDto
     {

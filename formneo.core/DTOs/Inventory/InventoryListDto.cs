@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.Ticket.TicketDepartments;
-using vesa.core.Models;
-using vesa.core.Models.Inventory;
-using vesa.core.Models.Ticket;
+using formneo.core.DTOs.Ticket.TicketDepartments;
+using formneo.core.Models;
+using formneo.core.Models.Inventory;
+using formneo.core.Models.Ticket;
 
-namespace vesa.core.DTOs.Inventory
+namespace formneo.core.DTOs.Inventory
 {
     public class InventoryListDto
     {

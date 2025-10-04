@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace vesa.core.Models
+namespace formneo.core.Models
 {
     [Index(nameof(MenuId), nameof(RoleId), IsUnique = true)]
     public class AspNetRolesMenu : GlobalBaseEntity

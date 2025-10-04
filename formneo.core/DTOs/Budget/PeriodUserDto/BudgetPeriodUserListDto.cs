@@ -5,11 +5,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.BudgetManagement;
-using vesa.core.Models;
-using vesa.core.DTOs.Clients;
+using formneo.core.Models.BudgetManagement;
+using formneo.core.Models;
+using formneo.core.DTOs.Clients;
 
-namespace vesa.core.DTOs.Budget.PeriodUserDto
+namespace formneo.core.DTOs.Budget.PeriodUserDto
 {
     public class BudgetPeriodUserListDto
     {

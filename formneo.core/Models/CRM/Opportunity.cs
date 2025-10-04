@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.Models.CRM
+namespace formneo.core.Models.CRM
 {
 	public enum OpportunityStage
 	{
@@ -14,7 +14,7 @@ namespace vesa.core.Models.CRM
 		Lost
 	}
 
-	public class Opportunity : vesa.core.Models.BaseEntity
+	public class Opportunity : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public string Title { get; set; }

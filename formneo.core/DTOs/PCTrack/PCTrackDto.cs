@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.FormEnums;
-using vesa.core.Models.PCTracking;
+using formneo.core.Models.FormEnums;
+using formneo.core.Models.PCTracking;
 
-namespace vesa.core.DTOs.PCTrack
+namespace formneo.core.DTOs.PCTrack
 {
     public class PCTrackDto
     {

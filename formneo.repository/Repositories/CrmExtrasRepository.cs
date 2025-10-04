@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using vesa.core.DTOs.CRM;
-using vesa.core.Models.CRM;
-using vesa.core.Repositories;
+using formneo.core.DTOs.CRM;
+using formneo.core.Models.CRM;
+using formneo.core.Repositories;
 
-namespace vesa.repository.Repositories
+namespace formneo.repository.Repositories
 {
 	public class OpportunityRepository : GenericRepository<Opportunity>, IOpportunityRepository
 	{

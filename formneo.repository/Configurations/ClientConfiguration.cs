@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using vesa.core.Models;
+using formneo.core.Models;
 
-namespace vesa.repository.Configurations
+namespace formneo.repository.Configurations
 {
     internal class ClientConfiguration : IEntityTypeConfiguration<MainClient>
     {

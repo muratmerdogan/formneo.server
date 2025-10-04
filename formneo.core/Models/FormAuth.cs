@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 
-namespace vesa.core.Models
+namespace formneo.core.Models
 {
     public class FormAuth : BaseEntity
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.Ticket;
+using formneo.core.Models.Ticket;
 
-namespace vesa.core.DTOs.DashboardDto
+namespace formneo.core.DTOs.DashboardDto
 {
     public class GetTicketCustomerAssignGroup
     {

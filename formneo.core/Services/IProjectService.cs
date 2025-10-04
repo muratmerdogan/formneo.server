@@ -1,7 +1,7 @@
-﻿using vesa.core.DTOs.ProjectDtos;
-using vesa.core.Models;
+﻿using formneo.core.DTOs.ProjectDtos;
+using formneo.core.Models;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
     public interface IProjectService : IService<Project>
     {

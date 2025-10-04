@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace vesa.core.DTOs.Menu
+namespace formneo.core.DTOs.Menu
 {
     public class MenuListDto
     {

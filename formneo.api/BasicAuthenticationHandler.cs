@@ -34,7 +34,7 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
             var password = credentials[1];
 
             // Kullanıcı doğrulama işlemi burada yapılır
-            if (username != "murat" || password != "Vesa2634@!")
+            if (username != "murat" || password != "formneo2634@!")
             {
                 return AuthenticateResult.Fail("Invalid Username or Password");
             }

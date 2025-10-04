@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs
+namespace formneo.core.DTOs
 {
     public class ClientTokenDto
     {

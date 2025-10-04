@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.Ticket;
-using vesa.core.DTOs.Ticket.TicketComment;
+using formneo.core.Models.Ticket;
+using formneo.core.DTOs.Ticket.TicketComment;
 
-namespace vesa.core.DTOs.Ticket
+namespace formneo.core.DTOs.Ticket
 {
     public class TicketCommentDto
     {

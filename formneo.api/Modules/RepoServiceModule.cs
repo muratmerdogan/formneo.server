@@ -1,18 +1,18 @@
 ﻿using Autofac;
 using System.Reflection;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
-using vesa.repository.Repositories;
-using vesa.repository.UnitOfWorks;
-using vesa.repository;
-using vesa.service.Mapping;
-using vesa.service.Services;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
+using formneo.repository.Repositories;
+using formneo.repository.UnitOfWorks;
+using formneo.repository;
+using formneo.service.Mapping;
+using formneo.service.Services;
 using Module = Autofac.Module;
 using NLayer.Service.Services;
 using NLayer.Core.Services;
 
-namespace vesa.api.Modules
+namespace formneo.api.Modules
 {
     public class RepoServiceModule : Module
 

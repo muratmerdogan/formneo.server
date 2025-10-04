@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.Departments
+namespace formneo.core.DTOs.Departments
 {
     public class DepartmentListAllNameDto
     {

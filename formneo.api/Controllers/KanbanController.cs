@@ -8,17 +8,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph.Models;
-using vesa.api.Helper;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Kanban;
-using vesa.core.DTOs.TicketProjects;
-using vesa.core.Models;
-using vesa.core.Models.NewFolder;
-using vesa.core.Services;
-using vesa.service.Services;
-using vesa.workflow;
+using formneo.api.Helper;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Kanban;
+using formneo.core.DTOs.TicketProjects;
+using formneo.core.Models;
+using formneo.core.Models.NewFolder;
+using formneo.core.Services;
+using formneo.service.Services;
+using formneo.workflow;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -189,10 +189,10 @@ namespace vesa.api.Controllers
                                             <table style=""width: 100%; table-layout: fixed; display: inline-table;"">
                                                 <tr>
                                                     <td style=""background-color: white; padding:12px; width: auto;"">
-                                                        <img src=""{VesaLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
+                                                        <img src=""{formneoLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
                                                     </td>
                                                     <td style=""background-color: white; padding:12px; width: auto;"">
-                                                        <img src=""{VesaLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
+                                                        <img src=""{formneoLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
                                                     </td>
                                                 </tr>
                                             </table>
@@ -213,7 +213,7 @@ namespace vesa.api.Controllers
                                                     </tr>
 
                                                 </table>
-                                                <p style=""color:#0073e6;""><strong>Destek Sistemine Giriş için: https://support.vesa-tech.com/</strong></p>
+                                                <p style=""color:#0073e6;""><strong>Destek Sistemine Giriş için: https://support.formneo-tech.com/</strong></p>
                                             </td>
                                         </tr>
 
@@ -230,7 +230,7 @@ namespace vesa.api.Controllers
                     </body>
                     </html>
                     ";
-                    utils.Utils.SendMail($"Vesacons Bilgilendirme E-postası", emailBody, toMails, null);
+                    utils.Utils.SendMail($"formneo Bilgilendirme E-postası", emailBody, toMails, null);
 
                 }
                

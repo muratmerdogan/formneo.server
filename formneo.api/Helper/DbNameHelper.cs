@@ -1,6 +1,6 @@
 ﻿using System.Data.SqlClient;
 
-namespace vesa.api.Helper
+namespace formneo.api.Helper
 {
     public class DbNameHelper
     {
@@ -22,9 +22,9 @@ namespace vesa.api.Helper
             string dbName = builder.InitialCatalog;
 
             // Ortama göre açıklama ekle
-            if (dbName.Equals("vesa_erp", StringComparison.OrdinalIgnoreCase))
+            if (dbName.Equals("formneo_erp", StringComparison.OrdinalIgnoreCase))
                 return "(Live system)";
-            else if (dbName.Equals("vesa_erp_test", StringComparison.OrdinalIgnoreCase))
+            else if (dbName.Equals("formneo_erp_test", StringComparison.OrdinalIgnoreCase))
                 return "(Test system)";
             else
                 return dbName;

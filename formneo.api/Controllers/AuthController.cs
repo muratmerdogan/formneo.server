@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using vesa.api.Controllers;
-using vesa.core.DTOs;
-using vesa.core.Services;
+using formneo.api.Controllers;
+using formneo.core.DTOs;
+using formneo.core.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.Models.Lookup
+namespace formneo.core.Models.Lookup
 {
-	public class LookupCategory : vesa.core.Models.GlobalBaseEntity
+	public class LookupCategory : formneo.core.Models.GlobalBaseEntity
 	{
 		[Required]
 		[StringLength(128)]

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
-using vesa.core.EnumExtensions;
+using formneo.core.EnumExtensions;
 
-namespace vesa.core.Models
+namespace formneo.core.Models
 {
     using System;
     using System.ComponentModel.DataAnnotations;

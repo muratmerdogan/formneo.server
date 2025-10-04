@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.Company;
-using vesa.core.Models;
-using vesa.core.Repositories;
+using formneo.core.DTOs.Company;
+using formneo.core.Models;
+using formneo.core.Repositories;
 
-namespace vesa.repository.Repositories
+namespace formneo.repository.Repositories
 {
     public class CompanyRepository : GenericRepository<Company>, ICompanyRepository
     {

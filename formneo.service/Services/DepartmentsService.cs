@@ -5,16 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Departments;
-using vesa.core.Models;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
-using vesa.repository.Repositories;
-using vesa.repository.UnitOfWorks;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Departments;
+using formneo.core.Models;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
+using formneo.repository.Repositories;
+using formneo.repository.UnitOfWorks;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
     public class DepartmentsService : Service<Departments>, IDepartmentService
     {

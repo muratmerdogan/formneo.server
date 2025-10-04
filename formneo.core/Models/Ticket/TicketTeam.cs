@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace vesa.core.Models.Ticket
+namespace formneo.core.Models.Ticket
 {
     public class TicketTeam : BaseEntity
     {

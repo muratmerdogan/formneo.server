@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models;
+using formneo.core.Models;
 using System.Reflection.Emit;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace vesa.repository.Configurations
+namespace formneo.repository.Configurations
 {
     internal class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
     {

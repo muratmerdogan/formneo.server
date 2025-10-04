@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using vesa.core.DTOs.Lookup;
-using vesa.core.Models.Lookup;
-using vesa.core.Services;
-using vesa.repository;
+using formneo.core.DTOs.Lookup;
+using formneo.core.Models.Lookup;
+using formneo.core.Services;
+using formneo.repository;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
 	public class LookupService : ILookupService
 	{
@@ -82,11 +82,8 @@ namespace vesa.service.Services
 			var tenantId = _tenantContext?.CurrentTenantId;
 			if (tenantId != null)
 			{
-				var cat = await _context.LookupCategories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == dto.CategoryId);
-				if (cat != null && cat.TenantId == tenantId)
-				{
-					entity.TenantId = tenantId;
-				}
+				// Kiracı, kendi item'ını oluşturuyorsa overlay olarak TenantId'yı damgala
+				entity.TenantId = tenantId;
 			}
 			_context.LookupItems.Add(entity);
 			await _context.SaveChangesAsync();
@@ -117,6 +114,17 @@ namespace vesa.service.Services
 		{
 			var entity = await _context.LookupItems.FirstOrDefaultAsync(x => x.Id == id);
 			if (entity == null) return null;
+			var tenantId = _tenantContext?.CurrentTenantId;
+			// Global item'larda düzenleme engeli (global admin dışı için interceptor zaten engeller)
+			if (entity.TenantId == null)
+			{
+				throw new InvalidOperationException("Global lookup item d\u00fczenlenemez.");
+			}
+			// Kirac\u0131 yaln\u0131zca kendi item'\u0131n\u0131 d\u00fczenleyebilir
+			if (tenantId == null || entity.TenantId != tenantId)
+			{
+				throw new InvalidOperationException("Ba\u015fka bir tenant'a ait lookup item d\u00fczenlenemez.");
+			}
 			_mapper.Map(dto, entity);
 			await _context.SaveChangesAsync();
 			return _mapper.Map<LookupItemDto>(entity);
@@ -126,6 +134,17 @@ namespace vesa.service.Services
 		{
 			var entity = await _context.LookupItems.FirstOrDefaultAsync(x => x.Id == id);
 			if (entity == null) return false;
+			var tenantId = _tenantContext?.CurrentTenantId;
+			// Global item'larda silme engeli
+			if (entity.TenantId == null)
+			{
+				throw new InvalidOperationException("Global lookup item silinemez.");
+			}
+			// Kirac\u0131 yaln\u0131zca kendi item'\u0131n\u0131 silebilir
+			if (tenantId == null || entity.TenantId != tenantId)
+			{
+				throw new InvalidOperationException("Ba\u015fka bir tenant'a ait lookup item silinemez.");
+			}
 			_context.LookupItems.Remove(entity);
 			await _context.SaveChangesAsync();
 			return true;

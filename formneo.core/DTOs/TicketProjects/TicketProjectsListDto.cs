@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.DepartmentUserDto;
-using vesa.core.Models;
+using formneo.core.DTOs.DepartmentUserDto;
+using formneo.core.Models;
 
-namespace vesa.core.DTOs.TicketProjects
+namespace formneo.core.DTOs.TicketProjects
 {
     public class TicketProjectsListDto
     {

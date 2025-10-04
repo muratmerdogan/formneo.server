@@ -4,15 +4,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using vesa.core.DTOs.Onboarding;
-using vesa.core.Models;
-using vesa.core.Models.Onboarding;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
-using vesa.repository;
-using vesa.core.EnumExtensions;
+using formneo.core.DTOs.Onboarding;
+using formneo.core.Models;
+using formneo.core.Models.Onboarding;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
+using formneo.repository;
+using formneo.core.EnumExtensions;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
 	public class OnboardingService : IOnboardingService
 	{

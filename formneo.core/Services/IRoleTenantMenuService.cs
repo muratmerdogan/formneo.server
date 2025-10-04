@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NLayer.Core.Services;
-using vesa.core.DTOs;
-using vesa.core.Models;
+using formneo.core.DTOs;
+using formneo.core.Models;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
     public interface IRoleTenantMenuService : IGlobalServiceWithDto<AspNetRolesTenantMenu, RoleTenantMenuListDto>
     {

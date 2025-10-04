@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace vesa.core.DTOs.RoleTenants
+namespace formneo.core.DTOs.RoleTenants
 {
     // Tenant'taki tüm rolleri kullanıcının sahip olup olmadığını işaretleyerek döner
     public class UserRoleAssignmentGetDto

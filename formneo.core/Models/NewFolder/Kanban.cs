@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs;
+using formneo.core.DTOs;
 
-namespace vesa.core.Models.NewFolder
+namespace formneo.core.Models.NewFolder
 {
     public class Kanban : BaseEntity
     {

@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.BudgetManagement;
+using formneo.core.Models.BudgetManagement;
 
-namespace vesa.core.Models
+namespace formneo.core.Models
 {
 
     public enum WorkflowStatus

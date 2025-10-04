@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using vesa.core.DTOs.CRM;
+using formneo.core.DTOs.CRM;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
 	public interface ICustomerDocumentService
 	{

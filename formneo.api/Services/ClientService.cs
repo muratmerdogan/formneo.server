@@ -1,14 +1,14 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Clients;
-using vesa.core.Models;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
-using vesa.repository;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Clients;
+using formneo.core.Models;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
+using formneo.repository;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
     public class ClientService : IClientService
     {

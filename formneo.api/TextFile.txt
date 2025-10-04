@@ -1,10 +1,10 @@
-﻿docker run -it --rm -p 8080:80 vesaserverapp
+﻿docker run -it --rm -p 8080:80 formneoserverapp
 
 
-docker tag vesa vesa/serverapp
+docker tag formneo formneo/serverapp
 
-docker login -u “murat.merdogan@vesacons.com” -p “ExpoExpo2024++” docker.io
+docker login -u “murat.merdogan@formneo.com” -p “ExpoExpo2024++” docker.io
 
 
 
-cf push serverapp --docker-image vesaduser/vesaserverapp:tagname
+cf push serverapp --docker-image formneoduser/formneoserverapp:tagname

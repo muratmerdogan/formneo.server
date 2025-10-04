@@ -1,6 +1,6 @@
 using System;
 
-namespace vesa.core.DTOs.RoleTenants
+namespace formneo.core.DTOs.RoleTenants
 {
 	public class RoleTenantListDto
 	{

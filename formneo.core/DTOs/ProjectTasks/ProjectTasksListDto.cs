@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.TicketProjects;
+using formneo.core.DTOs.TicketProjects;
 
-namespace vesa.core.DTOs.ProjectTasks
+namespace formneo.core.DTOs.ProjectTasks
 {
     public class ProjectTasksListDto
     {

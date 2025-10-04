@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace vesa.core.Models.Ticket
+namespace formneo.core.Models.Ticket
 {
     public class TicketAssigne  : BaseEntity
     {

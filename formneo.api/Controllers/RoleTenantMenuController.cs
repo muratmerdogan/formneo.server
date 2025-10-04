@@ -4,18 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using vesa.core.DTOs;
-using vesa.core.Services;
+using formneo.core.DTOs;
+using formneo.core.Services;
 using Microsoft.AspNetCore.Http;
-using vesa.core.DTOs.RoleTenants;
+using formneo.core.DTOs.RoleTenants;
 using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Identity;
-using vesa.core.Models;
-using vesa.core.UnitOfWorks;
+using formneo.core.Models;
+using formneo.core.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -72,19 +72,19 @@ namespace vesa.api.Controllers
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
-                throw new vesa.service.Exceptions.ClientSideException("userId zorunludur");
+                throw new formneo.service.Exceptions.ClientSideException("userId zorunludur");
             }
 
             if (tenantId == Guid.Empty)
             {
-                throw new vesa.service.Exceptions.ClientSideException("tenantId zorunludur");
+                throw new formneo.service.Exceptions.ClientSideException("tenantId zorunludur");
             }
 
             // Kullanıcının bu tenant'a ait aktif rolü var mı?
             var userRoles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId);
             if (userRoles == null || !userRoles.Any())
             {
-                throw new vesa.service.Exceptions.ClientSideException("Kullanıcı belirtilen tenant'a ait değildir veya aktif rolü yoktur");
+                throw new formneo.service.Exceptions.ClientSideException("Kullanıcı belirtilen tenant'a ait değildir veya aktif rolü yoktur");
             }
 
             // İlgili rol-tenant için menü izinlerini birleştirerek döndür
@@ -110,18 +110,18 @@ namespace vesa.api.Controllers
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
-                throw new vesa.service.Exceptions.ClientSideException("userId zorunludur");
+                throw new formneo.service.Exceptions.ClientSideException("userId zorunludur");
             }
 
             if (tenantId == Guid.Empty)
             {
-                throw new vesa.service.Exceptions.ClientSideException("tenantId zorunludur");
+                throw new formneo.service.Exceptions.ClientSideException("tenantId zorunludur");
             }
 
             var userRoles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId);
             if (userRoles == null || !userRoles.Any())
             {
-                throw new vesa.service.Exceptions.ClientSideException("Kullanıcı belirtilen tenant'a ait değildir veya aktif rolü yoktur");
+                throw new formneo.service.Exceptions.ClientSideException("Kullanıcı belirtilen tenant'a ait değildir veya aktif rolü yoktur");
             }
 
             var roleIds = userRoles
@@ -140,12 +140,12 @@ namespace vesa.api.Controllers
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
-                throw new vesa.service.Exceptions.ClientSideException("userId zorunludur");
+                throw new formneo.service.Exceptions.ClientSideException("userId zorunludur");
             }
 
             if (tenantId == Guid.Empty)
             {
-                throw new vesa.service.Exceptions.ClientSideException("tenantId zorunludur");
+                throw new formneo.service.Exceptions.ClientSideException("tenantId zorunludur");
             }
 
             // Tenant'a ait tüm rol+menü yapısını al
@@ -170,12 +170,12 @@ namespace vesa.api.Controllers
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
-                throw new vesa.service.Exceptions.ClientSideException("userId zorunludur");
+                throw new formneo.service.Exceptions.ClientSideException("userId zorunludur");
             }
 
             if (tenantId == Guid.Empty)
             {
-                throw new vesa.service.Exceptions.ClientSideException("tenantId zorunludur");
+                throw new formneo.service.Exceptions.ClientSideException("tenantId zorunludur");
             }
 
             var result = await _roleTenantService.GetUserRoleAssignmentsAsync(userId, tenantId);

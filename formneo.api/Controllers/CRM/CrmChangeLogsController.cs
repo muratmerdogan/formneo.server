@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using vesa.core.Services;
+using formneo.core.Services;
 
-namespace vesa.api.Controllers.CRM
+namespace formneo.api.Controllers.CRM
 {
 	[Route("api/crm/[controller]")]
 	[ApiController]

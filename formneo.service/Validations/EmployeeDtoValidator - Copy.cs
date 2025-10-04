@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Budget.JobCodeRequest;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Budget.JobCodeRequest;
 
-namespace vesa.service.Validations
+namespace formneo.service.Validations
 {
 
 

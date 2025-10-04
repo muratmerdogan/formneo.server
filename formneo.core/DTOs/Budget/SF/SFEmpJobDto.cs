@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.Budget.UpsertDto;
+using formneo.core.DTOs.Budget.UpsertDto;
 
-namespace vesa.core.DTOs.Budget.SF
+namespace formneo.core.DTOs.Budget.SF
 {
     public class SFPositionAllPropertyDto
     {

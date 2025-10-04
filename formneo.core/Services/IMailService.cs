@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
     public interface IMailService
     {

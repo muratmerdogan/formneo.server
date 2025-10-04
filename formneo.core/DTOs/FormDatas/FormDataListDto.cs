@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.FormEnums;
+using formneo.core.Models.FormEnums;
 
-namespace vesa.core.DTOs.FormDatas
+namespace formneo.core.DTOs.FormDatas
 {
     public class FormDataListDto : BaseListDto
     {

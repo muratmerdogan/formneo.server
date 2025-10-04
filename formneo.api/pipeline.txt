@@ -43,8 +43,8 @@ steps:
   inputs:
     credentialsOption: inputs
     serverUrl: 'ftp://104.247.163.226'
-    username: vesacons.com_68yapks7kcw
+    username: formneo.com_68yapks7kcw
     password: qZ67$Yg?icDp4rwi
     rootDirectory: $(Build.ArtifactStagingDirectory)
-    remoteDirectory: '/api.vesacons.com'
+    remoteDirectory: '/api.formneo.com'
     trustSSL: true

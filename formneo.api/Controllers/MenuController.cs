@@ -7,15 +7,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using NLayer.Core.Services;
-using vesa.core.DTOs;
-using vesa.core.DTOs.FormAuth;
-using vesa.core.DTOs.Menu;
-using vesa.core.Models;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.Options;
+using formneo.core.DTOs;
+using formneo.core.DTOs.FormAuth;
+using formneo.core.DTOs.Menu;
+using formneo.core.Models;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.Options;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

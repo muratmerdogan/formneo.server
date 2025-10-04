@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.Models.CRM
+namespace formneo.core.Models.CRM
 {
-	public class Reminder : vesa.core.Models.BaseEntity
+	public class Reminder : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public Guid? ActivityId { get; set; }

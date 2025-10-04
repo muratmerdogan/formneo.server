@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using vesa.core.DTOs;
+using formneo.core.DTOs;
 
-namespace vesa.core.DTOs.RoleTenants
+namespace formneo.core.DTOs.RoleTenants
 {
 	public class RoleWithMenusItemDto
 	{

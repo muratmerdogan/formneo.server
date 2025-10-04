@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using NLayer.Core.Services;
 using System.Dynamic;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Clients;
-using vesa.core.Models;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Clients;
+using formneo.core.Models;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
 
 

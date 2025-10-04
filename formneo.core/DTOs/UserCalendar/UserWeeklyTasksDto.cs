@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.TaskManagement;
+using formneo.core.DTOs.TaskManagement;
 
-namespace vesa.core.DTOs.UserCalendar
+namespace formneo.core.DTOs.UserCalendar
 {
     public class UserWeeklyTasksDto
     {

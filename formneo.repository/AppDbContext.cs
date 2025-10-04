@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -14,19 +15,19 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using vesa.core.Models;
-using vesa.core.Models.BudgetManagement;
-using vesa.core.Models.Inventory;
-using vesa.core.Models.NewFolder;
-using vesa.core.Models.PCTracking;
-using vesa.core.Models.TaskManagement;
-using vesa.core.Models.Ticket;
-using vesa.core.Models.CRM;
-using vesa.core.Models.Lookup;
-using vesa.core.Services;
+using formneo.core.Models;
+using formneo.core.Models.BudgetManagement;
+using formneo.core.Models.Inventory;
+using formneo.core.Models.NewFolder;
+using formneo.core.Models.PCTracking;
+using formneo.core.Models.TaskManagement;
+using formneo.core.Models.Ticket;
+using formneo.core.Models.CRM;
+using formneo.core.Models.Lookup;
+using formneo.core.Services;
 
 
-namespace vesa.repository
+namespace formneo.repository
 {
     public class AppDbContext : IdentityDbContext<UserApp, IdentityRole, string>
     {
@@ -81,7 +82,7 @@ namespace vesa.repository
         public DbSet<UserCalendar> UserCalendar { get; set; }
         //public DbSet<MenuUI> MenuUI { get; set; }
         // CRM
-        public DbSet<vesa.core.Models.CRM.Customer> Customers { get; set; }
+        public DbSet<formneo.core.Models.CRM.Customer> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public DbSet<CustomerOfficial> CustomerOfficials { get; set; }
         public DbSet<CustomerEmail> CustomerEmails { get; set; }
@@ -99,7 +100,7 @@ namespace vesa.repository
         public DbSet<QuoteLine> QuoteLines { get; set; }
         public DbSet<SpecialDay> SpecialDays { get; set; }
         public DbSet<CrmChangeLog> CrmChangeLogs { get; set; }
-        public DbSet<vesa.core.Models.Onboarding.OnboardingActivation> OnboardingActivations { get; set; }
+        public DbSet<formneo.core.Models.Onboarding.OnboardingActivation> OnboardingActivations { get; set; }
 
         // Lookup
         public DbSet<LookupCategory> LookupCategories { get; set; }
@@ -189,7 +190,7 @@ namespace vesa.repository
 
             // CRM Enum configurations are handled in CustomerConfiguration.cs
             // PostgreSQL için xmin Concurrency Token - En iyi çözüm
-            modelBuilder.Entity<vesa.core.Models.CRM.Customer>()
+            modelBuilder.Entity<formneo.core.Models.CRM.Customer>()
                 .UseXminAsConcurrencyToken();
 
             modelBuilder.Entity<CustomerAddress>().UseXminAsConcurrencyToken();
@@ -211,19 +212,19 @@ namespace vesa.repository
             modelBuilder.Entity<CustomerNote>().UseXminAsConcurrencyToken();
             
             // Diğer CRM entity'leri
-            modelBuilder.Entity<vesa.core.Models.CRM.Activity>().UseXminAsConcurrencyToken();
+            modelBuilder.Entity<formneo.core.Models.CRM.Activity>().UseXminAsConcurrencyToken();
             
-            modelBuilder.Entity<vesa.core.Models.CRM.Meeting>().UseXminAsConcurrencyToken();
+            modelBuilder.Entity<formneo.core.Models.CRM.Meeting>().UseXminAsConcurrencyToken();
             
-            modelBuilder.Entity<vesa.core.Models.CRM.Reminder>().UseXminAsConcurrencyToken();
+            modelBuilder.Entity<formneo.core.Models.CRM.Reminder>().UseXminAsConcurrencyToken();
             
-            modelBuilder.Entity<vesa.core.Models.CRM.Quote>().UseXminAsConcurrencyToken();
+            modelBuilder.Entity<formneo.core.Models.CRM.Quote>().UseXminAsConcurrencyToken();
             
-            modelBuilder.Entity<vesa.core.Models.CRM.QuoteLine>().UseXminAsConcurrencyToken();
+            modelBuilder.Entity<formneo.core.Models.CRM.QuoteLine>().UseXminAsConcurrencyToken();
             
-            modelBuilder.Entity<vesa.core.Models.CRM.Opportunity>().UseXminAsConcurrencyToken();
+            modelBuilder.Entity<formneo.core.Models.CRM.Opportunity>().UseXminAsConcurrencyToken();
             
-            modelBuilder.Entity<vesa.core.Models.CRM.SpecialDay>().UseXminAsConcurrencyToken();
+            modelBuilder.Entity<formneo.core.Models.CRM.SpecialDay>().UseXminAsConcurrencyToken();
 
             modelBuilder.Entity<CustomerAddress>()
                 .Property(p => p.Type)
@@ -298,7 +299,7 @@ namespace vesa.repository
             modelBuilder.Entity<QuoteLine>().HasQueryFilter(e => !e.IsDelete);
             modelBuilder.Entity<SpecialDay>().HasQueryFilter(e => !e.IsDelete);
             modelBuilder.Entity<CrmChangeLog>().HasQueryFilter(e => !e.IsDelete);
-            modelBuilder.Entity<vesa.core.Models.Onboarding.OnboardingActivation>().HasQueryFilter(e => !e.IsDelete);
+            modelBuilder.Entity<formneo.core.Models.Onboarding.OnboardingActivation>().HasQueryFilter(e => !e.IsDelete);
 
 
             base.OnModelCreating(modelBuilder);
@@ -379,6 +380,20 @@ namespace vesa.repository
                 //var currentUserName = _httpContextAccessor.HttpContext?.User?.Identity?.Name;
                 foreach (var item in ChangeTracker.Entries())
                 {
+                    // AsNoTracking ile getirilen ve sonradan Modified olarak attach edilen varlıklar için
+                    // OriginalValues boş olduğundan audit diff üretilemez. DB'den mevcut değerleri çekerek doldur.
+                    if (item.State == EntityState.Modified)
+                    {
+                        try
+                        {
+                            var dbValues = item.GetDatabaseValues();
+                            if (dbValues != null)
+                            {
+                                item.OriginalValues.SetValues(dbValues);
+                            }
+                        }
+                        catch { }
+                    }
                     if (item.Entity is BaseEntity entityReference)
                     {
                         switch (item.Entity)
@@ -650,6 +665,19 @@ namespace vesa.repository
             {
                 foreach (var item in ChangeTracker.Entries())
                 {
+                    // AsNoTracking sonrası attach edilen Modified varlıklar için OriginalValues'ı DB'den yükle
+                    if (item.State == EntityState.Modified)
+                    {
+                        try
+                        {
+                            var dbValues = item.GetDatabaseValues();
+                            if (dbValues != null)
+                            {
+                                item.OriginalValues.SetValues(dbValues);
+                            }
+                        }
+                        catch { }
+                    }
                     if (item.Entity is BaseEntity entityReference)
                     {
                         switch (item.State)

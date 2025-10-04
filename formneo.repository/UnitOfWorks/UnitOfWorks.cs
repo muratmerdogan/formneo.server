@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.UnitOfWorks;
+using formneo.core.UnitOfWorks;
 
-namespace vesa.repository.UnitOfWorks
+namespace formneo.repository.UnitOfWorks
 {
     public class UnitOfWork : IUnitOfWork
     {

@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace vesa.core.Models
+namespace formneo.core.Models
 {
 	public class UserTenantRole : GlobalBaseEntity
 	{

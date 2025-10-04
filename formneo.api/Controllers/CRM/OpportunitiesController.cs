@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using vesa.core.DTOs.CRM;
-using vesa.core.Services;
+using formneo.core.DTOs.CRM;
+using formneo.core.Services;
 
-namespace vesa.api.Controllers.CRM
+namespace formneo.api.Controllers.CRM
 {
 	[Route("api/crm/[controller]")]
 	[ApiController]
@@ -143,6 +143,53 @@ namespace vesa.api.Controllers.CRM
 			{
 				await _opportunityService.DeleteAsync(id);
 				return NoContent();
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"Internal error: {ex.Message}");
+			}
+		}
+
+		[HttpPost("{id}/stage")]
+		public async Task<IActionResult> UpdateStage(Guid id, [FromBody] int stage)
+		{
+			try
+			{
+				if (!Enum.IsDefined(typeof(formneo.core.Models.CRM.OpportunityStage), stage))
+					return BadRequest("Geçersiz stage");
+				var updated = await _opportunityService.UpdateStageAsync(id, (formneo.core.Models.CRM.OpportunityStage)stage);
+				if (updated == null) return NotFound($"Opportunity with ID {id} not found");
+				return Ok(updated);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"Internal error: {ex.Message}");
+			}
+		}
+
+		[HttpPost("{id}/won")]
+		public async Task<IActionResult> MarkWon(Guid id)
+		{
+			try
+			{
+				var updated = await _opportunityService.MarkWonAsync(id);
+				if (updated == null) return NotFound($"Opportunity with ID {id} not found");
+				return Ok(updated);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"Internal error: {ex.Message}");
+			}
+		}
+
+		[HttpPost("{id}/lost")]
+		public async Task<IActionResult> MarkLost(Guid id)
+		{
+			try
+			{
+				var updated = await _opportunityService.MarkLostAsync(id);
+				if (updated == null) return NotFound($"Opportunity with ID {id} not found");
+				return Ok(updated);
 			}
 			catch (Exception ex)
 			{

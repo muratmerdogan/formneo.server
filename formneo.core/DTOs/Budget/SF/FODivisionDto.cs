@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.Budget.SF;
+using formneo.core.DTOs.Budget.SF;
 
-namespace vesa.core.DTOs.Budget
+namespace formneo.core.DTOs.Budget
 {
     public class FODivisionDto :IGenericListDto
     {

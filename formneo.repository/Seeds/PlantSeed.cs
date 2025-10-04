@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models;
+using formneo.core.Models;
 
-namespace vesa.repository.Seeds
+namespace formneo.repository.Seeds
 {
     internal class PlantSeed : IEntityTypeConfiguration<Plant>
     {

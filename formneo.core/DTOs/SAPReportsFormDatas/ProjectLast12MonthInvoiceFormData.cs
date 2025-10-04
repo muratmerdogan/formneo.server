@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.SAPReportsFormDatas
+namespace formneo.core.DTOs.SAPReportsFormDatas
 {
     public class ProjectLast12MonthInvoiceFormData
     {

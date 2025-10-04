@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models;
+using formneo.core.Models;
 
-namespace vesa.repository.Seeds
+namespace formneo.repository.Seeds
 {
     internal class MainClientSeed : IEntityTypeConfiguration<MainClient>
     {
@@ -22,7 +22,7 @@ namespace vesa.repository.Seeds
             string currentPlant = "0779dd43-6047-400d-968d-e6f1b0c3b286";
 
             builder.HasData(
-                new MainClient { Id = new Guid(currentClient), Name = "RonesansHolding", Email = "info@vesacons.com", IsActive = true, PhoneNumber = "5069112452" });
+                new MainClient { Id = new Guid(currentClient), Name = "RonesansHolding", Email = "info@formneo.com", IsActive = true, PhoneNumber = "5069112452" });
 
 
             //builder.HasData(

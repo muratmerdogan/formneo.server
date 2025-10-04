@@ -1,14 +1,12 @@
 ﻿using Newtonsoft.Json;
 
-namespace vesa.api.Config
+namespace formneo.api.Config
 {
 
     //test
     public class Config
     {
-        //public static String SfAddress = "https://api2preview.sapsf.eu/odata/v2";
-        //public static String UserName = "D_HYILMAZ@yildirimhoT1";
-        //public static String Password = "Vesa1283.";
+
 
         public static string SfAddress { get; private set; }
         public static string UserName { get; private set; }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.DepartmentUserDto
+namespace formneo.core.DTOs.DepartmentUserDto
 {
     public class DepartmentUserUpdateDto
     {

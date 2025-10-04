@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace vesa.core.Repositories
+namespace formneo.core.Repositories
 {
     public interface IGenericRepository<T> where T : class
     {

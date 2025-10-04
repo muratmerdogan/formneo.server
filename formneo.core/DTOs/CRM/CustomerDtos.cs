@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using vesa.core.Models.CRM;
-using vesa.core.DTOs;
+using formneo.core.Models.CRM;
+using formneo.core.DTOs;
 
-namespace vesa.core.DTOs.CRM
+namespace formneo.core.DTOs.CRM
 {
 	public class CustomerAddressDto
 	{

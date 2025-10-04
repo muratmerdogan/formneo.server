@@ -4,9 +4,9 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using vesa.core.Services;
+using formneo.core.Services;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
     public class MailService : IMailService
     {

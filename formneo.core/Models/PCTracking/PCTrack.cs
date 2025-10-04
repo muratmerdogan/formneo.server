@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace vesa.core.Models.PCTracking
+namespace formneo.core.Models.PCTracking
 {
     public class PCTrack : BaseEntity
     {

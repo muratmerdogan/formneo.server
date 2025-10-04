@@ -1,6 +1,6 @@
 using System;
 
-namespace vesa.core.DTOs.Lookup
+namespace formneo.core.DTOs.Lookup
 {
 	public class LookupCategoryDto
 	{

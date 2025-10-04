@@ -4,14 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using vesa.core.DTOs.CRM;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
-using vesa.service.Exceptions;
-using vesa.core.Models.CRM;
+using formneo.core.DTOs.CRM;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
+using formneo.service.Exceptions;
+using formneo.core.Models.CRM;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
 	public class OpportunityService : IOpportunityService
 	{
@@ -86,6 +86,26 @@ namespace vesa.service.Services
 			return _mapper.Map<OpportunityDto>(entity);
 		}
 
+		public async Task<OpportunityDto> UpdateStageAsync(Guid id, OpportunityStage stage)
+		{
+			var entity = await _repo.GetByIdStringGuidAsync(id);
+			if (entity == null) return null;
+			entity.Stage = stage;
+			_repo.Update(entity);
+			try
+			{
+				await _uow.CommitAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				throw new ClientSideException("Kayıt başka biri tarafından güncellendi.");
+			}
+			return _mapper.Map<OpportunityDto>(entity);
+		}
+
+		public Task<OpportunityDto> MarkWonAsync(Guid id) => UpdateStageAsync(id, OpportunityStage.Won);
+		public Task<OpportunityDto> MarkLostAsync(Guid id) => UpdateStageAsync(id, OpportunityStage.Lost);
+
 		public async Task DeleteAsync(Guid id)
 		{
 			var entity = await _repo.GetByIdStringGuidAsync(id);
@@ -134,7 +154,7 @@ namespace vesa.service.Services
 
 		public async Task<ActivityDto> CreateAsync(ActivityDto dto)
 		{
-			var entity = _mapper.Map<vesa.core.Models.CRM.Activity>(dto);
+			var entity = _mapper.Map<formneo.core.Models.CRM.Activity>(dto);
 			await _repo.AddAsync(entity);
 			await _uow.CommitAsync();
 			return _mapper.Map<ActivityDto>(entity);
@@ -198,7 +218,7 @@ namespace vesa.service.Services
 
 		public async Task<ReminderDto> CreateAsync(ReminderDto dto)
 		{
-			var entity = _mapper.Map<vesa.core.Models.CRM.Reminder>(dto);
+			var entity = _mapper.Map<formneo.core.Models.CRM.Reminder>(dto);
 			await _repo.AddAsync(entity);
 			await _uow.CommitAsync();
 			return _mapper.Map<ReminderDto>(entity);
@@ -262,7 +282,7 @@ namespace vesa.service.Services
 
 		public async Task<MeetingDto> CreateAsync(MeetingDto dto)
 		{
-			var entity = _mapper.Map<vesa.core.Models.CRM.Meeting>(dto);
+			var entity = _mapper.Map<formneo.core.Models.CRM.Meeting>(dto);
 			await _repo.AddAsync(entity);
 			await _uow.CommitAsync();
 			return _mapper.Map<MeetingDto>(entity);
@@ -326,7 +346,7 @@ namespace vesa.service.Services
 
 		public async Task<QuoteDto> CreateAsync(QuoteDto dto)
 		{
-			var entity = _mapper.Map<vesa.core.Models.CRM.Quote>(dto);
+			var entity = _mapper.Map<formneo.core.Models.CRM.Quote>(dto);
 			await _repo.AddAsync(entity);
 			await _uow.CommitAsync();
 			return _mapper.Map<QuoteDto>(entity);

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using System.Text.Json;
-using vesa.core.DTOs;
-using vesa.service.Exceptions;
+using formneo.core.DTOs;
+using formneo.service.Exceptions;
 
-namespace vesa.api.Middlewares
+namespace formneo.api.Middlewares
 {
     public static class UseCustomExceptionHandler
     {

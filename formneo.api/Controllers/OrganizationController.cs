@@ -12,14 +12,14 @@ using Microsoft.Graph.Models;
 using Microsoft.OpenApi.Validations;
 using NLayer.Core.Services;
 using System.Runtime.ConstrainedExecution;
-using vesa.core.DTOs;
-using vesa.core.DTOs.DepartmentUserDto;
-using vesa.core.DTOs.Ticket.TicketDepartments;
-using vesa.core.Models;
-using vesa.core.Models.Ticket;
-using vesa.core.Services;
+using formneo.core.DTOs;
+using formneo.core.DTOs.DepartmentUserDto;
+using formneo.core.DTOs.Ticket.TicketDepartments;
+using formneo.core.Models;
+using formneo.core.Models.Ticket;
+using formneo.core.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -52,7 +52,7 @@ namespace vesa.api.Controllers
 
                 OrganizationDto result = new();
 
-                #region Statik Eklenen Alan (Vesa şirketi, genel müdürlük)
+                #region Statik Eklenen Alan (formneo şirketi, genel müdürlük)
                 // GENEL MÜDÜRLÜK EKLENDİ
                 var firstDepartment = departments.Where(e => e.Id == Guid.Parse("358da3ff-ea80-44da-bb42-33c849631456")).FirstOrDefault();
                 var firstDepartmentDto = new OrganizationDto
@@ -63,11 +63,11 @@ namespace vesa.api.Controllers
                     Type = "department",
                     Children = new List<OrganizationDto>(),
                 };
-                // VESA DANIŞMANLIK EKLENDİ
+                // formneo DANIŞMANLIK EKLENDİ
                 var companyDto = new OrganizationDto
                 {
                     Id = "2e5c2ba5-3eb8-414d-8bc7-08dd44716854",
-                    Name = "Vesa Danışmanlık",
+                    Name = "formneo Danışmanlık",
                     Expanded = true,
                     Type = "department",
                     Children = new List<OrganizationDto>(),
@@ -144,8 +144,8 @@ namespace vesa.api.Controllers
                                 Title = user.Positions?.Name,
                                 Email = user.Email,
                                 Photo = user.photo,
-                                ClassName = user.Email == "muhammed.kadan@vesacons.com" ? "ceo-node" :
-                                           (user.Email == "veysel.karani@vesacons.com" || user.Email == "bolat.ciftci@vesacons.com") ? "executive-node" :
+                                ClassName = user.Email == "muhammed.kadan@formneo.com" ? "ceo-node" :
+                                           (user.Email == "veysel.karani@formneo.com" || user.Email == "bolat.ciftci@formneo.com") ? "executive-node" :
                                            "employee-node",
                                 Children = new List<OrganizationDto>()
                             };

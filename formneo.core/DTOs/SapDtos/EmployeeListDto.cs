@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.SapDtos
+namespace formneo.core.DTOs.SapDtos
 {
     public class EmployeeDto
     {

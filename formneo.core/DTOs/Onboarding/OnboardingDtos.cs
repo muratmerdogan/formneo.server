@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.DTOs.Onboarding
+namespace formneo.core.DTOs.Onboarding
 {
 	public class OnboardCompanyDto
 	{

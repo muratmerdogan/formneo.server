@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using vesa.core.DTOs.Lookup;
-using vesa.core.Models.Lookup;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
+using formneo.core.DTOs.Lookup;
+using formneo.core.Models.Lookup;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
     public class LookupModuleService : ILookupModuleService
     {

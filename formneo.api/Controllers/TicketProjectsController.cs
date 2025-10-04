@@ -8,15 +8,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
-using vesa.core.DTOs;
-using vesa.core.DTOs.TaskManagement;
-using vesa.core.DTOs.TicketProjects;
-using vesa.core.Models;
-using vesa.core.Models.Ticket;
-using vesa.core.Services;
+using formneo.core.DTOs;
+using formneo.core.DTOs.TaskManagement;
+using formneo.core.DTOs.TicketProjects;
+using formneo.core.Models;
+using formneo.core.Models.Ticket;
+using formneo.core.Services;
 using WorkflowCore.Primitives;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

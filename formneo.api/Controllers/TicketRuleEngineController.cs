@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLayer.Core.Services;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Ticket.TicketRuleEngine;
-using vesa.core.DTOs.Ticket.TicketTeams;
-using vesa.core.Models.Ticket;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Ticket.TicketRuleEngine;
+using formneo.core.DTOs.Ticket.TicketTeams;
+using formneo.core.Models.Ticket;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

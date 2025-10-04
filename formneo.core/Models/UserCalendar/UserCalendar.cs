@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.Models.TaskManagement
+namespace formneo.core.Models.TaskManagement
 {
     public class UserCalendar : BaseEntity
     {

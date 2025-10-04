@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.DepartmentUserDto;
-using vesa.core.DTOs.Ticket.TicketTeams;
+using formneo.core.DTOs.DepartmentUserDto;
+using formneo.core.DTOs.Ticket.TicketTeams;
 
-namespace vesa.core.DTOs.Ticket
+namespace formneo.core.DTOs.Ticket
 {
     public class TicketDepartmensInsertDto
     {

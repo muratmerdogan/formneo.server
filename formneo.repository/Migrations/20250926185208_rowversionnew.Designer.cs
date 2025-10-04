@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using vesa.repository;
+using formneo.repository;
 
 #nullable disable
 
@@ -157,7 +157,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("vesa.core.Models.ApproveItems", b =>
+            modelBuilder.Entity("formneo.core.Models.ApproveItems", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -227,7 +227,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("ApproveItems");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.AspNetRolesMenu", b =>
+            modelBuilder.Entity("formneo.core.Models.AspNetRolesMenu", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -289,7 +289,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("AspNetRolesMenu");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.AspNetRolesTenantMenu", b =>
+            modelBuilder.Entity("formneo.core.Models.AspNetRolesTenantMenu", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -356,7 +356,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("AspNetRolesTenantMenu");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetJobCodeRequest", b =>
+            modelBuilder.Entity("formneo.core.Models.BudgetManagement.BudgetJobCodeRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -519,7 +519,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("BudgetJobCodeRequest");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetNormCodeRequest", b =>
+            modelBuilder.Entity("formneo.core.Models.BudgetManagement.BudgetNormCodeRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -757,7 +757,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("BudgetNormCodeRequest");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetPeriodUser", b =>
+            modelBuilder.Entity("formneo.core.Models.BudgetManagement.BudgetPeriodUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -821,7 +821,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("BudgetPeriodUser");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetPromotionRequest", b =>
+            modelBuilder.Entity("formneo.core.Models.BudgetManagement.BudgetPromotionRequest", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -892,7 +892,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("BudgetPromotionRequest");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetPeriod", b =>
+            modelBuilder.Entity("formneo.core.Models.BudgetPeriod", b =>
                 {
                     b.Property<string>("PeriodCode")
                         .HasColumnType("text");
@@ -948,7 +948,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("BudgetPeriod");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Activity", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Activity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1033,7 +1033,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Activities");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CrmChangeLog", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CrmChangeLog", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1099,7 +1099,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("CrmChangeLogs");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Customer", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Customer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1227,7 +1227,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerAddress", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerAddress", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1320,7 +1320,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("CustomerAddresses");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerCustomField", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerCustomField", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1387,7 +1387,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("CustomerCustomFields");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerDocument", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerDocument", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1461,7 +1461,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("CustomerDocuments");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerEmail", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerEmail", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1532,7 +1532,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("CustomerEmails");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerNote", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerNote", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1594,7 +1594,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("CustomerNotes");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerOfficial", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerOfficial", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1674,7 +1674,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("CustomerOfficials");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerPhone", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerPhone", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1739,7 +1739,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("CustomerPhones");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerSector", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerSector", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1794,7 +1794,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("CustomerSectors");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerTag", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerTag", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1849,7 +1849,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("CustomerTags");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Meeting", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Meeting", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1931,7 +1931,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Meetings");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Opportunity", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Opportunity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2016,7 +2016,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Opportunities");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Quote", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Quote", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2108,7 +2108,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Quotes");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.QuoteLine", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.QuoteLine", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2189,7 +2189,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("QuoteLines");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Reminder", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Reminder", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2259,7 +2259,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Reminders");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.SpecialDay", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.SpecialDay", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2334,7 +2334,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("SpecialDays");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Company", b =>
+            modelBuilder.Entity("formneo.core.Models.Company", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2370,7 +2370,7 @@ namespace formneo.repository.Migrations
                         });
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Departments", b =>
+            modelBuilder.Entity("formneo.core.Models.Departments", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2419,7 +2419,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Departments", (string)null);
                 });
 
-            modelBuilder.Entity("vesa.core.Models.EmpSalary", b =>
+            modelBuilder.Entity("formneo.core.Models.EmpSalary", b =>
                 {
                     b.Property<Guid>("EmployeeId")
                         .HasColumnType("uuid");
@@ -2470,7 +2470,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("EmpSalary", (string)null);
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Employee", b =>
+            modelBuilder.Entity("formneo.core.Models.Employee", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2594,7 +2594,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Employee", (string)null);
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Form", b =>
+            modelBuilder.Entity("formneo.core.Models.Form", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2681,7 +2681,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Form", (string)null);
                 });
 
-            modelBuilder.Entity("vesa.core.Models.FormAssign", b =>
+            modelBuilder.Entity("formneo.core.Models.FormAssign", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2738,7 +2738,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("FormAssign");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.FormAuth", b =>
+            modelBuilder.Entity("formneo.core.Models.FormAuth", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2786,7 +2786,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("FormAuth");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.FormRuleEngine", b =>
+            modelBuilder.Entity("formneo.core.Models.FormRuleEngine", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2838,7 +2838,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("FormRuleEngine");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.FormRuntime", b =>
+            modelBuilder.Entity("formneo.core.Models.FormRuntime", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2894,7 +2894,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("FormRuntime");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Inventory.Inventory", b =>
+            modelBuilder.Entity("formneo.core.Models.Inventory.Inventory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3021,7 +3021,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Inventory");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Lookup.LookupCategory", b =>
+            modelBuilder.Entity("formneo.core.Models.Lookup.LookupCategory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3082,7 +3082,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("LookupCategories");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Lookup.LookupItem", b =>
+            modelBuilder.Entity("formneo.core.Models.Lookup.LookupItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3151,7 +3151,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("LookupItems");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Lookup.LookupModule", b =>
+            modelBuilder.Entity("formneo.core.Models.Lookup.LookupModule", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3200,7 +3200,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("LookupModules");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.MainClient", b =>
+            modelBuilder.Entity("formneo.core.Models.MainClient", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3289,7 +3289,7 @@ namespace formneo.repository.Migrations
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
                             CreatedDate = new DateTime(2025, 9, 26, 18, 52, 6, 853, DateTimeKind.Utc).AddTicks(9640),
                             DomainVerified = false,
-                            Email = "info@vesacons.com",
+                            Email = "info@formneo.com",
                             FeatureFlags = "{}",
                             IsActive = true,
                             Name = "RonesansHolding",
@@ -3301,7 +3301,7 @@ namespace formneo.repository.Migrations
                         });
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Menu", b =>
+            modelBuilder.Entity("formneo.core.Models.Menu", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3377,7 +3377,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Menus");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.NewFolder.Kanban", b =>
+            modelBuilder.Entity("formneo.core.Models.NewFolder.Kanban", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3451,7 +3451,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Kanban");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.PCTracking.PCTrack", b =>
+            modelBuilder.Entity("formneo.core.Models.PCTracking.PCTrack", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3515,7 +3515,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("PCTrack");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Plant", b =>
+            modelBuilder.Entity("formneo.core.Models.Plant", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3551,7 +3551,7 @@ namespace formneo.repository.Migrations
                         });
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Positions", b =>
+            modelBuilder.Entity("formneo.core.Models.Positions", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3603,7 +3603,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Positions");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Project", b =>
+            modelBuilder.Entity("formneo.core.Models.Project", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3685,7 +3685,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.ProjectCategories", b =>
+            modelBuilder.Entity("formneo.core.Models.ProjectCategories", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3729,7 +3729,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("ProjectCategories");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.ProjectTasks", b =>
+            modelBuilder.Entity("formneo.core.Models.ProjectTasks", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3808,7 +3808,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("ProjectTasks");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.RoleTenant", b =>
+            modelBuilder.Entity("formneo.core.Models.RoleTenant", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3864,7 +3864,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("RoleTenants", (string)null);
                 });
 
-            modelBuilder.Entity("vesa.core.Models.TaskManagement.UserCalendar", b =>
+            modelBuilder.Entity("formneo.core.Models.TaskManagement.UserCalendar", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3936,7 +3936,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("UserCalendar");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.DepartmentUser", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.DepartmentUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3987,7 +3987,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("DepartmentUsers");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketApprove", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketApprove", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -4038,7 +4038,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("TicketApprove");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketAssigne", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketAssigne", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -4104,7 +4104,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("TicketAssigne");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketComment", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketComment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -4156,7 +4156,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("TicketComment");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketDepartment", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketDepartment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -4225,7 +4225,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("TicketDepartment");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketFile", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketFile", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -4285,7 +4285,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("TicketFile");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketNotifications", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketNotifications", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -4335,7 +4335,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("TicketNotifications");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketRuleEngine", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketRuleEngine", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -4405,7 +4405,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("TicketRuleEngine");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketTeam", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketTeam", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -4465,7 +4465,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("TicketTeam");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketTeamUserApp", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketTeamUserApp", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -4518,7 +4518,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("TicketTeamUserApp");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.Tickets", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.Tickets", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -4662,7 +4662,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Tickets");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.TicketProjects", b =>
+            modelBuilder.Entity("formneo.core.Models.TicketProjects", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -4739,7 +4739,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("TicketProjects");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.UserApp", b =>
+            modelBuilder.Entity("formneo.core.Models.UserApp", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -4900,7 +4900,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("vesa.core.Models.UserRefreshToken", b =>
+            modelBuilder.Entity("formneo.core.Models.UserRefreshToken", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("text");
@@ -4917,7 +4917,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("UserRefreshToken");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.UserTenant", b =>
+            modelBuilder.Entity("formneo.core.Models.UserTenant", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -5010,7 +5010,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("UserTenants", (string)null);
                 });
 
-            modelBuilder.Entity("vesa.core.Models.UserTenantRole", b =>
+            modelBuilder.Entity("formneo.core.Models.UserTenantRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -5061,7 +5061,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("UserTenantRoles");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkCompany", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkCompany", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -5124,7 +5124,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("WorkCompany");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkCompanySystemInfo", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkCompanySystemInfo", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -5173,7 +5173,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("WorkCompanySystemInfo");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkCompanyTicketMatris", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkCompanyTicketMatris", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -5221,7 +5221,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("WorkCompanyTicketMatris");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkFlowDefination", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkFlowDefination", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -5277,7 +5277,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("WorkFlowDefination");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkflowHead", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkflowHead", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -5345,7 +5345,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("WorkflowHead", (string)null);
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkflowItem", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkflowItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -5420,7 +5420,7 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("vesa.core.Models.UserApp", null)
+                    b.HasOne("formneo.core.Models.UserApp", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -5429,7 +5429,7 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("vesa.core.Models.UserApp", null)
+                    b.HasOne("formneo.core.Models.UserApp", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -5444,7 +5444,7 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", null)
+                    b.HasOne("formneo.core.Models.UserApp", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -5453,22 +5453,22 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("vesa.core.Models.UserApp", null)
+                    b.HasOne("formneo.core.Models.UserApp", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("vesa.core.Models.ApproveItems", b =>
+            modelBuilder.Entity("formneo.core.Models.ApproveItems", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkflowItem", "WorkflowItem")
+                    b.HasOne("formneo.core.Models.WorkflowItem", "WorkflowItem")
                         .WithMany("approveItems")
                         .HasForeignKey("WorkflowItemId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5479,9 +5479,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkflowItem");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.AspNetRolesMenu", b =>
+            modelBuilder.Entity("formneo.core.Models.AspNetRolesMenu", b =>
                 {
-                    b.HasOne("vesa.core.Models.Menu", "Menu")
+                    b.HasOne("formneo.core.Models.Menu", "Menu")
                         .WithMany()
                         .HasForeignKey("MenuId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5498,9 +5498,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.AspNetRolesTenantMenu", b =>
+            modelBuilder.Entity("formneo.core.Models.AspNetRolesTenantMenu", b =>
                 {
-                    b.HasOne("vesa.core.Models.Menu", "Menu")
+                    b.HasOne("formneo.core.Models.Menu", "Menu")
                         .WithMany()
                         .HasForeignKey("MenuId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5512,7 +5512,7 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "Tenant")
+                    b.HasOne("formneo.core.Models.MainClient", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5525,15 +5525,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetJobCodeRequest", b =>
+            modelBuilder.Entity("formneo.core.Models.BudgetManagement.BudgetJobCodeRequest", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkflowHead", "WorkflowHead")
+                    b.HasOne("formneo.core.Models.WorkflowHead", "WorkflowHead")
                         .WithMany()
                         .HasForeignKey("WorkflowHeadId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -5543,15 +5543,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkflowHead");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetNormCodeRequest", b =>
+            modelBuilder.Entity("formneo.core.Models.BudgetManagement.BudgetNormCodeRequest", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkflowHead", "WorkflowHead")
+                    b.HasOne("formneo.core.Models.WorkflowHead", "WorkflowHead")
                         .WithMany()
                         .HasForeignKey("WorkflowHeadId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -5561,15 +5561,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkflowHead");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetPeriodUser", b =>
+            modelBuilder.Entity("formneo.core.Models.BudgetManagement.BudgetPeriodUser", b =>
                 {
-                    b.HasOne("vesa.core.Models.BudgetPeriod", "BudgetPeriod")
+                    b.HasOne("formneo.core.Models.BudgetPeriod", "BudgetPeriod")
                         .WithMany("BudgetPeriodUsers")
                         .HasForeignKey("BudgetPeriodCode")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5580,15 +5580,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetManagement.BudgetPromotionRequest", b =>
+            modelBuilder.Entity("formneo.core.Models.BudgetManagement.BudgetPromotionRequest", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkflowHead", "WorkflowHead")
+                    b.HasOne("formneo.core.Models.WorkflowHead", "WorkflowHead")
                         .WithMany()
                         .HasForeignKey("WorkflowHeadId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -5598,9 +5598,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkflowHead");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetPeriod", b =>
+            modelBuilder.Entity("formneo.core.Models.BudgetPeriod", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5609,21 +5609,21 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Activity", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Activity", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.CRM.Opportunity", "Opportunity")
+                    b.HasOne("formneo.core.Models.CRM.Opportunity", "Opportunity")
                         .WithMany("Activities")
                         .HasForeignKey("OpportunityId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5636,19 +5636,19 @@ namespace formneo.repository.Migrations
                     b.Navigation("Opportunity");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Customer", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Customer", b =>
                 {
-                    b.HasOne("vesa.core.Models.Lookup.LookupItem", "CategoryItem")
+                    b.HasOne("formneo.core.Models.Lookup.LookupItem", "CategoryItem")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Lookup.LookupItem", "CustomerTypeItem")
+                    b.HasOne("formneo.core.Models.Lookup.LookupItem", "CustomerTypeItem")
                         .WithMany()
                         .HasForeignKey("CustomerTypeId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5661,15 +5661,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerAddress", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerAddress", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany("Addresses")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5680,15 +5680,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerCustomField", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerCustomField", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany("CustomFields")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5699,15 +5699,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerDocument", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerDocument", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany("Documents")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5718,15 +5718,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerEmail", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerEmail", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany("SecondaryEmails")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5737,15 +5737,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerNote", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerNote", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany("Notes")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5756,15 +5756,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerOfficial", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerOfficial", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany("Officials")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5775,15 +5775,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerPhone", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerPhone", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany("Phones")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5794,15 +5794,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerSector", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerSector", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany("Sectors")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5813,15 +5813,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.CustomerTag", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.CustomerTag", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany("Tags")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5832,21 +5832,21 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Meeting", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Meeting", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.CRM.Opportunity", "Opportunity")
+                    b.HasOne("formneo.core.Models.CRM.Opportunity", "Opportunity")
                         .WithMany()
                         .HasForeignKey("OpportunityId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -5858,15 +5858,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("Opportunity");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Opportunity", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Opportunity", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5877,21 +5877,21 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Quote", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Quote", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.CRM.Opportunity", "Opportunity")
+                    b.HasOne("formneo.core.Models.CRM.Opportunity", "Opportunity")
                         .WithMany()
                         .HasForeignKey("OpportunityId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -5903,15 +5903,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("Opportunity");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.QuoteLine", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.QuoteLine", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.CRM.Quote", "Quote")
+                    b.HasOne("formneo.core.Models.CRM.Quote", "Quote")
                         .WithMany("Lines")
                         .HasForeignKey("QuoteId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5922,20 +5922,20 @@ namespace formneo.repository.Migrations
                     b.Navigation("Quote");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Reminder", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Reminder", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Activity", "Activity")
+                    b.HasOne("formneo.core.Models.CRM.Activity", "Activity")
                         .WithMany()
                         .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5948,15 +5948,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.SpecialDay", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.SpecialDay", b =>
                 {
-                    b.HasOne("vesa.core.Models.CRM.Customer", "Customer")
+                    b.HasOne("formneo.core.Models.CRM.Customer", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5967,9 +5967,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Company", b =>
+            modelBuilder.Entity("formneo.core.Models.Company", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "Client")
+                    b.HasOne("formneo.core.Models.MainClient", "Client")
                         .WithMany("Companies")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5978,9 +5978,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Departments", b =>
+            modelBuilder.Entity("formneo.core.Models.Departments", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -5989,15 +5989,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.EmpSalary", b =>
+            modelBuilder.Entity("formneo.core.Models.EmpSalary", b =>
                 {
-                    b.HasOne("vesa.core.Models.Employee", "Employee")
+                    b.HasOne("formneo.core.Models.Employee", "Employee")
                         .WithMany("empSalary")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6008,15 +6008,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Employee", b =>
+            modelBuilder.Entity("formneo.core.Models.Employee", b =>
                 {
-                    b.HasOne("vesa.core.Models.Departments", "Departments")
+                    b.HasOne("formneo.core.Models.Departments", "Departments")
                         .WithMany()
                         .HasForeignKey("DepartmentsId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6027,17 +6027,17 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Form", b =>
+            modelBuilder.Entity("formneo.core.Models.Form", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkFlowDefination", "WorkFlowDefination")
+                    b.HasOne("formneo.core.Models.WorkFlowDefination", "WorkFlowDefination")
                         .WithOne("Form")
-                        .HasForeignKey("vesa.core.Models.Form", "WorkFlowDefinationId")
+                        .HasForeignKey("formneo.core.Models.Form", "WorkFlowDefinationId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("MainClient");
@@ -6045,21 +6045,21 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkFlowDefination");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.FormAssign", b =>
+            modelBuilder.Entity("formneo.core.Models.FormAssign", b =>
                 {
-                    b.HasOne("vesa.core.Models.Form", "Form")
+                    b.HasOne("formneo.core.Models.Form", "Form")
                         .WithMany()
                         .HasForeignKey("FormId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "UserApp")
+                    b.HasOne("formneo.core.Models.UserApp", "UserApp")
                         .WithMany()
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6072,14 +6072,14 @@ namespace formneo.repository.Migrations
                     b.Navigation("UserApp");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.FormAuth", b =>
+            modelBuilder.Entity("formneo.core.Models.FormAuth", b =>
                 {
-                    b.HasOne("vesa.core.Models.Form", "Form")
+                    b.HasOne("formneo.core.Models.Form", "Form")
                         .WithMany()
                         .HasForeignKey("FormId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6090,15 +6090,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.FormRuleEngine", b =>
+            modelBuilder.Entity("formneo.core.Models.FormRuleEngine", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkFlowDefination", "WorkFlowDefination")
+                    b.HasOne("formneo.core.Models.WorkFlowDefination", "WorkFlowDefination")
                         .WithMany()
                         .HasForeignKey("WorkFlowDefinationId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6109,15 +6109,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkFlowDefination");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.FormRuntime", b =>
+            modelBuilder.Entity("formneo.core.Models.FormRuntime", b =>
                 {
-                    b.HasOne("vesa.core.Models.Form", "Form")
+                    b.HasOne("formneo.core.Models.Form", "Form")
                         .WithMany()
                         .HasForeignKey("FormId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6128,20 +6128,20 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Inventory.Inventory", b =>
+            modelBuilder.Entity("formneo.core.Models.Inventory.Inventory", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Ticket.TicketDepartment", "TicketDepartment")
+                    b.HasOne("formneo.core.Models.Ticket.TicketDepartment", "TicketDepartment")
                         .WithMany()
                         .HasForeignKey("TicketDepartmentId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.UserApp", "UserApp")
+                    b.HasOne("formneo.core.Models.UserApp", "UserApp")
                         .WithMany()
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6153,9 +6153,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("UserApp");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Lookup.LookupCategory", b =>
+            modelBuilder.Entity("formneo.core.Models.Lookup.LookupCategory", b =>
                 {
-                    b.HasOne("vesa.core.Models.Lookup.LookupModule", "Module")
+                    b.HasOne("formneo.core.Models.Lookup.LookupModule", "Module")
                         .WithMany()
                         .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6163,9 +6163,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("Module");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Lookup.LookupItem", b =>
+            modelBuilder.Entity("formneo.core.Models.Lookup.LookupItem", b =>
                 {
-                    b.HasOne("vesa.core.Models.Lookup.LookupCategory", "Category")
+                    b.HasOne("formneo.core.Models.Lookup.LookupCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6174,9 +6174,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.MainClient", b =>
+            modelBuilder.Entity("formneo.core.Models.MainClient", b =>
                 {
-                    b.HasOne("vesa.core.Models.UserApp", "OwnerUser")
+                    b.HasOne("formneo.core.Models.UserApp", "OwnerUser")
                         .WithMany()
                         .HasForeignKey("OwnerUserId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6184,9 +6184,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("OwnerUser");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Menu", b =>
+            modelBuilder.Entity("formneo.core.Models.Menu", b =>
                 {
-                    b.HasOne("vesa.core.Models.Menu", "ParentMenu")
+                    b.HasOne("formneo.core.Models.Menu", "ParentMenu")
                         .WithMany("SubMenus")
                         .HasForeignKey("ParentMenuId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6194,15 +6194,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("ParentMenu");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.NewFolder.Kanban", b =>
+            modelBuilder.Entity("formneo.core.Models.NewFolder.Kanban", b =>
                 {
-                    b.HasOne("vesa.core.Models.UserApp", "Assignee")
+                    b.HasOne("formneo.core.Models.UserApp", "Assignee")
                         .WithMany()
                         .HasForeignKey("AssigneeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6213,9 +6213,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.PCTracking.PCTrack", b =>
+            modelBuilder.Entity("formneo.core.Models.PCTracking.PCTrack", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6224,9 +6224,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Plant", b =>
+            modelBuilder.Entity("formneo.core.Models.Plant", b =>
                 {
-                    b.HasOne("vesa.core.Models.Company", "Company")
+                    b.HasOne("formneo.core.Models.Company", "Company")
                         .WithMany("Plant")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6235,14 +6235,14 @@ namespace formneo.repository.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Positions", b =>
+            modelBuilder.Entity("formneo.core.Models.Positions", b =>
                 {
-                    b.HasOne("vesa.core.Models.WorkCompany", "CustomerRef")
+                    b.HasOne("formneo.core.Models.WorkCompany", "CustomerRef")
                         .WithMany()
                         .HasForeignKey("CustomerRefId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6253,15 +6253,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Project", b =>
+            modelBuilder.Entity("formneo.core.Models.Project", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "UserApp")
+                    b.HasOne("formneo.core.Models.UserApp", "UserApp")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6272,9 +6272,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("UserApp");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.ProjectCategories", b =>
+            modelBuilder.Entity("formneo.core.Models.ProjectCategories", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6283,15 +6283,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.ProjectTasks", b =>
+            modelBuilder.Entity("formneo.core.Models.ProjectTasks", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.TicketProjects", "TicketProjects")
+                    b.HasOne("formneo.core.Models.TicketProjects", "TicketProjects")
                         .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6302,7 +6302,7 @@ namespace formneo.repository.Migrations
                     b.Navigation("TicketProjects");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.RoleTenant", b =>
+            modelBuilder.Entity("formneo.core.Models.RoleTenant", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
                         .WithMany()
@@ -6310,7 +6310,7 @@ namespace formneo.repository.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.MainClient", "Tenant")
+                    b.HasOne("formneo.core.Models.MainClient", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6321,20 +6321,20 @@ namespace formneo.repository.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.TaskManagement.UserCalendar", b =>
+            modelBuilder.Entity("formneo.core.Models.TaskManagement.UserCalendar", b =>
                 {
-                    b.HasOne("vesa.core.Models.WorkCompany", "CustomerRef")
+                    b.HasOne("formneo.core.Models.WorkCompany", "CustomerRef")
                         .WithMany()
                         .HasForeignKey("CustomerRefId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "UserApp")
+                    b.HasOne("formneo.core.Models.UserApp", "UserApp")
                         .WithMany()
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6347,21 +6347,21 @@ namespace formneo.repository.Migrations
                     b.Navigation("UserApp");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.DepartmentUser", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.DepartmentUser", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Ticket.TicketDepartment", "TicketDepartment")
+                    b.HasOne("formneo.core.Models.Ticket.TicketDepartment", "TicketDepartment")
                         .WithMany("DepartmentUsers")
                         .HasForeignKey("TicketDepartmentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "User")
+                    b.HasOne("formneo.core.Models.UserApp", "User")
                         .WithMany("DepartmentUsers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6374,20 +6374,20 @@ namespace formneo.repository.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketApprove", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketApprove", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Ticket.Tickets", "Tickets")
+                    b.HasOne("formneo.core.Models.Ticket.Tickets", "Tickets")
                         .WithOne("TicketApprove")
-                        .HasForeignKey("vesa.core.Models.Ticket.TicketApprove", "TicketsId")
+                        .HasForeignKey("formneo.core.Models.Ticket.TicketApprove", "TicketsId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "UserApp")
+                    b.HasOne("formneo.core.Models.UserApp", "UserApp")
                         .WithMany()
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6399,25 +6399,25 @@ namespace formneo.repository.Migrations
                     b.Navigation("UserApp");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketAssigne", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketAssigne", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Ticket.TicketTeam", "TicketTeam")
+                    b.HasOne("formneo.core.Models.Ticket.TicketTeam", "TicketTeam")
                         .WithMany()
                         .HasForeignKey("TicketTeamID")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Ticket.Tickets", "Tickets")
+                    b.HasOne("formneo.core.Models.Ticket.Tickets", "Tickets")
                         .WithOne("TicketAssigne")
-                        .HasForeignKey("vesa.core.Models.Ticket.TicketAssigne", "TicketsId")
+                        .HasForeignKey("formneo.core.Models.Ticket.TicketAssigne", "TicketsId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "UserApp")
+                    b.HasOne("formneo.core.Models.UserApp", "UserApp")
                         .WithMany()
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6431,15 +6431,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("UserApp");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketComment", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketComment", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Ticket.Tickets", "Ticket")
+                    b.HasOne("formneo.core.Models.Ticket.Tickets", "Ticket")
                         .WithMany("TicketComment")
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6450,25 +6450,25 @@ namespace formneo.repository.Migrations
                     b.Navigation("Ticket");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketDepartment", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketDepartment", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "Manager")
+                    b.HasOne("formneo.core.Models.UserApp", "Manager")
                         .WithMany()
                         .HasForeignKey("ManagerId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Ticket.TicketDepartment", "ParentDepartment")
+                    b.HasOne("formneo.core.Models.Ticket.TicketDepartment", "ParentDepartment")
                         .WithMany("SubDepartments")
                         .HasForeignKey("ParentDepartmentId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.WorkCompany", "WorkCompany")
+                    b.HasOne("formneo.core.Models.WorkCompany", "WorkCompany")
                         .WithMany()
                         .HasForeignKey("WorkCompanyId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6482,15 +6482,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkCompany");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketFile", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketFile", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Ticket.TicketComment", "TicketComment")
+                    b.HasOne("formneo.core.Models.Ticket.TicketComment", "TicketComment")
                         .WithMany("Files")
                         .HasForeignKey("TicketCommentId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6501,21 +6501,21 @@ namespace formneo.repository.Migrations
                     b.Navigation("TicketComment");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketNotifications", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketNotifications", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Ticket.Tickets", "Ticket")
+                    b.HasOne("formneo.core.Models.Ticket.Tickets", "Ticket")
                         .WithMany()
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "UserApp")
+                    b.HasOne("formneo.core.Models.UserApp", "UserApp")
                         .WithMany()
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6527,9 +6527,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("UserApp");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketRuleEngine", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketRuleEngine", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6538,26 +6538,26 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketTeam", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketTeam", b =>
                 {
-                    b.HasOne("vesa.core.Models.Ticket.TicketDepartment", "Department")
+                    b.HasOne("formneo.core.Models.Ticket.TicketDepartment", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "Manager")
+                    b.HasOne("formneo.core.Models.UserApp", "Manager")
                         .WithMany()
                         .HasForeignKey("ManagerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkCompany", "WorkCompany")
+                    b.HasOne("formneo.core.Models.WorkCompany", "WorkCompany")
                         .WithMany()
                         .HasForeignKey("WorkCompanyId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6571,21 +6571,21 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkCompany");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketTeamUserApp", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketTeamUserApp", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Ticket.TicketTeam", "TicketTeam")
+                    b.HasOne("formneo.core.Models.Ticket.TicketTeam", "TicketTeam")
                         .WithMany("TeamList")
                         .HasForeignKey("TicketTeamId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "UserApp")
+                    b.HasOne("formneo.core.Models.UserApp", "UserApp")
                         .WithMany()
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6598,47 +6598,47 @@ namespace formneo.repository.Migrations
                     b.Navigation("UserApp");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.Tickets", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.Tickets", b =>
                 {
-                    b.HasOne("vesa.core.Models.WorkCompany", "CustomerRef")
+                    b.HasOne("formneo.core.Models.WorkCompany", "CustomerRef")
                         .WithMany()
                         .HasForeignKey("CustomerRefId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.Ticket.TicketDepartment", "TicketDepartment")
+                    b.HasOne("formneo.core.Models.Ticket.TicketDepartment", "TicketDepartment")
                         .WithMany("tickets")
                         .HasForeignKey("TicketDepartmentId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.TicketProjects", "TicketProject")
+                    b.HasOne("formneo.core.Models.TicketProjects", "TicketProject")
                         .WithMany()
                         .HasForeignKey("TicketProjectId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.UserApp", "UserApp")
+                    b.HasOne("formneo.core.Models.UserApp", "UserApp")
                         .WithMany()
                         .HasForeignKey("UserAppId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkCompany", "WorkCompany")
+                    b.HasOne("formneo.core.Models.WorkCompany", "WorkCompany")
                         .WithMany()
                         .HasForeignKey("WorkCompanyId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkCompanySystemInfo", "WorkCompanySystemInfo")
+                    b.HasOne("formneo.core.Models.WorkCompanySystemInfo", "WorkCompanySystemInfo")
                         .WithMany()
                         .HasForeignKey("WorkCompanySystemInfoId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.WorkflowHead", "WorkflowHead")
+                    b.HasOne("formneo.core.Models.WorkflowHead", "WorkflowHead")
                         .WithMany()
                         .HasForeignKey("WorkflowHeadId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6660,25 +6660,25 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkflowHead");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.TicketProjects", b =>
+            modelBuilder.Entity("formneo.core.Models.TicketProjects", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "Manager")
+                    b.HasOne("formneo.core.Models.UserApp", "Manager")
                         .WithMany()
                         .HasForeignKey("ManagerId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.ProjectCategories", "ProjectCategory")
+                    b.HasOne("formneo.core.Models.ProjectCategories", "ProjectCategory")
                         .WithMany()
                         .HasForeignKey("ProjectCategoryId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.WorkCompany", "WorkCompany")
+                    b.HasOne("formneo.core.Models.WorkCompany", "WorkCompany")
                         .WithMany()
                         .HasForeignKey("WorkCompanyId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6692,31 +6692,31 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkCompany");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.UserApp", b =>
+            modelBuilder.Entity("formneo.core.Models.UserApp", b =>
                 {
-                    b.HasOne("vesa.core.Models.Departments", null)
+                    b.HasOne("formneo.core.Models.Departments", null)
                         .WithMany("employess")
                         .HasForeignKey("DepartmentsId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.FormAuth", null)
+                    b.HasOne("formneo.core.Models.FormAuth", null)
                         .WithMany("Users")
                         .HasForeignKey("FormAuthId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Positions", "Positions")
+                    b.HasOne("formneo.core.Models.Positions", "Positions")
                         .WithMany("UserApps")
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.Ticket.TicketDepartment", "TicketDepartment")
+                    b.HasOne("formneo.core.Models.Ticket.TicketDepartment", "TicketDepartment")
                         .WithMany("employess")
                         .HasForeignKey("TicketDepartmentId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.WorkCompany", "WorkCompany")
+                    b.HasOne("formneo.core.Models.WorkCompany", "WorkCompany")
                         .WithOne("UserApp")
-                        .HasForeignKey("vesa.core.Models.UserApp", "WorkCompanyId")
+                        .HasForeignKey("formneo.core.Models.UserApp", "WorkCompanyId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Positions");
@@ -6726,15 +6726,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkCompany");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.UserTenant", b =>
+            modelBuilder.Entity("formneo.core.Models.UserTenant", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "Tenant")
+                    b.HasOne("formneo.core.Models.MainClient", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "User")
+                    b.HasOne("formneo.core.Models.UserApp", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6745,15 +6745,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.UserTenantRole", b =>
+            modelBuilder.Entity("formneo.core.Models.UserTenantRole", b =>
                 {
-                    b.HasOne("vesa.core.Models.RoleTenant", "RoleTenant")
+                    b.HasOne("formneo.core.Models.RoleTenant", "RoleTenant")
                         .WithMany()
                         .HasForeignKey("RoleTenantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.UserApp", "User")
+                    b.HasOne("formneo.core.Models.UserApp", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6764,20 +6764,20 @@ namespace formneo.repository.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkCompany", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkCompany", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkCompanyTicketMatris", null)
+                    b.HasOne("formneo.core.Models.WorkCompanyTicketMatris", null)
                         .WithMany("ToCompanies")
                         .HasForeignKey("WorkCompanyTicketMatrisId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.WorkFlowDefination", "WorkFlowDefination")
+                    b.HasOne("formneo.core.Models.WorkFlowDefination", "WorkFlowDefination")
                         .WithMany()
                         .HasForeignKey("WorkFlowDefinationId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6787,15 +6787,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkFlowDefination");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkCompanySystemInfo", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkCompanySystemInfo", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkCompany", "WorkCompany")
+                    b.HasOne("formneo.core.Models.WorkCompany", "WorkCompany")
                         .WithMany()
                         .HasForeignKey("WorkCompanyId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6805,14 +6805,14 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkCompany");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkCompanyTicketMatris", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkCompanyTicketMatris", b =>
                 {
-                    b.HasOne("vesa.core.Models.WorkCompany", "FromCompany")
+                    b.HasOne("formneo.core.Models.WorkCompany", "FromCompany")
                         .WithMany()
                         .HasForeignKey("FromCompanyId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6823,9 +6823,9 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkFlowDefination", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkFlowDefination", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6834,15 +6834,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkflowHead", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkflowHead", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkFlowDefination", "WorkFlowDefination")
+                    b.HasOne("formneo.core.Models.WorkFlowDefination", "WorkFlowDefination")
                         .WithMany("workflows")
                         .HasForeignKey("WorkFlowDefinationId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6853,15 +6853,15 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkFlowDefination");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkflowItem", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkflowItem", b =>
                 {
-                    b.HasOne("vesa.core.Models.MainClient", "MainClient")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("vesa.core.Models.WorkflowHead", "WorkflowHead")
+                    b.HasOne("formneo.core.Models.WorkflowHead", "WorkflowHead")
                         .WithMany("workflowItems")
                         .HasForeignKey("WorkflowHeadId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -6872,12 +6872,12 @@ namespace formneo.repository.Migrations
                     b.Navigation("WorkflowHead");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.BudgetPeriod", b =>
+            modelBuilder.Entity("formneo.core.Models.BudgetPeriod", b =>
                 {
                     b.Navigation("BudgetPeriodUsers");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Customer", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Customer", b =>
                 {
                     b.Navigation("Addresses");
 
@@ -6898,57 +6898,57 @@ namespace formneo.repository.Migrations
                     b.Navigation("Tags");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Opportunity", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Opportunity", b =>
                 {
                     b.Navigation("Activities");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.CRM.Quote", b =>
+            modelBuilder.Entity("formneo.core.Models.CRM.Quote", b =>
                 {
                     b.Navigation("Lines");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Company", b =>
+            modelBuilder.Entity("formneo.core.Models.Company", b =>
                 {
                     b.Navigation("Plant");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Departments", b =>
+            modelBuilder.Entity("formneo.core.Models.Departments", b =>
                 {
                     b.Navigation("employess");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Employee", b =>
+            modelBuilder.Entity("formneo.core.Models.Employee", b =>
                 {
                     b.Navigation("empSalary");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.FormAuth", b =>
+            modelBuilder.Entity("formneo.core.Models.FormAuth", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.MainClient", b =>
+            modelBuilder.Entity("formneo.core.Models.MainClient", b =>
                 {
                     b.Navigation("Companies");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Menu", b =>
+            modelBuilder.Entity("formneo.core.Models.Menu", b =>
                 {
                     b.Navigation("SubMenus");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Positions", b =>
+            modelBuilder.Entity("formneo.core.Models.Positions", b =>
                 {
                     b.Navigation("UserApps");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketComment", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketComment", b =>
                 {
                     b.Navigation("Files");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketDepartment", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketDepartment", b =>
                 {
                     b.Navigation("DepartmentUsers");
 
@@ -6959,12 +6959,12 @@ namespace formneo.repository.Migrations
                     b.Navigation("tickets");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.TicketTeam", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.TicketTeam", b =>
                 {
                     b.Navigation("TeamList");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.Ticket.Tickets", b =>
+            modelBuilder.Entity("formneo.core.Models.Ticket.Tickets", b =>
                 {
                     b.Navigation("TicketApprove");
 
@@ -6973,34 +6973,34 @@ namespace formneo.repository.Migrations
                     b.Navigation("TicketComment");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.UserApp", b =>
+            modelBuilder.Entity("formneo.core.Models.UserApp", b =>
                 {
                     b.Navigation("DepartmentUsers");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkCompany", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkCompany", b =>
                 {
                     b.Navigation("UserApp");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkCompanyTicketMatris", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkCompanyTicketMatris", b =>
                 {
                     b.Navigation("ToCompanies");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkFlowDefination", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkFlowDefination", b =>
                 {
                     b.Navigation("Form");
 
                     b.Navigation("workflows");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkflowHead", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkflowHead", b =>
                 {
                     b.Navigation("workflowItems");
                 });
 
-            modelBuilder.Entity("vesa.core.Models.WorkflowItem", b =>
+            modelBuilder.Entity("formneo.core.Models.WorkflowItem", b =>
                 {
                     b.Navigation("approveItems");
                 });

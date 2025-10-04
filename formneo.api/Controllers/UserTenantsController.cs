@@ -5,12 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using vesa.core.DTOs;
-using vesa.core.DTOs.UserTenants;
-using vesa.core.Models;
-using vesa.core.Services;
+using formneo.core.DTOs;
+using formneo.core.DTOs.UserTenants;
+using formneo.core.Models;
+using formneo.core.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

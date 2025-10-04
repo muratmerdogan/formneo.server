@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs;
+using formneo.core.DTOs;
 
-namespace vesa.service.Validations
+namespace formneo.service.Validations
 {
     public class EmployeeDtoValidator : AbstractValidator<EmployeeDto>
     {

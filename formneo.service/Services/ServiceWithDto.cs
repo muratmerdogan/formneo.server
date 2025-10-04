@@ -10,10 +10,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs;
-using vesa.core.Models;
-using vesa.core.Repositories;
-using vesa.core.UnitOfWorks;
+using formneo.core.DTOs;
+using formneo.core.Models;
+using formneo.core.Repositories;
+using formneo.core.UnitOfWorks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace NLayer.Service.Services

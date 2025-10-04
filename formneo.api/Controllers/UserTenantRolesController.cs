@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using vesa.core.Models;
-using vesa.core.Services;
+using formneo.core.Models;
+using formneo.core.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]

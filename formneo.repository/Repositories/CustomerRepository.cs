@@ -2,10 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using vesa.core.Models.CRM;
-using vesa.core.Repositories;
+using formneo.core.Models.CRM;
+using formneo.core.Repositories;
 
-namespace vesa.repository.Repositories
+namespace formneo.repository.Repositories
 {
 	public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
 	{

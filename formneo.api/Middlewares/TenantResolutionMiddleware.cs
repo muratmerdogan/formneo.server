@@ -4,16 +4,16 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using vesa.core.Services;
-using vesa.core.Options;
+using formneo.core.Services;
+using formneo.core.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
-using vesa.core.Models;
+using formneo.core.Models;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
-namespace vesa.api.Middlewares
+namespace formneo.api.Middlewares
 {
 	public class TenantResolutionMiddleware
 	{

@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.Models.CRM
+namespace formneo.core.Models.CRM
 {
 	public enum OfficialRole
 	{
@@ -12,7 +12,7 @@ namespace vesa.core.Models.CRM
 		Diger
 	}
 
-	public class CustomerOfficial : vesa.core.Models.BaseEntity
+	public class CustomerOfficial : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public string FullName { get; set; }

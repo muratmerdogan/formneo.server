@@ -1,6 +1,6 @@
-﻿using vesa.core.Models;
+﻿using formneo.core.Models;
 
-namespace vesa.core.Repositories
+namespace formneo.core.Repositories
 {
     public interface IPositionRepository : IGenericRepository<Positions>
     {

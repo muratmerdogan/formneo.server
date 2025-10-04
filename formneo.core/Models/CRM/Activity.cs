@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.Models.CRM
+namespace formneo.core.Models.CRM
 {
 	public enum ActivityType
 	{
@@ -19,7 +19,7 @@ namespace vesa.core.Models.CRM
 		Canceled
 	}
 
-	public class Activity : vesa.core.Models.BaseEntity
+	public class Activity : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public Guid? OpportunityId { get; set; }

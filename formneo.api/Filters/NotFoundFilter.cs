@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using vesa.core.DTOs;
-using vesa.core.Models;
-using vesa.core.Services;
-using vesa.core.Models.TaskManagement;
+using formneo.core.DTOs;
+using formneo.core.Models;
+using formneo.core.Services;
+using formneo.core.Models.TaskManagement;
 
-namespace vesa.api.Filters
+namespace formneo.api.Filters
 {
     public class NotFoundFilter<T> : IAsyncActionFilter where T : BaseEntity
     {

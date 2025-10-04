@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models;
+using formneo.core.Models;
 
-namespace vesa.core.DTOs.Budget.JobCodeRequest
+namespace formneo.core.DTOs.Budget.JobCodeRequest
 {
     public class BudgetPromotionRequestInsertDto
     {

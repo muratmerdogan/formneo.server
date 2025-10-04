@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using vesa.core.DTOs.UserTenants;
-using vesa.core.Models;
+using formneo.core.DTOs.UserTenants;
+using formneo.core.Models;
 using NLayer.Core.Services;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
     public interface IUserTenantService : IGlobalServiceWithDto<UserTenant, UserTenantListDto>
     {

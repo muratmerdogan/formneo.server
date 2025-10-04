@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using vesa.core.DTOs;
+using formneo.core.DTOs;
 
-namespace vesa.api.Filters
+namespace formneo.api.Filters
 {
     public class ValidateFilterAttribute : ActionFilterAttribute
     {

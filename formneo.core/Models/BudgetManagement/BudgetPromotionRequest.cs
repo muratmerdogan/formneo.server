@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.Models.BudgetManagement
+namespace formneo.core.Models.BudgetManagement
 {
     public class BudgetPromotionRequest : BaseEntity
     {

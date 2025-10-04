@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.Models
+namespace formneo.core.Models
 {
     public class Customer : BaseEntity
     {
@@ -15,7 +15,7 @@ namespace vesa.core.Models
 
         [Required]
         [MaxLength(100)]
-        public string MailExtension { get; set; } // Mail uzantısı örnek: @vesacons.com
+        public string MailExtension { get; set; } // Mail uzantısı örnek: @formneo.com
 
 
         public virtual ICollection<UserApp> Users { get; set; }

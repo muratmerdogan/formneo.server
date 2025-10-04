@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
     public interface IService<T> where T : class
     {

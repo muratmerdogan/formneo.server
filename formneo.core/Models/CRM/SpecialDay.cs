@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.Models.CRM
+namespace formneo.core.Models.CRM
 {
-	public class SpecialDay : vesa.core.Models.BaseEntity
+	public class SpecialDay : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public string Title { get; set; }

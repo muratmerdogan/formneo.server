@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using vesa.core.DTOs.Lookup;
+using formneo.core.DTOs.Lookup;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
 	public interface ILookupService
 	{

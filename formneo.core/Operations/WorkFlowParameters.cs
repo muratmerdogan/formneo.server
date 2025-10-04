@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs;
-using vesa.core.Models;
-using vesa.core.Services;
+using formneo.core.DTOs;
+using formneo.core.Models;
+using formneo.core.Services;
 
-namespace vesa.core.Operations
+namespace formneo.core.Operations
 {
     public  class WorkFlowParameters
     {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.Models.Ticket
+namespace formneo.core.Models.Ticket
 {
     public class Comment : BaseEntity
     {

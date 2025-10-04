@@ -1,4 +1,4 @@
-﻿namespace vesa.caching
+﻿namespace formneo.caching
 {
     public class Class1
     {

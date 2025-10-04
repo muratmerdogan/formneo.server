@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using NLayer.Core.Services;
-using vesa.core.DTOs;
-using vesa.core.DTOs.DepartmentUserDto;
-using vesa.core.DTOs.Ticket;
-using vesa.core.DTOs.Ticket.TicketDepartments;
-using vesa.core.Models.Ticket;
-using vesa.core.Services;
+using formneo.core.DTOs;
+using formneo.core.DTOs.DepartmentUserDto;
+using formneo.core.DTOs.Ticket;
+using formneo.core.DTOs.Ticket.TicketDepartments;
+using formneo.core.Models.Ticket;
+using formneo.core.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

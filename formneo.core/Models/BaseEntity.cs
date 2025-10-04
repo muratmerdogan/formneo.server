@@ -7,9 +7,9 @@ using System.Net.Mail;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Configuration;
+using formneo.core.Configuration;
 
-namespace vesa.core.Models
+namespace formneo.core.Models
 {
 
     public abstract class BaseEntity

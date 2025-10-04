@@ -1,6 +1,6 @@
 using System;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
 	public interface ITenantContext
 	{

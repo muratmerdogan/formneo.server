@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NLayer.Core.Services;
-using vesa.core.DTOs;
-using vesa.core.DTOs.FormAssign;
-using vesa.core.DTOs.FormAuth;
-using vesa.core.Models;
-using vesa.core.Services;
-using vesa.service.Services;
+using formneo.core.DTOs;
+using formneo.core.DTOs.FormAssign;
+using formneo.core.DTOs.FormAuth;
+using formneo.core.Models;
+using formneo.core.Services;
+using formneo.service.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

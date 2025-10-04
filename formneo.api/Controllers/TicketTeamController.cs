@@ -1,19 +1,19 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NLayer.Core.Services;
-using vesa.core.DTOs.Ticket;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Ticket.TicketDepartments;
-using vesa.core.DTOs.Ticket.TicketTeams;
-using vesa.core.Models.Ticket;
-using vesa.core.Services;
-using vesa.service.Services;
-using vesa.core.UnitOfWorks;
+using formneo.core.DTOs.Ticket;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Ticket.TicketDepartments;
+using formneo.core.DTOs.Ticket.TicketTeams;
+using formneo.core.Models.Ticket;
+using formneo.core.Services;
+using formneo.service.Services;
+using formneo.core.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

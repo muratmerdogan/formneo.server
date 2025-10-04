@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.PositionsDtos
+namespace formneo.core.DTOs.PositionsDtos
 {
     public class CreatePositionDto
     {

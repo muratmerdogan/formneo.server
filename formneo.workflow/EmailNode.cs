@@ -6,9 +6,9 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models;
+using formneo.core.Models;
 
-namespace vesa.workflow
+namespace formneo.workflow
 {
     public class EmailNode
     {
@@ -29,11 +29,11 @@ namespace vesa.workflow
 
         private void SendMail(string mailSubject)
         {
-            string senderEmail = "murat.merdogan@vesacons.com";
+            string senderEmail = "murat.merdogan@formneo.com";
             string senderPassword = "Ecm2634@!";
 
             // E-posta alıcısının adresi
-            string toEmail = "murat.merdogan@vesacons.com";
+            string toEmail = "murat.merdogan@formneo.com";
 
 
             // E-posta başlığı ve içeriği

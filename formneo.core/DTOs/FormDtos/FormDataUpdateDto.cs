@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.FormDto
+namespace formneo.core.DTOs.FormDto
 {
     public class FormDataUpdateDto
     {

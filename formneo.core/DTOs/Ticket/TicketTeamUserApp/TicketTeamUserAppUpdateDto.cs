@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.Ticket.TicketTeams
+namespace formneo.core.DTOs.Ticket.TicketTeams
 {
     public class TicketTeamUserAppUpdateDto
     {

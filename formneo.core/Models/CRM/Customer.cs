@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using vesa.core.Models.Lookup;
+using formneo.core.Models.Lookup;
 
-namespace vesa.core.Models.CRM
+namespace formneo.core.Models.CRM
 {
 
 	public enum LifecycleStage
@@ -16,7 +16,7 @@ namespace vesa.core.Models.CRM
 		Evangelist
 	}
 
-	public class Customer : vesa.core.Models.BaseEntity
+	public class Customer : formneo.core.Models.BaseEntity
 	{
 		// Lookup FK + Navigation (örnek: CustomerType)
 		public Guid? CustomerTypeId { get; set; }

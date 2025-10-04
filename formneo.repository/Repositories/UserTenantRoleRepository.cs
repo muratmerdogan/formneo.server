@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using vesa.core.Models;
-using vesa.core.Repositories;
+using formneo.core.Models;
+using formneo.core.Repositories;
 
-namespace vesa.repository.Repositories
+namespace formneo.repository.Repositories
 {
 	public class UserTenantRoleRepository : GenericRepository<UserTenantRole>, IUserTenantRoleRepository
 	{

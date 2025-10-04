@@ -7,20 +7,20 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["vesa.api/vesa.api.csproj", "vesa.api/"]
-COPY ["vesa.service/vesa.service.csproj", "vesa.service/"]
-COPY ["vesa.repository/vesa.repository.csproj", "vesa.repository/"]
-COPY ["vesa.core/vesa.core.csproj", "vesa.core/"]
-COPY ["vesa.workflow/vesa.workflow.csproj", "vesa.workflow/"]
-RUN dotnet restore "vesa.api/vesa.api.csproj"
+COPY ["formneo.api/formneo.api.csproj", "formneo.api/"]
+COPY ["formneo.service/formneo.service.csproj", "formneo.service/"]
+COPY ["formneo.repository/formneo.repository.csproj", "formneo.repository/"]
+COPY ["formneo.core/formneo.core.csproj", "formneo.core/"]
+COPY ["formneo.workflow/formneo.workflow.csproj", "formneo.workflow/"]
+RUN dotnet restore "formneo.api/formneo.api.csproj"
 COPY . .
-WORKDIR "/src/vesa.api"
-RUN dotnet build "vesa.api.csproj" -c Release -o /app/build
+WORKDIR "/src/formneo.api"
+RUN dotnet build "formneo.api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "vesa.api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "formneo.api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "vesa.api.dll"]
+ENTRYPOINT ["dotnet", "formneo.api.dll"]

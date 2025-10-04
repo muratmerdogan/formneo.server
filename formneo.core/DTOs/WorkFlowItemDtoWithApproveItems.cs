@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs;
-using vesa.core.Models;
+using formneo.core.DTOs;
+using formneo.core.Models;
 
-namespace vesa.core
+namespace formneo.core
 {
     public class WorkFlowItemDtoWithApproveItems
     {

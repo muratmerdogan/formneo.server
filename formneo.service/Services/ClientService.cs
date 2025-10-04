@@ -5,15 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.Clients;
-using vesa.core.Models;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
-using vesa.repository;
+using formneo.core.DTOs.Clients;
+using formneo.core.Models;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
+using formneo.repository;
 using Microsoft.EntityFrameworkCore;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
     public class ClientService: Service<MainClient>, IClientService
     {
@@ -53,7 +53,7 @@ namespace vesa.service.Services
         public async Task<Dictionary<Guid, int>> GetUserCountsByTenantAsync()
         {
             // Resolve repository via context to avoid circular deps; using context directly for aggregation
-            var context = (AppDbContext)((vesa.repository.Repositories.GenericRepository<MainClient>)_clientRepository).GetType()
+            var context = (AppDbContext)((formneo.repository.Repositories.GenericRepository<MainClient>)_clientRepository).GetType()
                 .GetField("_context", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                 ?.GetValue(_clientRepository);
 

@@ -3,16 +3,16 @@ using NLayer.Core.Services;
 using NLayer.Service.Services;
 using System.Net.Mail;
 using System.Net;
-using vesa.core.DTOs;
-using vesa.core.Models;
-using vesa.core.Operations;
-using vesa.core.Services;
-using vesa.service.Services;
+using formneo.core.DTOs;
+using formneo.core.Models;
+using formneo.core.Operations;
+using formneo.core.Services;
+using formneo.service.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using vesa.core.DTOs.Budget.SF;
+using formneo.core.DTOs.Budget.SF;
 
-namespace vesa.workflow
+namespace formneo.workflow
 {
     public class WorkFlowExecute
     {
@@ -194,11 +194,11 @@ namespace vesa.workflow
         private static void SendMail(MailStatus status, string UserName, string SendApproverSurname, string approveId, string text = "")
         {
 
-            string senderEmail = "support@vesacons.com";
+            string senderEmail = "support@formneo.com";
             string senderPassword = "Sifre2634@!!";
 
             // E-posta alıcısının adresi
-            string toEmail = "murat.merdogan@vesacons.com";
+            string toEmail = "murat.merdogan@formneo.com";
 
             // E-posta başlığı
             string subject = "Onay Süreci Hakkında Bilgilendirme";
@@ -259,11 +259,11 @@ namespace vesa.workflow
         </div>
 
         <p>Gerekli aksiyonları zamanında almanızı rica ederiz.</p>
-        <p style=""color:#0056b3;""><strong>Vesa Destek Sistemi: https://support.vesa-tech.com/</strong></p>
+        <p style=""color:#0056b3;""><strong>formneo Destek Sistemi: https://support.formneo-tech.com/</strong></p>
         
         <div class='footer'>
             <p>Bu e-posta otomatik olarak oluşturulmuştur, lütfen yanıtlamayınız.</p>
-            <p><strong>Vesacons</strong></p>
+            <p><strong>formneo</strong></p>
         </div>
     </div>
 </body>

@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using NLayer.Core.Services;
-using vesa.core.DTOs;
-using vesa.core.Models;
-using vesa.core.Services;
+using formneo.core.DTOs;
+using formneo.core.Models;
+using formneo.core.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
 
     [Route("api/[controller]")]

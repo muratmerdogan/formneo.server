@@ -1,4 +1,4 @@
-﻿namespace vesa.core.DTOs.Budget.SF
+﻿namespace formneo.core.DTOs.Budget.SF
 {
     public abstract class IGenericListDto
     {

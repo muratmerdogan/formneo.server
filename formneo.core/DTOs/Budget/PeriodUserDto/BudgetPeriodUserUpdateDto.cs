@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.BudgetManagement;
+using formneo.core.Models.BudgetManagement;
 
-namespace vesa.core.DTOs.Budget.PeriodUserDto
+namespace formneo.core.DTOs.Budget.PeriodUserDto
 {
     public class BudgetPeriodUserUpdateDto
     {

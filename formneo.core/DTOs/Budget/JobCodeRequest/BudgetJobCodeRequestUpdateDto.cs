@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models;
-using vesa.core.Models.BudgetManagement;
+using formneo.core.Models;
+using formneo.core.Models.BudgetManagement;
 
-namespace vesa.core.DTOs.Budget.JobCodeRequest
+namespace formneo.core.DTOs.Budget.JobCodeRequest
 {
     public class BudgetJobCodeRequestUpdateDto
     {

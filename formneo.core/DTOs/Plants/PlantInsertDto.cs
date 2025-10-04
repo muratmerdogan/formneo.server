@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.Plants
+namespace formneo.core.DTOs.Plants
 {
     public class PlantInsertDto
     {

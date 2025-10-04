@@ -4,14 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using vesa.core.DTOs.CRM;
-using vesa.core.Models.CRM;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
-using vesa.service.Exceptions;
+using formneo.core.DTOs.CRM;
+using formneo.core.Models.CRM;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
+using formneo.service.Exceptions;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
 	public class CustomerAddressService : ICustomerAddressService
 	{

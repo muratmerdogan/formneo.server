@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace vesa.core.DTOs
+namespace formneo.core.DTOs
 {
     public class RoleTenantMenuListDto
     {

@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models;
+using formneo.core.Models;
 
-namespace vesa.repository.Seeds
+namespace formneo.repository.Seeds
 {
     internal class EmployeeSeed : IEntityTypeConfiguration<Employee>
     {
@@ -15,9 +15,9 @@ namespace vesa.repository.Seeds
         {
 
             //builder.HasData(
-            //    new Employee { Id = Guid.NewGuid(), Client = "00", Company = "01", Plant = "01", PersId = "14", Name = "Murat", Surname = "Merdoğan", Email = "murat.merdogan@vesacons.com", City = "Eskişehir"  },
-            //    new Employee { Id = Guid.NewGuid(), Client = "00", Company = "01", Plant = "01", PersId = "24", Name = "Muhammed", Surname = "Kadan", Email = "murat.merdogan@vesacons.com", City = "Eskişehir",  },
-            //    new Employee { Id = Guid.NewGuid(), Client = "00", Company = "01", Plant = "01", PersId = "43", Name = "Bolat", Surname = "Çiftçi", Email = "murat.merdogan@vesacons.com", City = "Eskişehir" });
+            //    new Employee { Id = Guid.NewGuid(), Client = "00", Company = "01", Plant = "01", PersId = "14", Name = "Murat", Surname = "Merdoğan", Email = "murat.merdogan@formneo.com", City = "Eskişehir"  },
+            //    new Employee { Id = Guid.NewGuid(), Client = "00", Company = "01", Plant = "01", PersId = "24", Name = "Muhammed", Surname = "Kadan", Email = "murat.merdogan@formneo.com", City = "Eskişehir",  },
+            //    new Employee { Id = Guid.NewGuid(), Client = "00", Company = "01", Plant = "01", PersId = "43", Name = "Bolat", Surname = "Çiftçi", Email = "murat.merdogan@formneo.com", City = "Eskişehir" });
 
 
             //builder.HasData(

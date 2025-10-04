@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace vesa.core.Models.Ticket
+namespace formneo.core.Models.Ticket
 {
     [Index(nameof(TicketTeamId), nameof(UserAppId), IsUnique = true)]
     public class TicketTeamUserApp : BaseEntity

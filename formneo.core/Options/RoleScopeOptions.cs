@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace vesa.core.Options
+namespace formneo.core.Options
 {
 	public class RoleScopeOptions
 	{

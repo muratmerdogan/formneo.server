@@ -1,6 +1,6 @@
 using System;
 
-namespace vesa.core.DTOs.UserTenants
+namespace formneo.core.DTOs.UserTenants
 {
     public class UserTenantFullDto
     {

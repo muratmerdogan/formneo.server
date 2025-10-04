@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using vesa.core.Models.Lookup;
+using formneo.core.Models.Lookup;
 
-namespace vesa.repository.Configurations.Lookup
+namespace formneo.repository.Configurations.Lookup
 {
 	public class LookupItemConfiguration : IEntityTypeConfiguration<LookupItem>
 	{

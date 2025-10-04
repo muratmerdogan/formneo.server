@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.Models
+namespace formneo.core.Models
 {
     public class Users : BaseEntity
     {

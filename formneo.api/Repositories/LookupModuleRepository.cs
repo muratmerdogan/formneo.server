@@ -1,9 +1,9 @@
-using vesa.core.Models.Lookup;
-using vesa.core.Repositories;
-using vesa.repository;
-using vesa.repository.Repositories;
+using formneo.core.Models.Lookup;
+using formneo.core.Repositories;
+using formneo.repository;
+using formneo.repository.Repositories;
 
-namespace vesa.repository.Repositories
+namespace formneo.repository.Repositories
 {
 	public class LookupModuleRepository : GenericRepository<LookupModule>, ILookupModuleRepository
 	{

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using vesa.core.DTOs.Clients;
-using vesa.core.Models;
-using vesa.core.Repositories;
+using formneo.core.DTOs.Clients;
+using formneo.core.Models;
+using formneo.core.Repositories;
 
-namespace vesa.core.Repositories
+namespace formneo.core.Repositories
 {
     public interface IClientRepository : IGenericRepository<MainClient>
     {

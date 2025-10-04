@@ -1,4 +1,4 @@
-﻿namespace vesa.core.DTOs.PositionsDtos
+﻿namespace formneo.core.DTOs.PositionsDtos
 {
     public class UpdatePositionDto
     {

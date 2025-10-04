@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using vesa.core.Models.Ticket;
+using formneo.core.Models.Ticket;
 
-namespace vesa.core.Models
+namespace formneo.core.Models
 {
     public class Positions:BaseEntity
     {

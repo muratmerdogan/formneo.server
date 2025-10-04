@@ -1,4 +1,4 @@
-﻿using vesa.core.Models.Ticket;
+﻿using formneo.core.Models.Ticket;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,12 +6,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.Ticket;
-using vesa.core.Models;
-using vesa.core.DTOs.Ticket.TicketAssigne;
-using vesa.core.DTOs.Ticket.TicketNotifications;
+using formneo.core.Models.Ticket;
+using formneo.core.Models;
+using formneo.core.DTOs.Ticket.TicketAssigne;
+using formneo.core.DTOs.Ticket.TicketNotifications;
 
-namespace vesa.core.DTOs.Ticket.Tickets
+namespace formneo.core.DTOs.Ticket.Tickets
 {
     public class TicketUpdateDto
     {

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.NewFolder;
-using vesa.core.Repositories;
+using formneo.core.Models.NewFolder;
+using formneo.core.Repositories;
 
-namespace vesa.repository.Repositories
+namespace formneo.repository.Repositories
 {
     public class KanbanRepository : GenericRepository<Kanban>, IKanbanRepository
     {

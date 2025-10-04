@@ -4,13 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using vesa.core.DTOs.UserTenants;
-using vesa.core.Models;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
+using formneo.core.DTOs.UserTenants;
+using formneo.core.Models;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
     public class UserTenantService : IUserTenantService
     {
@@ -143,9 +143,9 @@ namespace vesa.service.Services
                 // mevcut mimaride doğrudan erişim yoksa, ekleme sırasında başarısız olacak kayıtları filtreleyebilmek için
                 // UserTenantRepository'de Include ile okuma yapılabildiği varsayımıyla _repository üzerinden context'e erişiyoruz.
 
-                // Context'e erişim: _repository as vesa.repository.Repositories.UserTenantRepository
-                var concreteRepo = _repository as vesa.repository.Repositories.UserTenantRepository;
-                var ctx = concreteRepo != null ? concreteRepo.GetType().GetField("_context", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(concreteRepo) as vesa.repository.AppDbContext : null;
+                // Context'e erişim: _repository as formneo.repository.Repositories.UserTenantRepository
+                var concreteRepo = _repository as formneo.repository.Repositories.UserTenantRepository;
+                var ctx = concreteRepo != null ? concreteRepo.GetType().GetField("_context", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(concreteRepo) as formneo.repository.AppDbContext : null;
 
                 List<string> validUserIds = distinctUserIds;
                 if (ctx != null)
@@ -186,92 +186,92 @@ namespace vesa.service.Services
         }
 
         // IServiceWithDto methods
-        public async Task<vesa.core.DTOs.CustomResponseDto<UserTenantListDto>> GetByIdAsync(string id)
+        public async Task<formneo.core.DTOs.CustomResponseDto<UserTenantListDto>> GetByIdAsync(string id)
         {
             var entity = await _genericRepository.GetByIdStringAsync(id);
             var dto = _mapper.Map<UserTenantListDto>(entity);
-            return vesa.core.DTOs.CustomResponseDto<UserTenantListDto>.Success(200, dto);
+            return formneo.core.DTOs.CustomResponseDto<UserTenantListDto>.Success(200, dto);
         }
 
-        public async Task<vesa.core.DTOs.CustomResponseDto<UserTenantListDto>> GetByIdGuidAsync(Guid id)
+        public async Task<formneo.core.DTOs.CustomResponseDto<UserTenantListDto>> GetByIdGuidAsync(Guid id)
         {
             var entity = await _genericRepository.GetByIdStringGuidAsync(id);
             var dto = _mapper.Map<UserTenantListDto>(entity);
-            return vesa.core.DTOs.CustomResponseDto<UserTenantListDto>.Success(200, dto);
+            return formneo.core.DTOs.CustomResponseDto<UserTenantListDto>.Success(200, dto);
         }
 
-        public async Task<vesa.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>> GetAllAsync()
+        public async Task<formneo.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>> GetAllAsync()
         {
             var list = await _genericRepository.GetAll().ToListAsync();
             var dtos = _mapper.Map<IEnumerable<UserTenantListDto>>(list);
-            return vesa.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>.Success(200, dtos);
+            return formneo.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>.Success(200, dtos);
         }
 
-        public async Task<vesa.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>> Where(System.Linq.Expressions.Expression<Func<UserTenant, bool>> expression)
+        public async Task<formneo.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>> Where(System.Linq.Expressions.Expression<Func<UserTenant, bool>> expression)
         {
             var list = await _genericRepository.Where(expression).ToListAsync();
             var dtos = _mapper.Map<IEnumerable<UserTenantListDto>>(list);
-            return vesa.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>.Success(200, dtos);
+            return formneo.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>.Success(200, dtos);
         }
 
-        public async Task<vesa.core.DTOs.CustomResponseDto<bool>> AnyAsync(System.Linq.Expressions.Expression<Func<UserTenant, bool>> expression)
+        public async Task<formneo.core.DTOs.CustomResponseDto<bool>> AnyAsync(System.Linq.Expressions.Expression<Func<UserTenant, bool>> expression)
         {
             var exists = await _genericRepository.AnyAsync(expression);
-            return vesa.core.DTOs.CustomResponseDto<bool>.Success(200, exists);
+            return formneo.core.DTOs.CustomResponseDto<bool>.Success(200, exists);
         }
 
-        public async Task<vesa.core.DTOs.CustomResponseDto<UserTenantListDto>> AddAsync(UserTenantListDto dto)
+        public async Task<formneo.core.DTOs.CustomResponseDto<UserTenantListDto>> AddAsync(UserTenantListDto dto)
         {
             var entity = _mapper.Map<UserTenant>(dto);
             await _genericRepository.AddAsync(entity);
             await _unitOfWork.CommitAsync();
             var newDto = _mapper.Map<UserTenantListDto>(entity);
-            return vesa.core.DTOs.CustomResponseDto<UserTenantListDto>.Success(201, newDto);
+            return formneo.core.DTOs.CustomResponseDto<UserTenantListDto>.Success(201, newDto);
         }
 
-        public async Task<vesa.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>> AddRangeAsync(IEnumerable<UserTenantListDto> dtos)
+        public async Task<formneo.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>> AddRangeAsync(IEnumerable<UserTenantListDto> dtos)
         {
             var entities = _mapper.Map<IEnumerable<UserTenant>>(dtos);
             await _genericRepository.AddRangeAsync(entities);
             await _unitOfWork.CommitAsync();
             var newDtos = _mapper.Map<IEnumerable<UserTenantListDto>>(entities);
-            return vesa.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>.Success(201, newDtos);
+            return formneo.core.DTOs.CustomResponseDto<IEnumerable<UserTenantListDto>>.Success(201, newDtos);
         }
 
-        public async Task<vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>> UpdateAsync(UserTenantListDto dto)
+        public async Task<formneo.core.DTOs.CustomResponseDto<formneo.core.DTOs.NoContentDto>> UpdateAsync(UserTenantListDto dto)
         {
             var entity = _mapper.Map<UserTenant>(dto);
             _genericRepository.Update(entity);
             await _unitOfWork.CommitAsync();
-            return vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>.Success(204);
+            return formneo.core.DTOs.CustomResponseDto<formneo.core.DTOs.NoContentDto>.Success(204);
         }
 
-        public async Task<vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>> RemoveAsync(string id)
+        public async Task<formneo.core.DTOs.CustomResponseDto<formneo.core.DTOs.NoContentDto>> RemoveAsync(string id)
         {
             var entity = await _genericRepository.GetByIdStringAsync(id);
             _genericRepository.Remove(entity);
             await _unitOfWork.CommitAsync();
-            return vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>.Success(204);
+            return formneo.core.DTOs.CustomResponseDto<formneo.core.DTOs.NoContentDto>.Success(204);
         }
 
-        public async Task<vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>> RemoveAsyncByGuid(Guid id)
+        public async Task<formneo.core.DTOs.CustomResponseDto<formneo.core.DTOs.NoContentDto>> RemoveAsyncByGuid(Guid id)
         {
             var entity = await _genericRepository.GetByIdStringGuidAsync(id);
             _genericRepository.Remove(entity);
             await _unitOfWork.CommitAsync();
-            return vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>.Success(204);
+            return formneo.core.DTOs.CustomResponseDto<formneo.core.DTOs.NoContentDto>.Success(204);
         }
 
-        public Task<vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>> RemoveRangeAsync(IEnumerable<int> ids)
+        public Task<formneo.core.DTOs.CustomResponseDto<formneo.core.DTOs.NoContentDto>> RemoveRangeAsync(IEnumerable<int> ids)
         {
-            return Task.FromResult(vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>.Success(204));
+            return Task.FromResult(formneo.core.DTOs.CustomResponseDto<formneo.core.DTOs.NoContentDto>.Success(204));
         }
 
-        public async Task<vesa.core.DTOs.CustomResponseDto<UserTenantListDto>> Find(System.Linq.Expressions.Expression<Func<UserTenant, bool>> expression)
+        public async Task<formneo.core.DTOs.CustomResponseDto<UserTenantListDto>> Find(System.Linq.Expressions.Expression<Func<UserTenant, bool>> expression)
         {
             var entity = await _genericRepository.Where(expression).FirstOrDefaultAsync();
             var dto = _mapper.Map<UserTenantListDto>(entity);
-            return vesa.core.DTOs.CustomResponseDto<UserTenantListDto>.Success(200, dto);
+            return formneo.core.DTOs.CustomResponseDto<UserTenantListDto>.Success(200, dto);
         }
 
         public Task<IQueryable<UserTenant>> Include()
@@ -279,12 +279,12 @@ namespace vesa.service.Services
             return Task.FromResult(_genericRepository.GetAll());
         }
 
-        public async Task<vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>> SoftDeleteAsync(Guid id)
+        public async Task<formneo.core.DTOs.CustomResponseDto<formneo.core.DTOs.NoContentDto>> SoftDeleteAsync(Guid id)
         {
             var entity = await _genericRepository.GetByIdStringGuidAsync(id);
             entity.IsDelete = true;
             await _unitOfWork.CommitAsync();
-            return vesa.core.DTOs.CustomResponseDto<vesa.core.DTOs.NoContentDto>.Success(204);
+            return formneo.core.DTOs.CustomResponseDto<formneo.core.DTOs.NoContentDto>.Success(204);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.service.Exceptions
+namespace formneo.service.Exceptions
 {
     public class NotFoundExcepiton : Exception
     {

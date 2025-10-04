@@ -1,8 +1,8 @@
 ﻿# Ignore Visual Studio temporary files, build results, and
 # user-specific files
-vesa.ronesans.server/.vscode/
+formneo.ronesans.server/.vscode/
 src/.vs/
-vesa.ronesans.server/.vs/*
+formneo.ronesans.server/.vs/*
 .vscode/*
 .vs/*
 

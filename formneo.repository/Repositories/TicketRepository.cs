@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models;
-using vesa.core.Models.Ticket;
-using vesa.core.Repositories;
+using formneo.core.Models;
+using formneo.core.Models.Ticket;
+using formneo.core.Repositories;
 
-namespace vesa.repository.Repositories
+namespace formneo.repository.Repositories
 {
     public class TicketRepository : GenericRepository<Tickets>, ITicketRepository
     {

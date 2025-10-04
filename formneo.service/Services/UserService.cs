@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLayer.Core.Services;
 using System;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Budget.SF;
-using vesa.core.Models;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Budget.SF;
+using formneo.core.Models;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
     public class UserService : IUserService
     {

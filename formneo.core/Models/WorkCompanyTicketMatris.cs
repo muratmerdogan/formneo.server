@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace vesa.core.Models
+namespace formneo.core.Models
 {
     public class WorkCompanyTicketMatris : BaseEntity
     {

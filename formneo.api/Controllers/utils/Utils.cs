@@ -3,7 +3,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Net.Mime;
 
-namespace vesa.api.Controllers.utils
+namespace formneo.api.Controllers.utils
 {
     public static class Utils
     {
@@ -21,8 +21,8 @@ namespace vesa.api.Controllers.utils
         public static List<string> GetMails()
         {
             List<string> tolist = new List<string>();
-            tolist.Add("murat.merdogan@vesacons.com");
-            tolist.Add("kardelen.baltaci@vesacons.com");
+            tolist.Add("murat.merdogan@formneo.com");
+            tolist.Add("kardelen.baltaci@formneo.com");
             tolist.Add("muratmerdogan@gmail.com");
             tolist.Add("busraydemir.26@gmail.com");
 
@@ -30,7 +30,7 @@ namespace vesa.api.Controllers.utils
         }
         public static void SendMail(string mailSubject, string mailText, List<string> toList, List<string>? ccList = null,bool? isAttachment=null)
         {
-            string senderEmail = "support@vesacons.com";
+            string senderEmail = "support@formneo.com";
             string senderPassword = "Sifre2634@!!";
 
             // E-posta başlığı ve içeriği
@@ -54,8 +54,8 @@ namespace vesa.api.Controllers.utils
             mail.IsBodyHtml = true;
             if (isAttachment == true)
             {
-                string base64WordFile = VesaLogo.ticketSystemDocument;
-                string fileName = "vesatickets.docx";
+                string base64WordFile = formneoLogo.ticketSystemDocument;
+                string fileName = "formneotickets.docx";
                 byte[] fileBytes = Convert.FromBase64String(base64WordFile);
                 MemoryStream ms = new MemoryStream(fileBytes);
                 Attachment attachment = new Attachment(ms, fileName, MediaTypeNames.Application.Octet);
@@ -66,8 +66,8 @@ namespace vesa.api.Controllers.utils
             {
                 mail.To.Add(new MailAddress(item));
             }
-            //mail.Bcc.Add("murat.merdogan@vesacons.com");
-            //mail.Bcc.Add("busra.aydemir@vesacons.com");
+            //mail.Bcc.Add("murat.merdogan@formneo.com");
+            //mail.Bcc.Add("busra.aydemir@formneo.com");
             if (ccList != null)
             {
                 foreach (var item in ccList)

@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.Ticket;
+using formneo.core.Models.Ticket;
 
-namespace vesa.core.Models.Inventory
+namespace formneo.core.Models.Inventory
 {
     public class Inventory : BaseEntity
     {

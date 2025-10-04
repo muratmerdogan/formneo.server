@@ -11,19 +11,19 @@ using Newtonsoft.Json.Linq;
 using NLayer.Core.Services;
 using System.Dynamic;
 using System.Text;
-using vesa.api.Filters;
-using vesa.api.Helper;
-using vesa.core.DTOs;
-using vesa.core.DTOs.FormAssign;
-using vesa.core.DTOs.FormDto;
-using vesa.core.Models;
-using vesa.core.Models.FormEnums;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
-using vesa.repository.UnitOfWorks;
-using vesa.service.Services;
+using formneo.api.Filters;
+using formneo.api.Helper;
+using formneo.core.DTOs;
+using formneo.core.DTOs.FormAssign;
+using formneo.core.DTOs.FormDto;
+using formneo.core.Models;
+using formneo.core.Models.FormEnums;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
+using formneo.repository.UnitOfWorks;
+using formneo.service.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
 
     [Route("api/[controller]")]
@@ -322,8 +322,8 @@ namespace vesa.api.Controllers
         private async Task SendMailFormUpdate(string userName, string formName, string valuesJson, string formDesign)
         {
             List<string> tolist = new List<string>();
-            tolist.Add("busra.aydemir@vesacons.com");
-            tolist.Add("murat.merdogan@vesacons.com");
+            tolist.Add("busra.aydemir@formneo.com");
+            tolist.Add("murat.merdogan@formneo.com");
 
             JObject dataObj = JObject.Parse(valuesJson);
             JObject formData = (JObject)dataObj["data"];
@@ -358,10 +358,10 @@ namespace vesa.api.Controllers
                             <tr>
                                 <!-- Logo ve Başlık birlikte yer alacak -->
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                             </tr>
                         </table>
@@ -375,7 +375,7 @@ namespace vesa.api.Controllers
                             <p style='font-size:13px;'><strong>Form Detayları:</strong></p>
                             {htmlDataContent}
                             <br>
-                            <p style=""color:#0073e6;""><strong>Formlara ulaşmak için: https://support.vesa-tech.com/userFormList</strong></p>
+                            <p style=""color:#0073e6;""><strong>Formlara ulaşmak için: https://support.formneo-tech.com/userFormList</strong></p>
                         </td>
                     </tr>
                     <!-- FOOTER -->

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models.Inventory;
+using formneo.core.Models.Inventory;
 
-namespace vesa.core.DTOs.Inventory
+namespace formneo.core.DTOs.Inventory
 {
     public class InventoryUpdateDto
     {

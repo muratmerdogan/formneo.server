@@ -6,24 +6,24 @@ using NLayer.Core.Services;
 using NLayer.Service.Services;
 using System.Globalization;
 using System.Linq;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Budget.SF;
-using vesa.core.DTOs.DashboardDto;
-using vesa.core.DTOs.ProjectDtos;
-using vesa.core.DTOs.Ticket;
-using vesa.core.DTOs.Ticket.TicketAssigne;
-using vesa.core.DTOs.Ticket.TicketDepartments;
-using vesa.core.DTOs.Ticket.Tickets;
-using vesa.core.EnumExtensions;
-using vesa.core.Models;
-using vesa.core.Models.TaskManagement;
-using vesa.core.Models.Ticket;
-using vesa.core.Repositories;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
-using vesa.repository.Repositories;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Budget.SF;
+using formneo.core.DTOs.DashboardDto;
+using formneo.core.DTOs.ProjectDtos;
+using formneo.core.DTOs.Ticket;
+using formneo.core.DTOs.Ticket.TicketAssigne;
+using formneo.core.DTOs.Ticket.TicketDepartments;
+using formneo.core.DTOs.Ticket.Tickets;
+using formneo.core.EnumExtensions;
+using formneo.core.Models;
+using formneo.core.Models.TaskManagement;
+using formneo.core.Models.Ticket;
+using formneo.core.Repositories;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
+using formneo.repository.Repositories;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
     public class TicketService : Service<Tickets>, ITicketServices
     {

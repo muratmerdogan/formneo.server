@@ -1,6 +1,6 @@
 using System;
 
-namespace vesa.core.Models.CRM
+namespace formneo.core.Models.CRM
 {
 	public enum CrmChangeAction
 	{

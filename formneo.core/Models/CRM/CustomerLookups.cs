@@ -1,16 +1,16 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.Models.CRM
+namespace formneo.core.Models.CRM
 {
-	public class CustomerTag : vesa.core.Models.BaseEntity
+	public class CustomerTag : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public string Tag { get; set; }
 		public Customer Customer { get; set; }
 	}
 
-	public class CustomerEmail : vesa.core.Models.BaseEntity
+	public class CustomerEmail : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public string Email { get; set; }
@@ -22,7 +22,7 @@ namespace vesa.core.Models.CRM
 		public Customer Customer { get; set; }
 	}
 
-	public class CustomerDocument : vesa.core.Models.BaseEntity
+	public class CustomerDocument : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public string FileName { get; set; }
@@ -34,14 +34,14 @@ namespace vesa.core.Models.CRM
 		public Customer Customer { get; set; }
 	}
 
-	public class CustomerSector : vesa.core.Models.BaseEntity
+	public class CustomerSector : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public string Sector { get; set; }
 		public Customer Customer { get; set; }
 	}
 
-	public class CustomerCustomField : vesa.core.Models.BaseEntity
+	public class CustomerCustomField : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public string FieldId { get; set; }
@@ -51,7 +51,7 @@ namespace vesa.core.Models.CRM
 		public Customer Customer { get; set; }
 	}
 
-	public class CustomerPhone : vesa.core.Models.BaseEntity
+	public class CustomerPhone : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public string Label { get; set; }
@@ -61,7 +61,7 @@ namespace vesa.core.Models.CRM
 		public Customer Customer { get; set; }
 	}
 
-	public class CustomerNote : vesa.core.Models.BaseEntity
+	public class CustomerNote : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public DateTime Date { get; set; }

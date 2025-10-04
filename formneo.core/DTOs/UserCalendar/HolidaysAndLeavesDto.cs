@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.UserCalendar
+namespace formneo.core.DTOs.UserCalendar
 {
     public class HolidaysAndLeavesDto
     {

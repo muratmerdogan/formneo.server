@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using vesa.core.Models;
+using formneo.core.Models;
 
-namespace vesa.core.DTOs
+namespace formneo.core.DTOs
 {
     public class WorkCompanyTicketMatrisListDto
     {

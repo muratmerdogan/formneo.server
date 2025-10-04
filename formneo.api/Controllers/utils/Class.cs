@@ -1,4 +1,4 @@
-﻿namespace vesa.api.Controllers.utils
+﻿namespace formneo.api.Controllers.utils
 {
     public class Class
     {

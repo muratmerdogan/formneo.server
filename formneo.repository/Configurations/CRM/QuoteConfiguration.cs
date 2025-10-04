@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using vesa.core.Models.CRM;
+using formneo.core.Models.CRM;
 
-namespace vesa.repository.Configurations.CRM
+namespace formneo.repository.Configurations.CRM
 {
 	public class QuoteConfiguration : IEntityTypeConfiguration<Quote>
 	{

@@ -14,20 +14,20 @@ using NLayer.Core.Services;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using vesa.api.Helper;
-using vesa.core.DTOs;
-using vesa.core.DTOs.PositionsDtos;
-using vesa.core.DTOs.TaskManagement;
-using vesa.core.DTOs.Ticket.TicketDepartments;
-using vesa.core.DTOs.UserCalendar;
-using vesa.core.EnumExtensions;
-using vesa.core.Models;
-using vesa.core.Models.TaskManagement;
-using vesa.core.Models.Ticket;
-using vesa.core.Services;
-using vesa.service.Services;
+using formneo.api.Helper;
+using formneo.core.DTOs;
+using formneo.core.DTOs.PositionsDtos;
+using formneo.core.DTOs.TaskManagement;
+using formneo.core.DTOs.Ticket.TicketDepartments;
+using formneo.core.DTOs.UserCalendar;
+using formneo.core.EnumExtensions;
+using formneo.core.Models;
+using formneo.core.Models.TaskManagement;
+using formneo.core.Models.Ticket;
+using formneo.core.Services;
+using formneo.service.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -830,7 +830,7 @@ namespace vesa.api.Controllers
                 else
                 {
                     var kullanicilar = await _userService.GetAllUserWithOutPhoto();
-                    var kullaniciIds = kullanicilar.Data.Where(e => e.WorkCompanyId == "2e5c2ba5-3eb8-414d-8bc7-08dd44716854" || e.WorkCompanyText == "Vesa Danışmanlık").Select(e => e.Id);
+                    var kullaniciIds = kullanicilar.Data.Where(e => e.WorkCompanyId == "2e5c2ba5-3eb8-414d-8bc7-08dd44716854" || e.WorkCompanyText == "formneo Danışmanlık").Select(e => e.Id);
                     var servicee = await _userCalendarService.Include();
 
                     // Ortak tarih aralığı filtresi
@@ -1069,10 +1069,10 @@ namespace vesa.api.Controllers
                         <table style=""width: 100%; table-layout: fixed; display: inline-table;"">
                             <tr>
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                             </tr>
                         </table>
@@ -1099,7 +1099,7 @@ namespace vesa.api.Controllers
                                     <td style=""border:1px solid #ddd; padding:8px;"">{endDate}</td>
                                 </tr>
                             </table>
-                            <p style=""color:#0073e6;""><strong>Destek Sistemine Giriş için: https://support.vesa-tech.com/</strong></p>
+                            <p style=""color:#0073e6;""><strong>Destek Sistemine Giriş için: https://support.formneo-tech.com/</strong></p>
                         </td>
                     </tr>
 
@@ -1119,7 +1119,7 @@ namespace vesa.api.Controllers
 
             if (emails != null)
             {
-                utils.Utils.SendMail($"Vesacons Bilgilendirme E-postası", emailBody, emails, null);
+                utils.Utils.SendMail($"formneo Bilgilendirme E-postası", emailBody, emails, null);
             }
         }
     }

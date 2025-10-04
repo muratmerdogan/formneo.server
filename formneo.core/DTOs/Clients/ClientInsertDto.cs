@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.EnumExtensions;
+using formneo.core.EnumExtensions;
 
-namespace vesa.core.DTOs.Clients
+namespace formneo.core.DTOs.Clients
 {
     public class MainClientInsertDto
     {

@@ -2,12 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using vesa.api.Helper;
-using vesa.core.DTOs.CRM;
-using vesa.core.Services;
-using vesa.service.Exceptions;
+using formneo.api.Helper;
+using formneo.core.DTOs.CRM;
+using formneo.core.Services;
+using formneo.service.Exceptions;
 
-namespace vesa.api.Controllers.CRM
+namespace formneo.api.Controllers.CRM
 {
 	[Route("api/[controller]")]
 	[ApiController]

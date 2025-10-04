@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.EnumExtensions
+namespace formneo.core.EnumExtensions
 {
     using System;
     using System.ComponentModel;

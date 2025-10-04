@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.Budget.SF
+namespace formneo.core.DTOs.Budget.SF
 {
 
     public class FOLocationSFDto  : IGenericListDto

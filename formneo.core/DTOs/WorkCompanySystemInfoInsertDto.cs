@@ -1,4 +1,4 @@
-﻿namespace vesa.core.DTOs
+﻿namespace formneo.core.DTOs
 {
     public class WorkCompanySystemInfoInsertDto
     {

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Company;
-using vesa.core.DTOs.DashboardDto;
-using vesa.core.DTOs.Ticket.Tickets;
-using vesa.core.Models.TaskManagement;
-using vesa.core.Models.Ticket;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Company;
+using formneo.core.DTOs.DashboardDto;
+using formneo.core.DTOs.Ticket.Tickets;
+using formneo.core.Models.TaskManagement;
+using formneo.core.Models.Ticket;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
     public interface ITicketServices : IService<Tickets>
     {

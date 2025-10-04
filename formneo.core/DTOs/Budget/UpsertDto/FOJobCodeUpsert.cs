@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.Budget.UpsertDto
+namespace formneo.core.DTOs.Budget.UpsertDto
 {
     using System;
     using Newtonsoft.Json;

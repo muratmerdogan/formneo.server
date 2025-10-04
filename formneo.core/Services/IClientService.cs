@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.DTOs.Clients;
-using vesa.core.Models;
+using formneo.core.DTOs.Clients;
+using formneo.core.Models;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
     public interface IClientService: IService<MainClient>
     {

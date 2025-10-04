@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
-namespace vesa.api.Controllers.Webhooks
+namespace formneo.api.Controllers.Webhooks
 {
     [ApiController]
     [AllowAnonymous]
@@ -95,6 +95,17 @@ namespace vesa.api.Controllers.Webhooks
                 return Unauthorized(new { message = "Invalid x-api-key" });
             }
             return Ok(new { status = "received", type = "restaurantStatus" });
+        }
+
+        // Kurye restoran varışı (arrival)
+        [HttpPost("courierArrival")]
+        public IActionResult CourierArrival([FromBody] object payload)
+        {
+            if (!IsValidApiKey())
+            {
+                return Unauthorized(new { message = "Invalid x-api-key" });
+            }
+            return Ok(new { status = "received", type = "courierArrival" });
         }
     }
 }

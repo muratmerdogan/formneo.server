@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace vesa.core.Models.CRM
+namespace formneo.core.Models.CRM
 {
-	public class Meeting : vesa.core.Models.BaseEntity
+	public class Meeting : formneo.core.Models.BaseEntity
 	{
 		public Guid CustomerId { get; set; }
 		public Guid? OpportunityId { get; set; }

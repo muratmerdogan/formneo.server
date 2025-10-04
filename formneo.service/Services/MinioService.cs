@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using vesa.core.Services;
+using formneo.core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace vesa.service.Services
+namespace formneo.service.Services
 {
 	public class MinioService : IMinioService
 	{

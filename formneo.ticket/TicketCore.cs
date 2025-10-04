@@ -5,7 +5,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Text.RegularExpressions;
 using System.Reflection.Emit;
 
-namespace vesa.ticket
+namespace formneo.ticket
 {
     public class TicketCore
     {

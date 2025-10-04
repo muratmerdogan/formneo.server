@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using vesa.api.Helper;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Ticket.Tickets;
-using vesa.core.Models.TaskManagement;
-using vesa.core.Services;
+using formneo.api.Helper;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Ticket.Tickets;
+using formneo.core.Models.TaskManagement;
+using formneo.core.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     public class ForgotPasswordController : CustomBaseController
     {
@@ -140,10 +140,10 @@ namespace vesa.api.Controllers
                             <tr>
                                 <!-- Logo ve Başlık birlikte yer alacak -->
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                             </tr>
                         </table>

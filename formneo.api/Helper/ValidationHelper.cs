@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace vesa.api.Helper
+namespace formneo.api.Helper
 {
     public static class ValidationHelper
     {

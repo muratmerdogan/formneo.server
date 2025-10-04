@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Reflection;
 using System.Text.Json.Nodes;
 
-namespace vesa.core.RuleEngine
+namespace formneo.core.RuleEngine
 {
     using System.Text.Json;
     using System.Reflection;

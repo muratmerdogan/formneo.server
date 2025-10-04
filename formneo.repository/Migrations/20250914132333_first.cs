@@ -3509,7 +3509,7 @@ namespace formneo.repository.Migrations
             migrationBuilder.InsertData(
                 table: "Clients",
                 columns: new[] { "Id", "BillingCustomerId", "BillingEmail", "CreatedDate", "CustomDomain", "DomainVerified", "Email", "FeatureFlags", "IsActive", "LogoUrl", "Name", "OwnerUserId", "PhoneNumber", "Plan", "Quotas", "Slug", "SsoMetadataUrl", "SsoType", "Status", "Timezone", "UpdatedDate" },
-                values: new object[] { new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"), null, null, new DateTime(2025, 9, 14, 13, 23, 31, 596, DateTimeKind.Utc).AddTicks(3402), null, false, "info@vesacons.com", "{}", true, null, "RonesansHolding", null, "5069112452", 0, "{}", null, null, null, 0, "Europe/Istanbul", null });
+                values: new object[] { new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"), null, null, new DateTime(2025, 9, 14, 13, 23, 31, 596, DateTimeKind.Utc).AddTicks(3402), null, false, "info@formneo.com", "{}", true, null, "RonesansHolding", null, "5069112452", 0, "{}", null, null, null, 0, "Europe/Istanbul", null });
 
             migrationBuilder.InsertData(
                 table: "Companies",

@@ -38,35 +38,35 @@ using System.Security.Claims;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using vesa.api.Controllers.utils;
-using vesa.api.Helper;
-using vesa.core.Configuration;
-using vesa.core.DTOs;
-using vesa.core.DTOs.Budget.NormCodeRequest;
-using vesa.core.DTOs.Ticket;
-using vesa.core.DTOs.Ticket.TicketAssigne;
-using vesa.core.DTOs.Ticket.TicketComment;
-using vesa.core.DTOs.Ticket.TicketDepartments;
-using vesa.core.DTOs.Ticket.TicketNotifications;
-using vesa.core.DTOs.Ticket.TicketRuleEngine;
-using vesa.core.DTOs.Ticket.Tickets;
-using vesa.core.DTOs.Ticket.TicketTeams;
-using vesa.core.EnumExtensions;
-using vesa.core.Models;
-using vesa.core.Models.BudgetManagement;
-using vesa.core.Models.TaskManagement;
-using vesa.core.Models.Ticket;
-using vesa.core.Operations;
-using vesa.core.RuleEngine;
-using vesa.core.Services;
-using vesa.core.UnitOfWorks;
-using vesa.repository.UnitOfWorks;
-using vesa.service.Services;
-using vesa.ticket;
-using vesa.workflow;
+using formneo.api.Controllers.utils;
+using formneo.api.Helper;
+using formneo.core.Configuration;
+using formneo.core.DTOs;
+using formneo.core.DTOs.Budget.NormCodeRequest;
+using formneo.core.DTOs.Ticket;
+using formneo.core.DTOs.Ticket.TicketAssigne;
+using formneo.core.DTOs.Ticket.TicketComment;
+using formneo.core.DTOs.Ticket.TicketDepartments;
+using formneo.core.DTOs.Ticket.TicketNotifications;
+using formneo.core.DTOs.Ticket.TicketRuleEngine;
+using formneo.core.DTOs.Ticket.Tickets;
+using formneo.core.DTOs.Ticket.TicketTeams;
+using formneo.core.EnumExtensions;
+using formneo.core.Models;
+using formneo.core.Models.BudgetManagement;
+using formneo.core.Models.TaskManagement;
+using formneo.core.Models.Ticket;
+using formneo.core.Operations;
+using formneo.core.RuleEngine;
+using formneo.core.Services;
+using formneo.core.UnitOfWorks;
+using formneo.repository.UnitOfWorks;
+using formneo.service.Services;
+using formneo.ticket;
+using formneo.workflow;
 using static OfficeOpenXml.ExcelErrorValue;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -182,7 +182,7 @@ namespace vesa.api.Controllers
 
             ticket.TicketDepartmentId = new Guid("E0BB054C-8885-49B1-9693-67D2DE9BA3FD");
 
-            //1-> Vesa Destek sisteminden olusturulmus
+            //1-> formneo Destek sisteminden olusturulmus
             //2 ->Mailden olusturulmus
             var newDto = new ChechRuleDto
             {
@@ -1535,10 +1535,10 @@ namespace vesa.api.Controllers
                             <tr>
                                 <!-- Logo ve Başlık birlikte yer alacak -->
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                             </tr>
                         </table>
@@ -1594,7 +1594,7 @@ namespace vesa.api.Controllers
                                     <td style=""border:1px solid #ddd; padding:12px; font-size:14px;"">{not}</td>
                                 </tr>
                             </table>
-                            <p style=""color:#0073e6;""><strong>Destek Sistemine Giriş için: https://support.vesa-tech.com/</strong></p>
+                            <p style=""color:#0073e6;""><strong>Destek Sistemine Giriş için: https://support.formneo-tech.com/</strong></p>
                         </td>
                     </tr>
                     <!-- FOOTER -->
@@ -1630,7 +1630,7 @@ namespace vesa.api.Controllers
             //    {
             //        tolist.Add(resData.Email);
 
-            //        //tolist.Add("murat.merdogan@vesacons.com");
+            //        //tolist.Add("murat.merdogan@formneo.com");
             //        utils.Utils.SendMail("Yeni Talep Oluşturuldu", emailBody, tolist);
             //    }
             //}
@@ -1661,10 +1661,10 @@ namespace vesa.api.Controllers
                             <tr>
                                 <!-- Logo ve Başlık birlikte yer alacak -->
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                             </tr>
                         </table>
@@ -1680,7 +1680,7 @@ namespace vesa.api.Controllers
                             </br>
                             <p>Bilgilerinize</p>
                             </br>
-                            <p style=""color:#0073e6;""><strong>Destek Sistemine Giriş için: https://support.vesa-tech.com/</strong></p>
+                            <p style=""color:#0073e6;""><strong>Destek Sistemine Giriş için: https://support.formneo-tech.com/</strong></p>
                         </td>
                     </tr>
                     <!-- FOOTER -->
@@ -1720,10 +1720,10 @@ namespace vesa.api.Controllers
                             <tr>
                                 <!-- Logo ve Başlık birlikte yer alacak -->
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                             </tr>
                         </table>
@@ -1739,7 +1739,7 @@ namespace vesa.api.Controllers
                                     <th style=""border:1px solid #ddd; background-color:#f0f4f8; text-align:left; padding:12px; font-size:14px;"">Merhaba, e-posta adresiniz sistemimizde kayıtlı olmadığı için yukarıda belirtilen konulu talebiniz oluşturulamamıştır. Lütfen departman yöneticisi ile iletişime geçiniz.</th>
                                 </tr>
                             </table>
-                            <p style=""color:#0073e6;""><strong>Destek Sistemine Giriş için: https://support.vesa-tech.com/</strong></p>
+                            <p style=""color:#0073e6;""><strong>Destek Sistemine Giriş için: https://support.formneo-tech.com/</strong></p>
                         </td>
                     </tr>
                     <!-- FOOTER -->
@@ -1760,7 +1760,7 @@ namespace vesa.api.Controllers
             if (email != null)
             {
                 var recipients = new List<string> { email };
-                utils.Utils.SendMail($"Vesacons Bilgilendirme E-postası", emailBody, recipients, null);
+                utils.Utils.SendMail($"formneo Bilgilendirme E-postası", emailBody, recipients, null);
             }
 
         }
@@ -1969,7 +1969,7 @@ namespace vesa.api.Controllers
                     // 📄 PDF Oluşturma
                     iTextSharp.text.Document pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 25, 25, 30, 30);
                     PdfWriter.GetInstance(pdfDoc, memoryStream);
-                    pdfDoc.AddAuthor("VESA");
+                    pdfDoc.AddAuthor("formneo");
                     pdfDoc.AddTitle("Talep Detay Raporu");
                     pdfDoc.Open();
 
@@ -1984,7 +1984,7 @@ namespace vesa.api.Controllers
                     BaseFont baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
                     iTextSharp.text.Font titleFont = new iTextSharp.text.Font(baseFont, 18, iTextSharp.text.Font.BOLD, corporateGray); // 20pt ve kalın font
 
-                    string base64 = VesaLogo.Logo;
+                    string base64 = formneoLogo.Logo;
                     if (base64.Contains(","))
                     {
                         base64 = base64.Substring(base64.IndexOf(",") + 1);
@@ -2530,7 +2530,7 @@ namespace vesa.api.Controllers
             var tenantId = _configuration["AzureAd:TenantId"];
             var clientId = _configuration["AzureAd:ClientId"];
             var clientSecret = "";
-            var userEmail = "support@vesacons.com";
+            var userEmail = "support@formneo.com";
 
     
 
@@ -2538,13 +2538,13 @@ namespace vesa.api.Controllers
             var builder = new SqlConnectionStringBuilder(connectionString);
             string databaseName = builder.InitialCatalog;
 
-            if (databaseName == "vesa_erp_test")
+            if (databaseName == "formneo_erp_test")
             {
                 clientSecret = "";
 
 
             }
-            else if (databaseName == "vesa_erp")
+            else if (databaseName == "formneo_erp")
             {
                 clientSecret = "";
             }
@@ -3096,17 +3096,17 @@ namespace vesa.api.Controllers
             var tenantId = _configuration["AzureAd:TenantId"];
             var clientId = _configuration["AzureAd:ClientId"];
             var clientSecret = "";
-            var userEmail = "support@vesacons.com";
+            var userEmail = "support@formneo.com";
 
             string connectionString = _configuration.GetConnectionString("SqlServerConnection");
             var builder = new SqlConnectionStringBuilder(connectionString);
             string databaseName = builder.InitialCatalog;
 
-            if (databaseName == "vesa_erp_test")
+            if (databaseName == "formneo_erp_test")
             {
                 clientSecret = "";
             }
-            else if (databaseName == "vesa_erp")
+            else if (databaseName == "formneo_erp")
             {
                 clientSecret = "";
             }

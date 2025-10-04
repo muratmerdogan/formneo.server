@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "vesa.api": {
+    "formneo.api": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",

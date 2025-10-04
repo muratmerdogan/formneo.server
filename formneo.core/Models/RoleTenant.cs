@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
- namespace vesa.core.Models
+ namespace formneo.core.Models
  {
  	public class RoleTenant : GlobalBaseEntity
 	{

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.DTOs.Clients
+namespace formneo.core.DTOs.Clients
 {
     public class ClientReturnGuidId
     {

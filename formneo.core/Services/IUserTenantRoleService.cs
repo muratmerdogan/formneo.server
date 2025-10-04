@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using vesa.core.Models;
+using formneo.core.Models;
 
-namespace vesa.core.Services
+namespace formneo.core.Services
 {
 	public interface IUserTenantRoleService : IService<UserTenantRole>
 	{

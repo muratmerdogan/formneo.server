@@ -6,18 +6,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NLayer.Core.Services;
-using vesa.api.Helper;
-using vesa.core.DTOs;
-using vesa.core.DTOs.FormAssign;
-using vesa.core.DTOs.Ticket.Tickets;
-using vesa.core.EnumExtensions;
-using vesa.core.Models;
-using vesa.core.Models.FormEnums;
-using vesa.core.Models.Ticket;
-using vesa.core.Services;
-using vesa.service.Services;
+using formneo.api.Helper;
+using formneo.core.DTOs;
+using formneo.core.DTOs.FormAssign;
+using formneo.core.DTOs.Ticket.Tickets;
+using formneo.core.EnumExtensions;
+using formneo.core.Models;
+using formneo.core.Models.FormEnums;
+using formneo.core.Models.Ticket;
+using formneo.core.Services;
+using formneo.service.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
 
     [Route("api/[controller]")]
@@ -244,10 +244,10 @@ namespace vesa.api.Controllers
                             <tr>
                                 <!-- Logo ve Başlık birlikte yer alacak -->
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.Logo}"" alt=""Logo"" width=""100"" height=""60"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                                 <td style=""background-color: white; padding:12px; width: auto;"">
-                                    <img src=""{VesaLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
+                                    <img src=""{formneoLogo.ColorImg}"" alt=""Logo"" width=""650"" height=""20"" style=""display: block; width: 100%; height: auto;"">
                                 </td>
                             </tr>
                         </table>
@@ -258,7 +258,7 @@ namespace vesa.api.Controllers
                         <td style=""padding:20px;"">
                             {mailContent}
                             <br>
-                            <p style=""color:#0073e6;""><strong>Formlara ulaşmak için: https://support.vesa-tech.com/userFormList</strong></p>
+                            <p style=""color:#0073e6;""><strong>Formlara ulaşmak için: https://support.formneo-tech.com/userFormList</strong></p>
                         </td>
                     </tr>
                     <!-- FOOTER -->

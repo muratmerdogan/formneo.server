@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vesa.core.Models.FormEnums
+namespace formneo.core.Models.FormEnums
 {
     public enum FormType
     {

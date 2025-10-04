@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using vesa.core.DTOs.Clients;
-using vesa.core.Models;
-using vesa.core.Repositories;
-using vesa.repository;
-using vesa.repository.Repositories;
+using formneo.core.DTOs.Clients;
+using formneo.core.Models;
+using formneo.core.Repositories;
+using formneo.repository;
+using formneo.repository.Repositories;
 
-namespace vesa.repository.Repositories
+namespace formneo.repository.Repositories
 {
     public class ClientRepository : GenericRepository<MainClient>, IClientRepository
     {

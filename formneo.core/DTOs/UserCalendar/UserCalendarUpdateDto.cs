@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using vesa.core.Models;
-using vesa.core.Models.TaskManagement;
+using formneo.core.Models;
+using formneo.core.Models.TaskManagement;
 
-namespace vesa.core.DTOs.TaskManagement
+namespace formneo.core.DTOs.TaskManagement
 {
     public class UserCalendarUpdateDto
     {

@@ -50,5 +50,9 @@
     <Folder Include="publish\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Controllers\PickListController.cs" />
+  </ItemGroup>
+
 </Project>
 

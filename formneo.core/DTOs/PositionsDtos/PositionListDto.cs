@@ -1,7 +1,7 @@
-﻿using vesa.core.DTOs.SapDtos;
-using vesa.core.Models;
+﻿using formneo.core.DTOs.SapDtos;
+using formneo.core.Models;
 
-namespace vesa.core.DTOs.PositionsDtos
+namespace formneo.core.DTOs.PositionsDtos
 {
     public class PositionListDto
     {
