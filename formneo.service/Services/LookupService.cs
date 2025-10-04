@@ -80,8 +80,12 @@ namespace formneo.service.Services
 		{
 			var entity = _mapper.Map<LookupItem>(dto);
 			var tenantId = _tenantContext?.CurrentTenantId;
+			var category = await _context.LookupCategories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == dto.CategoryId);
+			if (category == null) throw new InvalidOperationException("Kategori bulunamadı.");
 			if (tenantId != null)
 			{
+				if (category.TenantId != null && category.TenantId != tenantId)
+					throw new InvalidOperationException("Başka bir tenant'a ait kategoriye item eklenemez.");
 				// Kiracı, kendi item'ını oluşturuyorsa overlay olarak TenantId'yı damgala
 				entity.TenantId = tenantId;
 			}
@@ -124,6 +128,14 @@ namespace formneo.service.Services
 			if (tenantId == null || entity.TenantId != tenantId)
 			{
 				throw new InvalidOperationException("Ba\u015fka bir tenant'a ait lookup item d\u00fczenlenemez.");
+			}
+			// Kategori erişim doğrulaması: item başka bir tenant kategorisine taşınmasın
+			if (dto.CategoryId != entity.CategoryId && dto.CategoryId != System.Guid.Empty)
+			{
+				var newCategory = await _context.LookupCategories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == dto.CategoryId);
+				if (newCategory == null) throw new InvalidOperationException("Kategori bulunamadı.");
+				if (newCategory.TenantId != null && newCategory.TenantId != tenantId)
+					throw new InvalidOperationException("Başka bir tenant'a ait kategoriye taşıma yapılamaz.");
 			}
 			_mapper.Map(dto, entity);
 			await _context.SaveChangesAsync();

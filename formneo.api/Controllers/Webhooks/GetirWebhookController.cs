@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System.Text.Json;
+using System.Threading.Tasks;
+using formneo.core.Services;
 
 namespace formneo.api.Controllers.Webhooks
 {
@@ -10,10 +13,12 @@ namespace formneo.api.Controllers.Webhooks
     public class GetirWebhookController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly IGetirService _getirService;
 
-        public GetirWebhookController(IConfiguration configuration)
+        public GetirWebhookController(IConfiguration configuration, IGetirService getirService)
         {
             _configuration = configuration;
+            _getirService = getirService;
         }
 
         private bool IsValidApiKey()
@@ -35,26 +40,26 @@ namespace formneo.api.Controllers.Webhooks
         }
 
         [HttpPost("newOrder")]
-        public IActionResult NewOrder([FromBody] object payload)
+        public async Task<IActionResult> NewOrder([FromBody] object payload)
         {
             if (!IsValidApiKey())
             {
                 return Unauthorized(new { message = "Invalid x-api-key" });
             }
 
-            // Şimdilik sadece 200 OK dönüyoruz; ileride iş kuralları eklenecek
+            await _getirService.HandleNewOrderAsync(payload?.ToString() ?? "{}");
             return Ok(new { status = "received", type = "newOrder" });
         }
 
         [HttpPost("cancelOrder")]
-        public IActionResult CancelOrder([FromBody] object payload)
+        public async Task<IActionResult> CancelOrder([FromBody] object payload)
         {
             if (!IsValidApiKey())
             {
                 return Unauthorized(new { message = "Invalid x-api-key" });
             }
 
-            // Şimdilik sadece 200 OK dönüyoruz; ileride iş kuralları eklenecek
+            await _getirService.HandleCancelOrderAsync(payload?.ToString() ?? "{}");
             return Ok(new { status = "received", type = "cancelOrder" });
         }
 
@@ -67,44 +72,48 @@ namespace formneo.api.Controllers.Webhooks
 
         // Test ortamı için uçlar
         [HttpPost("test/newOrder")]
-        public IActionResult TestNewOrder([FromBody] object payload)
+        public async Task<IActionResult> TestNewOrder([FromBody] object payload)
         {
             if (!IsValidApiKey())
             {
                 return Unauthorized(new { message = "Invalid x-api-key" });
             }
+            await _getirService.HandleNewOrderAsync(payload?.ToString() ?? "{}");
             return Ok(new { status = "received", type = "test.newOrder" });
         }
 
         [HttpPost("test/cancelOrder")]
-        public IActionResult TestCancelOrder([FromBody] object payload)
+        public async Task<IActionResult> TestCancelOrder([FromBody] object payload)
         {
             if (!IsValidApiKey())
             {
                 return Unauthorized(new { message = "Invalid x-api-key" });
             }
+            await _getirService.HandleCancelOrderAsync(payload?.ToString() ?? "{}");
             return Ok(new { status = "received", type = "test.cancelOrder" });
         }
 
         // Restoran statü değişiklikleri
         [HttpPost("restaurantStatus")]
-        public IActionResult RestaurantStatus([FromBody] object payload)
+        public async Task<IActionResult> RestaurantStatus([FromBody] object payload)
         {
             if (!IsValidApiKey())
             {
                 return Unauthorized(new { message = "Invalid x-api-key" });
             }
+            await _getirService.HandleRestaurantStatusAsync(payload?.ToString() ?? "{}");
             return Ok(new { status = "received", type = "restaurantStatus" });
         }
 
         // Kurye restoran varışı (arrival)
         [HttpPost("courierArrival")]
-        public IActionResult CourierArrival([FromBody] object payload)
+        public async Task<IActionResult> CourierArrival([FromBody] object payload)
         {
             if (!IsValidApiKey())
             {
                 return Unauthorized(new { message = "Invalid x-api-key" });
             }
+            await _getirService.HandleCourierArrivalAsync(payload?.ToString() ?? "{}");
             return Ok(new { status = "received", type = "courierArrival" });
         }
     }

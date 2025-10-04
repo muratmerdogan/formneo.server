@@ -38,6 +38,7 @@ using formneo.service.Services;
 using formneo.service.SignService;
 using formneo.service.Validations;
 using formneo.service.Services;
+using formneo.core.Configuration;
 using ServiceCollection = Microsoft.Extensions.DependencyInjection.ServiceCollection;
 using formneo.api.Seed;
 using FluentValidation.AspNetCore;
@@ -223,6 +224,7 @@ builder.Services.AddScoped(typeof(NotFoundFilter<>));
 builder.Services.AddAutoMapper(typeof(MapProfile));
 builder.Services.Configure<CustomTokenOption>(builder.Configuration.GetSection("TokenOption"));
 builder.Services.Configure<RoleScopeOptions>(builder.Configuration.GetSection("RoleScope"));
+builder.Services.Configure<GetirOptions>(builder.Configuration.GetSection("Getir"));
 
 //builder.Services.AddDbContext<AppDbContext>(x =>
 //{
@@ -400,6 +402,7 @@ builder.Services.AddScoped<formneo.core.Services.ITenantContext, formneo.service
 builder.Host.UseServiceProviderFactory
     (new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new RepoServiceModule()));
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerBuilder.RegisterModule(new GetirModule()));
 
 
 var app = builder.Build();
@@ -445,7 +448,7 @@ app.UseDeveloperExceptionPage();
 app.MapControllers();
 
 // İlk çalıştırmada veritabanını ve admin kullanıcıyı oluştur
-formneo.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = true;
+//formneo.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = true;
 //try
 //{
 //    await formneo.api.Seed.DatabaseInitializer.InitializeAsync(app.Services);
@@ -454,5 +457,6 @@ formneo.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = true;
 //{
 //    formneo.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = false;
 //}
+formneo.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = false;
 
 app.Run();
