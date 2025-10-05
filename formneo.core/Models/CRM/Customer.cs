@@ -21,11 +21,11 @@ namespace formneo.core.Models.CRM
 		// Lookup FK + Navigation (örnek: CustomerType)
 		public Guid? CustomerTypeId { get; set; }
 		[ForeignKey(nameof(CustomerTypeId))]
-		public LookupItem? CustomerTypeItem { get; set; }
+		public TenantLookupItem? CustomerTypeItem { get; set; }
 
         public Guid? CategoryId { get; set; }
         [ForeignKey(nameof(CategoryId))]
-        public LookupItem? CategoryItem { get; set; }
+        public TenantLookupItem? CategoryItem { get; set; }
  
 		[StringLength(64, ErrorMessage = "Durum en fazla 64 karakter olabilir")]
 		public string Status { get; set; }

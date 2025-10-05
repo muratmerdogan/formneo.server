@@ -10,8 +10,6 @@ using formneo.core.Models;
 using formneo.core.Repositories;
 using formneo.core.Services;
 using formneo.core.UnitOfWorks;
-using formneo.repository.Repositories;
-using formneo.repository.UnitOfWorks;
 
 namespace formneo.service.Services
 {

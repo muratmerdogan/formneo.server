@@ -448,15 +448,15 @@ app.UseDeveloperExceptionPage();
 app.MapControllers();
 
 // İlk çalıştırmada veritabanını ve admin kullanıcıyı oluştur
-//formneo.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = true;
-//try
-//{
-//    await formneo.api.Seed.DatabaseInitializer.InitializeAsync(app.Services);
-//}
-//finally
-//{
-//    formneo.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = false;
-//}
+// formneo.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = true;
+// try
+// {
+//     await formneo.api.Seed.DatabaseInitializer.InitializeAsync(app.Services);
+// }
+// finally
+// {
+//     formneo.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = false;
+// }
 formneo.api.Filters.GlobalEntityWriteInterceptor.SkipEnforcement = false;
 
 app.Run();

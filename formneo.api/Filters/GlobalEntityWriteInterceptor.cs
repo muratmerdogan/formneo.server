@@ -147,13 +147,28 @@ namespace formneo.api.Filters
 
 		private static bool IsTenantEntityByType(Type entityType)
 		{
+			// Sistemimizde TenantBaseEntity yok. Tenant varlıkları, GlobalBaseEntity olmayan BaseEntity türevleridir.
 			var t = entityType;
+			bool seenGlobalBase = false;
 			while (t != null)
 			{
-				if (string.Equals(t.Name, "TenantBaseEntity", StringComparison.Ordinal))
+				if (string.Equals(t.Name, "GlobalBaseEntity", StringComparison.Ordinal))
+				{
+					seenGlobalBase = true;
+					break;
+				}
+				if (string.Equals(t.Name, "BaseEntity", StringComparison.Ordinal))
+				{
+					// BaseEntity zincirinde GlobalBaseEntity görülmediyse tenant varlığıdır
 					return true;
+				}
 				t = t.BaseType;
 			}
+			if (seenGlobalBase)
+			{
+				return false;
+			}
+			// Opsiyonel: Gelecekte işaretleyici arayüz eklenirse destekle
 			if (entityType.GetInterfaces().Any(i => string.Equals(i.Name, "ITenantEntity", StringComparison.Ordinal)))
 				return true;
 			return false;

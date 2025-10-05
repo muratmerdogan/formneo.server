@@ -46,6 +46,8 @@ namespace formneo.core.DTOs.Menu
 
         public bool IsTenantOnly { get; set; }
 
+        public bool IsGlobalOnly { get; set; }
+
 
     }
 }

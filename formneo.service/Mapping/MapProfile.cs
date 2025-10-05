@@ -455,16 +455,17 @@ namespace formneo.service.Mapping
 			CreateMap<CrmChangeLog, CrmChangeLogDto>().ReverseMap();
 
 			// Lookup
-			CreateMap<LookupCategory, LookupCategoryDto>().ReverseMap();
-			CreateMap<LookupItem, LookupItemDto>().ReverseMap();
+			CreateMap<TenantLookupCategory, LookupCategoryDto>().ReverseMap();
+			CreateMap<TenantLookupItem, LookupItemDto>().ReverseMap();
 
             // Lookup
-            CreateMap<LookupCategory, LookupCategoryDto>();
-            CreateMap<LookupCategoryDto, LookupCategory>()
+            CreateMap<TenantLookupCategory, LookupCategoryDto>();
+            CreateMap<LookupCategoryDto, TenantLookupCategory>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
-            CreateMap<LookupItem, LookupItemDto>().ReverseMap();
-            CreateMap<LookupModule, LookupModuleDto>().ReverseMap();
+            CreateMap<TenantLookupItem, LookupItemDto>().ReverseMap();
+            // Tenant lookup mappings removed; Lookup* are tenant-scoped (BaseEntity)
+            CreateMap<TenantLookupModule, LookupModuleDto>().ReverseMap();
         }
     }
 }

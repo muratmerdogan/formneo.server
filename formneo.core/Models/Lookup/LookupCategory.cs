@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace formneo.core.Models.Lookup
 {
-	public class LookupCategory : formneo.core.Models.GlobalBaseEntity
+	public class TenantLookupCategory : formneo.core.Models.BaseEntity
 	{
 		[Required]
 		[StringLength(128)]
@@ -11,14 +11,11 @@ namespace formneo.core.Models.Lookup
 
 		[StringLength(512)]
 		public string? Description { get; set; }
-
-		public bool IsTenantScoped { get; set; }
-		public bool IsReadOnly { get; set; }
-
-		public Guid? TenantId { get; set; }
+		
+        public bool IsReadOnly { get; set; }
 
 		public Guid? ModuleId { get; set; }
-		public LookupModule? Module { get; set; }
+		public TenantLookupModule? Module { get; set; }
 	}
 }
 

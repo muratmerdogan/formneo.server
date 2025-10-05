@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace formneo.core.Models.Lookup
 {
-	public class LookupModule : formneo.core.Models.GlobalBaseEntity
+	public class TenantLookupModule : BaseEntity
 	{
 		[Required]
 		[StringLength(128)]

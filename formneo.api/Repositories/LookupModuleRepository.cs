@@ -5,7 +5,7 @@ using formneo.repository.Repositories;
 
 namespace formneo.repository.Repositories
 {
-	public class LookupModuleRepository : GenericRepository<LookupModule>, ILookupModuleRepository
+	public class LookupModuleRepository : GenericRepository<TenantLookupModule>, ILookupModuleRepository
 	{
 		public LookupModuleRepository(AppDbContext context) : base(context)
 		{

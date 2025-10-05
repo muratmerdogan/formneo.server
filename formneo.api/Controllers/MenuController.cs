@@ -150,7 +150,8 @@ namespace formneo.api.Controllers
                 Icon = m.Icon,
                 IsDelete = m.IsDelete,
                 MenuCode = m.MenuCode,
-                IsTenantOnly = m.IsTenantOnly
+                IsTenantOnly = m.IsTenantOnly,
+                IsGlobalOnly = m.IsGlobalOnly
             }).ToList().OrderBy(e => e.Order);
 
             // Alt menüleri ekleyelim
@@ -248,7 +249,7 @@ namespace formneo.api.Controllers
                 Icon = m.Icon,
                 IsDelete = m.IsDelete,
                 MenuCode = m.MenuCode,
-                IsTenantOnly = m.IsTenantOnly
+                IsTenantOnly = m.IsTenantOnly,
             }).ToList().OrderBy(e => e.Order);
 
             // Alt menüleri ekleyelim
@@ -286,7 +287,9 @@ namespace formneo.api.Controllers
                     Order = m.Order,
                     Href = m.Href,
                     Icon = m.Icon,
-                    IsDelete = m.IsDelete
+                    IsDelete = m.IsDelete,
+                    IsGlobalOnly = m.IsGlobalOnly,
+                    IsTenantOnly = m.IsTenantOnly
                 })
                 .ToList()
                 .OrderBy(e => e.Order)
@@ -367,7 +370,9 @@ namespace formneo.api.Controllers
                 Order = m.Order,
                 Href = m.Href,
                 Icon = m.Icon,
-                IsDelete = m.IsDelete
+                IsDelete = m.IsDelete,
+                IsTenantOnly = m.IsTenantOnly,
+                IsGlobalOnly = m.IsGlobalOnly
             }).ToList();
             foreach (var subMenu in subMenus)
             {

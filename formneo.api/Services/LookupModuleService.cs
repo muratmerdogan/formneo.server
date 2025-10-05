@@ -38,7 +38,7 @@ namespace formneo.service.Services
 
         public async Task<LookupModuleDto> CreateAsync(LookupModuleDto dto)
         {
-            var entity = _mapper.Map<LookupModule>(dto);
+            var entity = _mapper.Map<TenantLookupModule>(dto);
             await _repository.AddAsync(entity);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<LookupModuleDto>(entity);

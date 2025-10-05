@@ -43,6 +43,9 @@ namespace formneo.core.Models
         // Global admin modunda gösterilmemesi gereken tenant-bazlı menüler için işaret
         public bool IsTenantOnly { get; set; }
 
+        // Tenant modunda gösterilmemesi gereken, sadece global modda görünen menüler için işaret
+        public bool IsGlobalOnly { get; set; }
+
     }
 
     public class MenuInsertDto
@@ -70,6 +73,8 @@ namespace formneo.core.Models
         public bool ShowMenu { get; set; }
 
         public bool IsTenantOnly { get; set; }
+
+        public bool IsGlobalOnly { get; set; }
     }
 
     public class MenuUpdateDto
@@ -100,5 +105,7 @@ namespace formneo.core.Models
         public bool ShowMenu { get; set; }
 
         public bool IsTenantOnly { get; set; }
+
+        public bool IsGlobalOnly { get; set; }
     }
 }

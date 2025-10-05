@@ -103,9 +103,9 @@ namespace formneo.repository
         public DbSet<formneo.core.Models.Onboarding.OnboardingActivation> OnboardingActivations { get; set; }
 
         // Lookup
-        public DbSet<LookupCategory> LookupCategories { get; set; }
-        public DbSet<LookupItem> LookupItems { get; set; }
-        public DbSet<LookupModule> LookupModules { get; set; }
+        public DbSet<TenantLookupCategory> TenantLookupCategories { get; set; }
+        public DbSet<TenantLookupItem> TenantLookupItems { get; set; }
+        public DbSet<TenantLookupModule> TenantLookupModules { get; set; }
 
         //public DbSet<Employee> Employees { get; set; }
         //public DbSet<EmpSalary> EmpSalary { get; set; }
@@ -266,22 +266,21 @@ namespace formneo.repository
                 var lambda = System.Linq.Expressions.Expression.Lambda(body, parameter);
                 modelBuilder.Entity(clrType).HasQueryFilter(lambda);
             }
-            // Lookup Soft Delete Query Filters
-            modelBuilder.Entity<LookupModule>().HasQueryFilter(e => !e.IsDelete);
-            modelBuilder.Entity<LookupCategory>().HasQueryFilter(e => !e.IsDelete);
-            modelBuilder.Entity<LookupItem>().HasQueryFilter(e => !e.IsDelete);
+            
 
             // Hybrid lookup unique constraints (global + tenant override)
-            modelBuilder.Entity<LookupCategory>()
-                .HasIndex(c => new { c.ModuleId, c.Key, c.TenantId })
+            modelBuilder.Entity<TenantLookupCategory>()
+                .HasIndex(c => new { c.ModuleId, c.Key })
                 .IsUnique();
 
-            modelBuilder.Entity<LookupItem>()
-                .HasIndex(i => new { i.CategoryId, i.Code, i.TenantId })
+            modelBuilder.Entity<TenantLookupItem>()
+                .HasIndex(i => new { i.CategoryId, i.Code })
                 .IsUnique();
 
             // Otomatik tenant-aware unique constraints
             ConfigureTenantAwareUniqueConstraints(modelBuilder);
+            // Tenant-aware concurrency tokens (UPDATE/DELETE WHERE'e MainClientId eklemek için)
+            ConfigureTenantConcurrencyTokens(modelBuilder);
             modelBuilder.Entity<CustomerAddress>().HasQueryFilter(e => !e.IsDelete);
             modelBuilder.Entity<CustomerOfficial>().HasQueryFilter(e => !e.IsDelete);
             modelBuilder.Entity<CustomerEmail>().HasQueryFilter(e => !e.IsDelete);
@@ -341,6 +340,23 @@ namespace formneo.repository
                             .IsUnique();
                     }
                 }
+            }
+        }
+
+        // UPDATE/DELETE WHERE koşullarına MainClientId eklemek için concurrency token ayarı
+        private void ConfigureTenantConcurrencyTokens(ModelBuilder modelBuilder)
+        {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                var clrType = entityType.ClrType;
+                if (clrType == null) continue;
+                if (typeof(GlobalBaseEntity).IsAssignableFrom(clrType)) continue;
+                if (!typeof(BaseEntity).IsAssignableFrom(clrType)) continue;
+
+                // MainClientId alanı concurrency token olsun
+                modelBuilder.Entity(clrType)
+                    .Property("MainClientId")
+                    .IsConcurrencyToken();
             }
         }
 

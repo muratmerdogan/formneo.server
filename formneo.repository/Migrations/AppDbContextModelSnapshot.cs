@@ -192,6 +192,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -453,6 +454,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -548,6 +550,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -776,6 +779,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -846,6 +850,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -911,6 +916,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -979,6 +985,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1154,6 +1161,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("character varying(512)");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1279,6 +1287,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1349,6 +1358,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1427,6 +1437,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1495,6 +1506,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1556,6 +1568,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1629,6 +1642,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1701,6 +1715,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1756,6 +1771,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1811,6 +1827,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1881,6 +1898,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -1963,6 +1981,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2044,6 +2063,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2138,6 +2158,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2216,6 +2237,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2290,6 +2312,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2368,7 +2391,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 9, 28, 15, 16, 32, 412, DateTimeKind.Utc).AddTicks(720),
+                            CreatedDate = new DateTime(2025, 10, 5, 13, 46, 51, 579, DateTimeKind.Utc).AddTicks(3910),
                             Name = "RonesansHolding"
                         });
                 });
@@ -2399,6 +2422,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2447,6 +2471,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2529,6 +2554,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2645,6 +2671,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2707,6 +2734,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2761,6 +2789,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2806,6 +2835,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2861,6 +2891,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -2952,6 +2983,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -3024,7 +3056,7 @@ namespace formneo.repository.Migrations
                     b.ToTable("Inventory");
                 });
 
-            modelBuilder.Entity("formneo.core.Models.Lookup.LookupCategory", b =>
+            modelBuilder.Entity("formneo.core.Models.Lookup.TenantLookupCategory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3047,18 +3079,17 @@ namespace formneo.repository.Migrations
                     b.Property<bool>("IsReadOnly")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsTenantScoped")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Key")
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
-                    b.Property<Guid?>("ModuleId")
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("TenantId")
+                    b.Property<Guid?>("ModuleId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("UniqNumber")
@@ -3076,16 +3107,15 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ModuleId", "Key", "TenantId")
+                    b.HasIndex("ModuleId");
+
+                    b.HasIndex("MainClientId", "ModuleId", "Key")
                         .IsUnique();
 
-                    b.HasIndex("TenantId", "ModuleId", "Key")
-                        .IsUnique();
-
-                    b.ToTable("LookupCategories");
+                    b.ToTable("TenantLookupCategories");
                 });
 
-            modelBuilder.Entity("formneo.core.Models.Lookup.LookupItem", b =>
+            modelBuilder.Entity("formneo.core.Models.Lookup.TenantLookupItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3116,6 +3146,11 @@ namespace formneo.repository.Migrations
                     b.Property<bool>("IsDelete")
                         .HasColumnType("boolean");
 
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -3126,9 +3161,6 @@ namespace formneo.repository.Migrations
 
                     b.Property<int>("OrderNo")
                         .HasColumnType("integer");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid");
 
                     b.Property<int>("UniqNumber")
                         .ValueGeneratedOnAdd()
@@ -3145,16 +3177,15 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId", "Code", "TenantId")
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("MainClientId", "CategoryId", "Code")
                         .IsUnique();
 
-                    b.HasIndex("TenantId", "CategoryId", "Code")
-                        .IsUnique();
-
-                    b.ToTable("LookupItems");
+                    b.ToTable("TenantLookupItems");
                 });
 
-            modelBuilder.Entity("formneo.core.Models.Lookup.LookupModule", b =>
+            modelBuilder.Entity("formneo.core.Models.Lookup.TenantLookupModule", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3181,6 +3212,11 @@ namespace formneo.repository.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -3200,7 +3236,9 @@ namespace formneo.repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LookupModules");
+                    b.HasIndex("MainClientId");
+
+                    b.ToTable("TenantLookupModules");
                 });
 
             modelBuilder.Entity("formneo.core.Models.MainClient", b =>
@@ -3290,7 +3328,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 9, 28, 15, 16, 32, 412, DateTimeKind.Utc).AddTicks(1550),
+                            CreatedDate = new DateTime(2025, 10, 5, 13, 46, 51, 579, DateTimeKind.Utc).AddTicks(4710),
                             DomainVerified = false,
                             Email = "info@formneo.com",
                             FeatureFlags = "{}",
@@ -3333,6 +3371,9 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsGlobalOnly")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsTenantOnly")
@@ -3405,6 +3446,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -3578,6 +3620,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("integer");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -3647,7 +3690,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 9, 28, 15, 16, 32, 412, DateTimeKind.Utc).AddTicks(1630),
+                            CreatedDate = new DateTime(2025, 10, 5, 13, 46, 51, 579, DateTimeKind.Utc).AddTicks(4800),
                             Name = "RonesansHoldingTurkey"
                         });
                 });
@@ -3675,6 +3718,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -3734,6 +3778,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -3803,6 +3848,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -3853,6 +3899,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -3994,6 +4041,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4054,6 +4102,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4105,6 +4154,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("TicketsId")
@@ -4160,6 +4210,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .HasColumnType("uuid");
 
                     b.Property<int>("Status")
@@ -4229,6 +4280,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4288,6 +4340,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4358,6 +4411,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4403,6 +4457,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4465,6 +4520,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4526,6 +4582,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4583,6 +4640,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4670,6 +4728,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("text");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -4786,6 +4845,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -5185,6 +5245,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -5242,6 +5303,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -5294,6 +5356,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -5349,6 +5412,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -5405,6 +5469,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -5463,6 +5528,7 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("uuid");
 
@@ -5739,12 +5805,12 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("formneo.core.Models.CRM.Customer", b =>
                 {
-                    b.HasOne("formneo.core.Models.Lookup.LookupItem", "CategoryItem")
+                    b.HasOne("formneo.core.Models.Lookup.TenantLookupItem", "CategoryItem")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("formneo.core.Models.Lookup.LookupItem", "CustomerTypeItem")
+                    b.HasOne("formneo.core.Models.Lookup.TenantLookupItem", "CustomerTypeItem")
                         .WithMany()
                         .HasForeignKey("CustomerTypeId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -6254,25 +6320,52 @@ namespace formneo.repository.Migrations
                     b.Navigation("UserApp");
                 });
 
-            modelBuilder.Entity("formneo.core.Models.Lookup.LookupCategory", b =>
+            modelBuilder.Entity("formneo.core.Models.Lookup.TenantLookupCategory", b =>
                 {
-                    b.HasOne("formneo.core.Models.Lookup.LookupModule", "Module")
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.Lookup.TenantLookupModule", "Module")
                         .WithMany()
                         .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.Navigation("MainClient");
+
                     b.Navigation("Module");
                 });
 
-            modelBuilder.Entity("formneo.core.Models.Lookup.LookupItem", b =>
+            modelBuilder.Entity("formneo.core.Models.Lookup.TenantLookupItem", b =>
                 {
-                    b.HasOne("formneo.core.Models.Lookup.LookupCategory", "Category")
+                    b.HasOne("formneo.core.Models.Lookup.TenantLookupCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("MainClient");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.Lookup.TenantLookupModule", b =>
+                {
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("MainClient");
                 });
 
             modelBuilder.Entity("formneo.core.Models.MainClient", b =>
