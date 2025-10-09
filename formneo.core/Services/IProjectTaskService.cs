@@ -10,6 +10,8 @@ namespace formneo.core.Services
 		Task<ProjectTaskListDto> CreateAsync(ProjectTaskInsertDto dto);
 		Task<ProjectTaskListDto?> UpdateAsync(ProjectTaskUpdateDto dto);
 		Task<bool> DeleteAsync(Guid id);
+		Task<ProjectTaskListDto?> UpdateStatusAsync(Guid id, int status);
+		Task<IEnumerable<ProjectActivityLog>> GetHistoryAsync(Guid id);
 	}
 }
 

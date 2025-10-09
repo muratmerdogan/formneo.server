@@ -6,6 +6,8 @@ using formneo.core.Repositories;
 using formneo.core.Services;
 using formneo.core.UnitOfWorks;
 using formneo.core.Services;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace formneo.service.Services
 {
@@ -16,9 +18,11 @@ namespace formneo.service.Services
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ITenantProjectRepository _tenantProjectRepository;
 		private readonly ICustomerRepository _customerRepository;
+		private readonly IGenericRepository<ProjectActivityLog> _activityLogRepo;
+		private readonly IHttpContextAccessor _httpContextAccessor;
 		private readonly ITenantContext _tenantContext;
 
-		public ProjectTaskService(IGenericRepository<ProjectTask> repository, IUnitOfWork unitOfWork, IMapper mapper, IProjectTaskRepository projectTaskRepository, ITenantProjectRepository tenantProjectRepository, ICustomerRepository customerRepository, ITenantContext tenantContext)
+		public ProjectTaskService(IGenericRepository<ProjectTask> repository, IUnitOfWork unitOfWork, IMapper mapper, IProjectTaskRepository projectTaskRepository, ITenantProjectRepository tenantProjectRepository, ICustomerRepository customerRepository, ITenantContext tenantContext, IGenericRepository<ProjectActivityLog> activityLogRepo, IHttpContextAccessor httpContextAccessor)
 			: base(repository, unitOfWork)
 		{
 			_repository = projectTaskRepository;
@@ -27,6 +31,8 @@ namespace formneo.service.Services
 			_tenantProjectRepository = tenantProjectRepository;
 			_customerRepository = customerRepository;
 			_tenantContext = tenantContext;
+			_activityLogRepo = activityLogRepo;
+			_httpContextAccessor = httpContextAccessor;
 		}
 
 		public async Task<IEnumerable<ProjectTaskListDto>> GetByProjectAsync(Guid projectId)
@@ -80,6 +86,16 @@ namespace formneo.service.Services
 			}
 			await _repository.AddAsync(entity);
 			await _unitOfWork.CommitAsync();
+			// Log creation
+			await _activityLogRepo.AddAsync(new ProjectActivityLog
+			{
+				ProjectTaskId = entity.Id,
+				ActivityType = ProjectActivityType.TaskCreated,
+				Summary = "Task created",
+				Details = $"Status={(ProjectTaskStatus)dto.Status}",
+				UserId = GetCurrentUserIdOrNull()
+			});
+			await _unitOfWork.CommitAsync();
 			// reload with relations
 			var created = await _repository.Where(t => t.Id == entity.Id)
 				.Include(t => t.Assignee)
@@ -100,6 +116,7 @@ namespace formneo.service.Services
 			entity.Description = dto.Description;
 			entity.StartDate = dto.StartDate;
 			entity.EndDate = dto.EndDate;
+			var oldStatus = entity.Status;
 			entity.Status = (ProjectTaskStatus)dto.Status;
 			entity.AssigneeId = dto.AssigneeId;
 
@@ -123,6 +140,27 @@ namespace formneo.service.Services
 			}
 
 			await base.UpdateAsync(entity);
+			// Log update and status change
+			await _activityLogRepo.AddAsync(new ProjectActivityLog
+			{
+				ProjectTaskId = entity.Id,
+				ActivityType = ProjectActivityType.TaskUpdated,
+				Summary = "Task updated",
+				Details = null,
+				UserId = GetCurrentUserIdOrNull()
+			});
+			if (oldStatus != entity.Status)
+			{
+				await _activityLogRepo.AddAsync(new ProjectActivityLog
+				{
+					ProjectTaskId = entity.Id,
+					ActivityType = ProjectActivityType.StatusChanged,
+					Summary = $"Status: {oldStatus} -> {entity.Status}",
+					Details = null,
+					UserId = GetCurrentUserIdOrNull()
+				});
+			}
+			await _unitOfWork.CommitAsync();
 
 			var updated = await _repository.Where(t => t.Id == entity.Id)
 				.Include(t => t.Assignee)
@@ -156,6 +194,42 @@ namespace formneo.service.Services
 				AssigneeId = t.AssigneeId,
 				AssigneeName = t.Assignee != null ? ($"{t.Assignee.FirstName} {t.Assignee.LastName}").Trim() : null
 			};
+		}
+
+		public async Task<ProjectTaskListDto?> UpdateStatusAsync(Guid id, int status)
+		{
+			var entity = await _repository.GetByIdStringGuidAsync(id);
+			if (entity == null) return null;
+			var old = entity.Status;
+			entity.Status = (ProjectTaskStatus)status;
+			await base.UpdateAsync(entity);
+			await _activityLogRepo.AddAsync(new ProjectActivityLog
+			{
+				ProjectTaskId = entity.Id,
+				ActivityType = ProjectActivityType.StatusChanged,
+				Summary = $"Status: {old} -> {entity.Status}",
+				Details = null,
+				UserId = GetCurrentUserIdOrNull()
+			});
+			await _unitOfWork.CommitAsync();
+			var updated = await _repository.Where(t => t.Id == entity.Id)
+				.Include(t => t.Customer)
+				.Include(t => t.Assignee)
+				.FirstAsync();
+			return MapToListDto(updated);
+		}
+
+		private string? GetCurrentUserIdOrNull()
+		{
+			var user = _httpContextAccessor?.HttpContext?.User;
+			return user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+		}
+
+		public async Task<IEnumerable<ProjectActivityLog>> GetHistoryAsync(Guid id)
+		{
+			return await _activityLogRepo.Where(l => l.ProjectTaskId == id)
+				.OrderBy(l => l.CreatedDate)
+				.ToListAsync();
 		}
 	}
 }

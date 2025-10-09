@@ -48,6 +48,21 @@ namespace formneo.api.Controllers
 			return Ok(updated);
 		}
 
+		[HttpPatch("status")]
+		public async Task<IActionResult> UpdateStatus([FromBody] ProjectTaskStatusUpdateDto dto)
+		{
+			var updated = await _service.UpdateStatusAsync(dto.Id, dto.Status);
+			if (updated == null) return NotFound();
+			return Ok(updated);
+		}
+
+		[HttpGet("{id}/history")]
+		public async Task<IActionResult> GetHistory(Guid id)
+		{
+			var logs = await _service.GetHistoryAsync(id);
+			return Ok(logs);
+		}
+
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete(Guid id)
 		{
