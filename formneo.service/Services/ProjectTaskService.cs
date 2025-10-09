@@ -5,6 +5,7 @@ using formneo.core.Models;
 using formneo.core.Repositories;
 using formneo.core.Services;
 using formneo.core.UnitOfWorks;
+using formneo.core.Services;
 
 namespace formneo.service.Services
 {
@@ -14,14 +15,18 @@ namespace formneo.service.Services
 		private readonly IMapper _mapper;
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ITenantProjectRepository _tenantProjectRepository;
+		private readonly ICustomerRepository _customerRepository;
+		private readonly ITenantContext _tenantContext;
 
-		public ProjectTaskService(IGenericRepository<ProjectTask> repository, IUnitOfWork unitOfWork, IMapper mapper, IProjectTaskRepository projectTaskRepository, ITenantProjectRepository tenantProjectRepository)
+		public ProjectTaskService(IGenericRepository<ProjectTask> repository, IUnitOfWork unitOfWork, IMapper mapper, IProjectTaskRepository projectTaskRepository, ITenantProjectRepository tenantProjectRepository, ICustomerRepository customerRepository, ITenantContext tenantContext)
 			: base(repository, unitOfWork)
 		{
 			_repository = projectTaskRepository;
 			_mapper = mapper;
 			_unitOfWork = unitOfWork;
 			_tenantProjectRepository = tenantProjectRepository;
+			_customerRepository = customerRepository;
+			_tenantContext = tenantContext;
 		}
 
 		public async Task<IEnumerable<ProjectTaskListDto>> GetByProjectAsync(Guid projectId)
@@ -64,6 +69,15 @@ namespace formneo.service.Services
 					entity.CustomerId = proj.CustomerId.Value;
 				}
 			}
+			// Validate customer FK within current tenant scope
+			if (entity.CustomerId != null && entity.CustomerId != Guid.Empty)
+			{
+				var cust = await _customerRepository.GetByIdStringGuidAsync(entity.CustomerId.Value);
+				if (cust == null)
+				{
+					entity.CustomerId = null; // invalid -> clear
+				}
+			}
 			await _repository.AddAsync(entity);
 			await _unitOfWork.CommitAsync();
 			// reload with relations
@@ -76,7 +90,8 @@ namespace formneo.service.Services
 
 		public async Task<ProjectTaskListDto?> UpdateAsync(ProjectTaskUpdateDto dto)
 		{
-			var entity = await _repository.GetByIdStringGuidAsync(dto.Id);
+			ProjectTask? entity;
+			entity = await _repository.GetByIdStringGuidAsync(dto.Id);
 			if (entity == null) return null;
 
 			entity.ProjectId = dto.ProjectId;
@@ -95,6 +110,15 @@ namespace formneo.service.Services
 				if (proj != null && proj.CustomerId.HasValue)
 				{
 					entity.CustomerId = proj.CustomerId.Value;
+				}
+			}
+			// Validate customer FK within current tenant scope
+			if (entity.CustomerId != null && entity.CustomerId != Guid.Empty)
+			{
+				var cust = await _customerRepository.GetByIdStringGuidAsync(entity.CustomerId.Value);
+				if (cust == null)
+				{
+					entity.CustomerId = null;
 				}
 			}
 

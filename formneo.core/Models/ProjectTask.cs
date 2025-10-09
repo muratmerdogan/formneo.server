@@ -23,7 +23,7 @@ namespace formneo.core.Models
 
 		[ForeignKey("Customer")]
 		public Guid? CustomerId { get; set; }
-		public virtual Customer? Customer { get; set; }
+		public virtual CRM.Customer? Customer { get; set; }
 
 		[Required]
 		[StringLength(200)]

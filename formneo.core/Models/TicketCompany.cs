@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace formneo.core.Models
 {
-    public class Customer : BaseEntity
+    public class Customer222 : BaseEntity
     {
         [Required]
         [MaxLength(100)]
