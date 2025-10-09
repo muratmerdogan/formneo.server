@@ -9,6 +9,7 @@ using formneo.core.DTOs.ProjectDtos;
 using formneo.core.EnumExtensions;
 using formneo.core.Models;
 using formneo.core.Services;
+using formneo.core.Models;
 using formneo.service.Services;
 using formneo.api.Helper;
 using formneo.core.Models.Security;
@@ -23,12 +24,16 @@ namespace formneo.api.Controllers
         private readonly IProjectService _projectService;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
+        private readonly IService<ProjectRelation> _projectRelationService;
+        private readonly IProjectTeamMemberService _projectTeamMemberService;
 
-        public ProjectsController(IProjectService projectService, IMapper mapper, IUserService userService)
+        public ProjectsController(IProjectService projectService, IMapper mapper, IUserService userService, IService<ProjectRelation> projectRelationService, IProjectTeamMemberService projectTeamMemberService)
         {
             _projectService = projectService;
             _mapper = mapper;
             _userService = userService;
+            _projectRelationService = projectRelationService;
+            _projectTeamMemberService = projectTeamMemberService;
         }
         [HttpGet]
         [RequirePermission("Projects", Actions.View)]
@@ -46,6 +51,30 @@ namespace formneo.api.Controllers
             var user = await _userService.GetUserByNameAsync(name);
             project.UserId = user.Data.Id;
             await _projectService.AddAsync(project);
+
+            // Parents (many-to-many via ProjectRelation)
+            if (dto.ParentProjectIds != null && dto.ParentProjectIds.Count > 0)
+            {
+                var relations = dto.ParentProjectIds
+                    .Where(pid => pid != Guid.Empty && pid != project.Id)
+                    .Distinct()
+                    .Select(pid => new ProjectRelation { ParentProjectId = pid, ChildProjectId = project.Id })
+                    .ToList();
+                if (relations.Count > 0)
+                    await _projectRelationService.AddRangeAsync(relations);
+            }
+
+            // Managers (multiple) via ProjectTeamMember
+            if (dto.ManagerIds != null && dto.ManagerIds.Count > 0)
+            {
+                var managers = dto.ManagerIds
+                    .Where(uid => !string.IsNullOrWhiteSpace(uid))
+                    .Distinct()
+                    .Select(uid => new ProjectTeamMember { ProjectId = project.Id, UserId = uid, Role = "Manager", IsActive = true })
+                    .ToList();
+                if (managers.Count > 0)
+                    await _projectTeamMemberService.AddRangeAsync(managers);
+            }
             return Ok(dto);
         }
         [HttpPut]
@@ -74,6 +103,34 @@ namespace formneo.api.Controllers
             
 
             await _projectService.UpdateAsync(existingProject);
+
+            // Sync parents
+            var currentRelations = await _projectRelationService.Where(r => r.ChildProjectId == existingProject.Id).ToListAsync();
+            await _projectRelationService.RemoveRangeAsync(currentRelations);
+            if (dto.ParentProjectIds != null && dto.ParentProjectIds.Count > 0)
+            {
+                var newRelations = dto.ParentProjectIds
+                    .Where(pid => pid != Guid.Empty && pid != existingProject.Id)
+                    .Distinct()
+                    .Select(pid => new ProjectRelation { ParentProjectId = pid, ChildProjectId = existingProject.Id })
+                    .ToList();
+                if (newRelations.Count > 0)
+                    await _projectRelationService.AddRangeAsync(newRelations);
+            }
+
+            // Sync managers
+            var currentManagers = await _projectTeamMemberService.Where(m => m.ProjectId == existingProject.Id && m.Role == "Manager").ToListAsync();
+            await _projectTeamMemberService.RemoveRangeAsync(currentManagers);
+            if (dto.ManagerIds != null && dto.ManagerIds.Count > 0)
+            {
+                var newManagers = dto.ManagerIds
+                    .Where(uid => !string.IsNullOrWhiteSpace(uid))
+                    .Distinct()
+                    .Select(uid => new ProjectTeamMember { ProjectId = existingProject.Id, UserId = uid, Role = "Manager", IsActive = true })
+                    .ToList();
+                if (newManagers.Count > 0)
+                    await _projectTeamMemberService.AddRangeAsync(newManagers);
+            }
 
             return Ok(existingProject);
         }

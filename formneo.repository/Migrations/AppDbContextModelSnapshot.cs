@@ -2391,9 +2391,59 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 10, 6, 14, 19, 26, 850, DateTimeKind.Utc).AddTicks(4820),
+                            CreatedDate = new DateTime(2025, 10, 9, 15, 8, 37, 529, DateTimeKind.Utc).AddTicks(9400),
                             Name = "RonesansHolding"
                         });
+                });
+
+            modelBuilder.Entity("formneo.core.Models.Customer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("MailExtension")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MainClientId");
+
+                    b.ToTable("Customer");
                 });
 
             modelBuilder.Entity("formneo.core.Models.Departments", b =>
@@ -3328,7 +3378,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 10, 6, 14, 19, 26, 850, DateTimeKind.Utc).AddTicks(5630),
+                            CreatedDate = new DateTime(2025, 10, 9, 15, 8, 37, 530, DateTimeKind.Utc).AddTicks(120),
                             DomainVerified = false,
                             Email = "info@formneo.com",
                             FeatureFlags = "{}",
@@ -3690,7 +3740,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 10, 6, 14, 19, 26, 850, DateTimeKind.Utc).AddTicks(5750),
+                            CreatedDate = new DateTime(2025, 10, 9, 15, 8, 37, 530, DateTimeKind.Utc).AddTicks(210),
                             Name = "RonesansHoldingTurkey"
                         });
                 });
@@ -3831,6 +3881,68 @@ namespace formneo.repository.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("formneo.core.Models.ProjectActivityLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ActivityType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Details")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProjectTaskId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Summary")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MainClientId");
+
+                    b.HasIndex("ProjectTaskId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProjectActivityLogs");
+                });
+
             modelBuilder.Entity("formneo.core.Models.ProjectCategories", b =>
                 {
                     b.Property<Guid>("Id")
@@ -3874,6 +3986,188 @@ namespace formneo.repository.Migrations
                     b.HasIndex("MainClientId");
 
                     b.ToTable("ProjectCategories");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.ProjectRelation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChildProjectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ParentProjectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChildProjectId");
+
+                    b.HasIndex("MainClientId");
+
+                    b.HasIndex("ParentProjectId");
+
+                    b.ToTable("ProjectRelations");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.ProjectTask", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AssigneeId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssigneeId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("MainClientId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectTask");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.ProjectTaskComment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProjectTaskId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MainClientId");
+
+                    b.HasIndex("ProjectTaskId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProjectTaskComments");
                 });
 
             modelBuilder.Entity("formneo.core.Models.ProjectTasks", b =>
@@ -3954,6 +4248,64 @@ namespace formneo.repository.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("ProjectTasks");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.ProjectTeamMember", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Role")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MainClientId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProjectTeamMembers");
                 });
 
             modelBuilder.Entity("formneo.core.Models.RoleTenant", b =>
@@ -4190,6 +4542,64 @@ namespace formneo.repository.Migrations
                     b.HasIndex("UserAppId");
 
                     b.ToTable("UserCalendar");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.TenantProject", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("MainClientId");
+
+                    b.ToTable("TenantProjects");
                 });
 
             modelBuilder.Entity("formneo.core.Models.Ticket.DepartmentUser", b =>
@@ -5019,6 +5429,9 @@ namespace formneo.repository.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Department")
                         .HasColumnType("text");
 
@@ -5146,6 +5559,8 @@ namespace formneo.repository.Migrations
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("DepartmentsId");
 
@@ -6252,6 +6667,16 @@ namespace formneo.repository.Migrations
                     b.Navigation("Client");
                 });
 
+            modelBuilder.Entity("formneo.core.Models.Customer", b =>
+                {
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("MainClient");
+                });
+
             modelBuilder.Entity("formneo.core.Models.Departments", b =>
                 {
                     b.HasOne("formneo.core.Models.MainClient", "MainClient")
@@ -6573,6 +6998,32 @@ namespace formneo.repository.Migrations
                     b.Navigation("UserApp");
                 });
 
+            modelBuilder.Entity("formneo.core.Models.ProjectActivityLog", b =>
+                {
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.ProjectTask", "ProjectTask")
+                        .WithMany()
+                        .HasForeignKey("ProjectTaskId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.UserApp", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("MainClient");
+
+                    b.Navigation("ProjectTask");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("formneo.core.Models.ProjectCategories", b =>
                 {
                     b.HasOne("formneo.core.Models.MainClient", "MainClient")
@@ -6582,6 +7033,93 @@ namespace formneo.repository.Migrations
                         .IsRequired();
 
                     b.Navigation("MainClient");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.ProjectRelation", b =>
+                {
+                    b.HasOne("formneo.core.Models.Project", "ChildProject")
+                        .WithMany()
+                        .HasForeignKey("ChildProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.Project", "ParentProject")
+                        .WithMany()
+                        .HasForeignKey("ParentProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ChildProject");
+
+                    b.Navigation("MainClient");
+
+                    b.Navigation("ParentProject");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.ProjectTask", b =>
+                {
+                    b.HasOne("formneo.core.Models.UserApp", "Assignee")
+                        .WithMany()
+                        .HasForeignKey("AssigneeId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("formneo.core.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.TenantProject", "TenantProject")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Assignee");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("MainClient");
+
+                    b.Navigation("TenantProject");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.ProjectTaskComment", b =>
+                {
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.ProjectTask", "ProjectTask")
+                        .WithMany()
+                        .HasForeignKey("ProjectTaskId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.UserApp", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("MainClient");
+
+                    b.Navigation("ProjectTask");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("formneo.core.Models.ProjectTasks", b =>
@@ -6601,6 +7139,33 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
 
                     b.Navigation("TicketProjects");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.ProjectTeamMember", b =>
+                {
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.TenantProject", "TenantProject")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.UserApp", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("MainClient");
+
+                    b.Navigation("TenantProject");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("formneo.core.Models.RoleTenant", b =>
@@ -6657,6 +7222,24 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
 
                     b.Navigation("UserApp");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.TenantProject", b =>
+                {
+                    b.HasOne("formneo.core.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("MainClient");
                 });
 
             modelBuilder.Entity("formneo.core.Models.Ticket.DepartmentUser", b =>
@@ -7006,6 +7589,11 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("formneo.core.Models.UserApp", b =>
                 {
+                    b.HasOne("formneo.core.Models.Customer", null)
+                        .WithMany("Users")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("formneo.core.Models.Departments", null)
                         .WithMany("employess")
                         .HasForeignKey("DepartmentsId")
@@ -7223,6 +7811,11 @@ namespace formneo.repository.Migrations
             modelBuilder.Entity("formneo.core.Models.Company", b =>
                 {
                     b.Navigation("Plant");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.Customer", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("formneo.core.Models.Departments", b =>

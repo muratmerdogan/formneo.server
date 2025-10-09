@@ -18,5 +18,9 @@ namespace formneo.core.DTOs.ProjectDtos
         public string ProjectGain { get; set; }
         public string ProjectLearn { get; set; }
         public string ProjectTags { get; set; }
+
+		// Yeni: çoklu üst proje ve yöneticiler
+		public List<Guid>? ParentProjectIds { get; set; }
+		public List<string>? ManagerIds { get; set; }
     }
 }

@@ -466,6 +466,17 @@ namespace formneo.service.Mapping
             CreateMap<TenantLookupItem, LookupItemDto>().ReverseMap();
             // Tenant lookup mappings removed; Lookup* are tenant-scoped (BaseEntity)
             CreateMap<TenantLookupModule, LookupModuleDto>().ReverseMap();
+
+			// ProjectTask
+			CreateMap<formneo.core.Models.ProjectTask, formneo.core.DTOs.ProjectTask.ProjectTaskListDto>()
+				.ForMember(d => d.Status, o => o.MapFrom(s => (int)s.Status))
+				.ForMember(d => d.StatusText, o => o.MapFrom(s => s.Status.ToString()))
+				.ForMember(d => d.AssigneeName, o => o.MapFrom(s => s.Assignee != null ? (s.Assignee.FirstName + " " + s.Assignee.LastName).Trim() : null))
+				.ForMember(d => d.CustomerName, o => o.MapFrom(s => s.Customer != null ? s.Customer.Name : null));
+			CreateMap<formneo.core.DTOs.ProjectTask.ProjectTaskInsertDto, formneo.core.Models.ProjectTask>()
+				.ForMember(d => d.Status, o => o.MapFrom(s => (formneo.core.Models.ProjectTaskStatus)s.Status));
+			CreateMap<formneo.core.DTOs.ProjectTask.ProjectTaskUpdateDto, formneo.core.Models.ProjectTask>()
+				.ForMember(d => d.Status, o => o.MapFrom(s => (formneo.core.Models.ProjectTaskStatus)s.Status));
         }
     }
 }

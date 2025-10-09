@@ -18,7 +18,7 @@ namespace formneo.api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class ProjectTasksController : CustomBaseController
+    public class LegacyProjectTasksController : CustomBaseController
     {
         private readonly IMapper _mapper;
         private readonly IProjectTasksService _projectTasksService;
@@ -28,7 +28,7 @@ namespace formneo.api.Controllers
         private readonly ITenantContext _tenantContext;
         private readonly IUserTenantService _userTenantService;
 
-        public ProjectTasksController(IUserService userService,UserManager<UserApp> userManager, ITicketProjectsService ticketProjectsService, IProjectTasksService projectTasksService, IMapper mapper, ITicketServices ticketService, ITenantContext tenantContext, IUserTenantService userTenantService)
+        public LegacyProjectTasksController(IUserService userService,UserManager<UserApp> userManager, ITicketProjectsService ticketProjectsService, IProjectTasksService projectTasksService, IMapper mapper, ITicketServices ticketService, ITenantContext tenantContext, IUserTenantService userTenantService)
         {
             _ticketProjectsService = ticketProjectsService;
             _mapper = mapper;

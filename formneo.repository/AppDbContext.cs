@@ -42,6 +42,7 @@ namespace formneo.repository
         public DbSet<BudgetPromotionRequest> BudgetPromotionRequest { get; set; }
         public DbSet<UserRefreshToken> UserRefreshToken { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<TenantProject> TenantProjects { get; set; }
         public DbSet<Positions> Positions { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<Tickets> Tickets { get; set; }
@@ -78,6 +79,11 @@ namespace formneo.repository
         public DbSet<TicketProjects> TicketProjects { get; set; }
         public DbSet<ProjectTasks> ProjectTasks { get; set; }
         public DbSet<ProjectCategories> ProjectCategories { get; set; }
+        public DbSet<ProjectTask> ProjectTask { get; set; }
+        public DbSet<ProjectTeamMember> ProjectTeamMembers { get; set; }
+        public DbSet<ProjectTaskComment> ProjectTaskComments { get; set; }
+        public DbSet<ProjectActivityLog> ProjectActivityLogs { get; set; }
+        public DbSet<ProjectRelation> ProjectRelations { get; set; }
         public DbSet<Inventory> Inventory { get; set; }
 
         public DbSet<UserCalendar> UserCalendar { get; set; }
