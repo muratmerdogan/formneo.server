@@ -387,7 +387,7 @@ namespace formneo.service.Services
                 var user = await _userManager.ResetPasswordAsync(result, token, newPassword);
                 return user != null ? true : false;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }

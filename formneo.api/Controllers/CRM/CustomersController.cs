@@ -11,6 +11,7 @@ namespace formneo.api.Controllers.CRM
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[RequirePermissionForHttpVerb("customer")]
 	public class CustomersController : ControllerBase
 	{
 		private readonly ICustomerService _customerService;

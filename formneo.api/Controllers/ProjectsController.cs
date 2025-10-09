@@ -10,6 +10,8 @@ using formneo.core.EnumExtensions;
 using formneo.core.Models;
 using formneo.core.Services;
 using formneo.service.Services;
+using formneo.api.Helper;
+using formneo.core.Models.Security;
 
 namespace formneo.api.Controllers
 {
@@ -29,12 +31,14 @@ namespace formneo.api.Controllers
             _userService = userService;
         }
         [HttpGet]
+        [RequirePermission("Projects", Actions.View)]
         public async Task<IActionResult> GetAllProjectList()
         {
             var values = await _projectService.GetAllProductListAsync();
             return Ok(values);
         }
         [HttpPost]
+        [RequirePermission("Projects", Actions.Create)]
         public async Task<IActionResult> CreateProject(CreateProjectDto dto)
         {
             var project= _mapper.Map<Project>(dto);
@@ -45,6 +49,7 @@ namespace formneo.api.Controllers
             return Ok(dto);
         }
         [HttpPut]
+        [RequirePermission("Projects", Actions.Update)]
         public async Task<IActionResult> UpdateProject(UpdateProjectDto dto)
         {
             string name = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
@@ -73,6 +78,7 @@ namespace formneo.api.Controllers
             return Ok(existingProject);
         }
         [HttpDelete]
+        [RequirePermission("Projects", Actions.Delete)]
         public async Task<IActionResult> RemoveProject(Guid id)
         {
             var value = await _projectService.GetByIdStringGuidAsync(id);

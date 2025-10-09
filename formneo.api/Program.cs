@@ -42,6 +42,8 @@ using formneo.core.Configuration;
 using ServiceCollection = Microsoft.Extensions.DependencyInjection.ServiceCollection;
 using formneo.api.Seed;
 using FluentValidation.AspNetCore;
+using formneo.core.Services;
+using formneo.api.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -393,9 +395,10 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 
-
-
-builder.Services.AddAuthorization();
+// Permission policy provider & handler
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
+builder.Services.AddScoped<IPermissionEvaluator, PermissionEvaluator>();
 
 builder.Services.AddScoped<DbNameHelper>();
 builder.Services.AddScoped<formneo.core.Services.ITenantContext, formneo.service.Services.TenantContext>();

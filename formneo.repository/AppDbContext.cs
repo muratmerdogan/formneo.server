@@ -25,6 +25,7 @@ using formneo.core.Models.Ticket;
 using formneo.core.Models.CRM;
 using formneo.core.Models.Lookup;
 using formneo.core.Services;
+using formneo.core.Models.Security;
 
 
 namespace formneo.repository
@@ -80,8 +81,10 @@ namespace formneo.repository
         public DbSet<Inventory> Inventory { get; set; }
 
         public DbSet<UserCalendar> UserCalendar { get; set; }
-        //public DbSet<MenuUI> MenuUI { get; set; }
-        // CRM
+        // Security
+        public DbSet<Resource> Resources { get; set; }
+        public DbSet<UserPermission> UserPermissions { get; set; }
+
         public DbSet<formneo.core.Models.CRM.Customer> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public DbSet<CustomerOfficial> CustomerOfficials { get; set; }
