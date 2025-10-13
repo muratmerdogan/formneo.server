@@ -65,6 +65,8 @@ namespace formneo.api.Controllers
                 ParentFormId=x.ParentFormId,
                 CanEdit=x.CanEdit,
                 ShowInMenu=x.ShowInMenu,
+                PublicationStatus = x.PublicationStatus,
+                PublicationStatusText = x.PublicationStatus.GetDescription(),
             }).ToListAsync();
             return dto;
         }
@@ -96,6 +98,8 @@ namespace formneo.api.Controllers
                 ParentFormId=x.ParentFormId,
                 CanEdit = x.CanEdit,
                 ShowInMenu = x.ShowInMenu,
+                PublicationStatus = x.PublicationStatus,
+                PublicationStatusText = x.PublicationStatus.GetDescription(),
             }).FirstAsync();
 
             return dto;
@@ -108,6 +112,11 @@ namespace formneo.api.Controllers
         public async Task<IActionResult> Save(FormDataInsertDto formDto)
         {
             var result = await _service.AddAsync(_mapper.Map<Form>(formDto));
+            if (result.PublicationStatus == 0)
+            {
+                result.PublicationStatus = FormPublicationStatus.Draft;
+                await _service.UpdateAsync(result);
+            }
             if (result.ParentFormId == null) {
                 result.ParentFormId = result.Id;
                 await _service.UpdateAsync(result);
@@ -120,13 +129,74 @@ namespace formneo.api.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(FormDataUpdateDto formDto)
         {
-            //var form = await _formRepository.GetByIdStringGuidAsync(formDto.Id);
-            var form = _mapper.Map<Form>(formDto);
-            //form.CanEdit = false;
-            //form.ShowInMenu = false;
-            await _service.UpdateAsync(form);
+            var existing = await _formRepository.GetByIdStringGuidAsync(formDto.Id);
+            if (existing == null)
+                return NotFound();
+            if (existing.PublicationStatus != FormPublicationStatus.Draft)
+                return BadRequest("Only Draft forms can be updated.");
+
+            // Map updatable fields only
+            existing.FormName = formDto.FormName;
+            existing.FormDescription = formDto.FormDescription;
+            existing.FormDesign = formDto.FormDesign;
+            existing.IsActive = formDto.IsActive;
+            existing.JavaScriptCode = formDto.JavaScriptCode;
+            existing.FormType = formDto.FormType;
+            existing.FormCategory = formDto.FormCategory;
+            existing.FormPriority = formDto.FormPriority;
+            existing.WorkFlowDefinationId = formDto.WorkFlowDefinationId;
+            existing.CanEdit = formDto.CanEdit;
+            existing.ShowInMenu = formDto.ShowInMenu;
+            existing.PublicationStatus = formDto.PublicationStatus; // optionally keep Draft
+
+            await _service.UpdateAsync(existing);
 
             return CreateActionResult(CustomResponseDto<FormDataUpdateDto>.Success(204));
+        }
+
+        [HttpPost("[action]/{id}")]
+        public async Task<IActionResult> CreateRevision(Guid id)
+        {
+            var newRev = await _service.CreateRevisionAsync(id);
+            return Ok(new { id = newRev.Id, revision = newRev.Revision });
+        }
+
+        [HttpPost("[action]/{id}")]
+        public async Task<IActionResult> Publish(Guid id)
+        {
+            var published = await _service.PublishAsync(id);
+            return Ok(new { id = published.Id, revision = published.Revision, status = published.PublicationStatus.ToString() });
+        }
+
+        [HttpGet("[action]/{parentId}")]
+        public async Task<ActionResult<List<FormDataListDto>>> Versions(Guid parentId)
+        {
+            var list = await _service.GetVersionsAsync(parentId);
+            var dto = list.Select(x => new FormDataListDto
+            {
+                CreatedDate = x.CreatedDate,
+                FormCategory = x.FormCategory,
+                FormName = x.FormName,
+                FormCategoryText = x.FormCategory.GetDescription(),
+                FormDescription = x.FormDescription,
+                FormPriority = x.FormPriority,
+                FormType = x.FormType,
+                FormDesign = x.FormDesign,
+                FormPriorityText = x.FormPriority.GetDescription(),
+                FormTypeText = x.FormType.GetDescription(),
+                Id = x.Id,
+                IsActive = x.IsActive,
+                JavaScriptCode = x.JavaScriptCode,
+                Revision = x.Revision,
+                WorkFlowDefinationId = x.WorkFlowDefinationId,
+                WorkFlowName = x.WorkFlowDefination != null ? x.WorkFlowDefination.WorkflowName : null,
+                ParentFormId=x.ParentFormId,
+                CanEdit = x.CanEdit,
+                ShowInMenu = x.ShowInMenu,
+                PublicationStatus = x.PublicationStatus,
+                PublicationStatusText = x.PublicationStatus.GetDescription(),
+            }).ToList();
+            return dto;
         }
 
         // DELETE api/products/5
@@ -192,7 +262,33 @@ namespace formneo.api.Controllers
         public async Task<ActionResult<List<FormDataListDto>>> GetFormListByMenu()
         {
             var forms = await _service.GetAllAsync();
-            var dto = _mapper.Map<List<FormDataListDto>>(forms.Where(e => e.IsActive == 1));
+            var dto = forms
+                .Where(e => e.IsActive == 1 && e.PublicationStatus == FormPublicationStatus.Published)
+                .Select(x => new FormDataListDto
+                {
+                    CreatedDate = x.CreatedDate,
+                    FormCategory = x.FormCategory,
+                    FormName = x.FormName,
+                    FormCategoryText = x.FormCategory.GetDescription(),
+                    FormDescription = x.FormDescription,
+                    FormPriority = x.FormPriority,
+                    FormType = x.FormType,
+                    FormDesign = x.FormDesign,
+                    FormPriorityText = x.FormPriority.GetDescription(),
+                    FormTypeText = x.FormType.GetDescription(),
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    JavaScriptCode = x.JavaScriptCode,
+                    Revision = x.Revision,
+                    WorkFlowDefinationId = x.WorkFlowDefinationId,
+                    WorkFlowName = null,
+                    ParentFormId = x.ParentFormId,
+                    CanEdit = x.CanEdit,
+                    ShowInMenu = x.ShowInMenu,
+                    PublicationStatus = x.PublicationStatus,
+                    PublicationStatusText = x.PublicationStatus.GetDescription(),
+                })
+                .ToList();
 
             return dto;
         }

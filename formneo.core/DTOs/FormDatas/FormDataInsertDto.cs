@@ -25,6 +25,8 @@ namespace formneo.core.DTOs.FormDatas
         public bool CanEdit { get; set; }
         public bool ShowInMenu { get; set; }
 
+        public FormPublicationStatus PublicationStatus { get; set; }
+
 
     }
 }

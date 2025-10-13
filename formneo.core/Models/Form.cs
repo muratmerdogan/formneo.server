@@ -44,5 +44,9 @@ namespace formneo.core.Models
         public bool CanEdit { get; set; }
         public bool ShowInMenu { get; set; }
 
+        [Required]
+        [EnumDataType(typeof(FormPublicationStatus))]
+        public FormPublicationStatus PublicationStatus { get; set; }
+
     }
 }

@@ -30,5 +30,8 @@ namespace formneo.core.DTOs.FormDatas
         public Guid? ParentFormId { get; set; }
         public bool CanEdit { get; set; }
         public bool ShowInMenu { get; set; }
+
+        public FormPublicationStatus PublicationStatus { get; set; }
+        public string? PublicationStatusText { get; set; }
     }
 }

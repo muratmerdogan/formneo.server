@@ -2391,7 +2391,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 10, 9, 20, 54, 21, 951, DateTimeKind.Utc).AddTicks(2780),
+                            CreatedDate = new DateTime(2025, 10, 13, 6, 49, 32, 831, DateTimeKind.Utc).AddTicks(6160),
                             Name = "RonesansHolding"
                         });
                 });
@@ -2677,6 +2677,9 @@ namespace formneo.repository.Migrations
 
                     b.Property<Guid?>("ParentFormId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("PublicationStatus")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Revision")
                         .HasColumnType("integer");
@@ -3328,7 +3331,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 10, 9, 20, 54, 21, 951, DateTimeKind.Utc).AddTicks(3640),
+                            CreatedDate = new DateTime(2025, 10, 13, 6, 49, 32, 831, DateTimeKind.Utc).AddTicks(6890),
                             DomainVerified = false,
                             Email = "info@formneo.com",
                             FeatureFlags = "{}",
@@ -3690,7 +3693,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 10, 9, 20, 54, 21, 951, DateTimeKind.Utc).AddTicks(3730),
+                            CreatedDate = new DateTime(2025, 10, 13, 6, 49, 32, 831, DateTimeKind.Utc).AddTicks(7000),
                             Name = "RonesansHoldingTurkey"
                         });
                 });
