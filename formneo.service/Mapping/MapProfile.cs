@@ -49,6 +49,7 @@ using formneo.core.Models.CRM;
 using formneo.core.DTOs.CRM;
 using formneo.core.DTOs.Lookup;
 using formneo.core.Models.Lookup;
+using formneo.core.DTOs.RoleForm;
 
 namespace formneo.service.Mapping
 {
@@ -204,6 +205,8 @@ namespace formneo.service.Mapping
             CreateMap<RoleMenuListDto, RoleMenuInsertDto>().ReverseMap();
             CreateMap<RoleMenuListDto, AspNetRolesMenu>().ReverseMap();
             CreateMap<RoleTenantMenuListDto, AspNetRolesTenantMenu>().ReverseMap();
+            this.AddRoleFormMappings();
+            CreateMap<FormTenantRole, FormTenantRoleListDto>().ReverseMap();
             CreateMap<FormDataListDto, Form>().ReverseMap();
             CreateMap<TicketTeam, TicketTeamListDto>().ReverseMap();
             CreateMap<TicketTeamListDto, TicketTeamInsertDto>().ReverseMap();

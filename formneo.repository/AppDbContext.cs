@@ -55,6 +55,8 @@ namespace formneo.repository
         public DbSet<TicketDepartment> TicketDepartment { get; set; }
         public DbSet<AspNetRolesMenu> AspNetRolesMenu { get; set; }
         public DbSet<AspNetRolesTenantMenu> AspNetRolesTenantMenu { get; set; }
+        public DbSet<AspNetRolesTenantForm> AspNetRolesTenantForm { get; set; }
+        public DbSet<FormTenantRole> FormTenantRoles { get; set; }
         public DbSet<TicketTeam> TicketTeam { get; set; }
         public DbSet<TicketTeamUserApp> TicketTeamUserApp { get; set; }
 

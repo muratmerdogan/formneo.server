@@ -287,6 +287,75 @@ namespace formneo.repository.Migrations
                     b.ToTable("AspNetRolesMenu");
                 });
 
+            modelBuilder.Entity("formneo.core.Models.AspNetRolesTenantForm", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("CanAdd")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("CanDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("CanEdit")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("CanView")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("FormId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FormTenantRoleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FormTenantRoleId");
+
+                    b.HasIndex("FormId", "FormTenantRoleId")
+                        .IsUnique();
+
+                    b.HasIndex("MainClientId", "FormId", "FormTenantRoleId")
+                        .IsUnique();
+
+                    b.ToTable("AspNetRolesTenantForm");
+                });
+
             modelBuilder.Entity("formneo.core.Models.AspNetRolesTenantMenu", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2391,7 +2460,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 10, 13, 6, 49, 32, 831, DateTimeKind.Utc).AddTicks(6160),
+                            CreatedDate = new DateTime(2025, 10, 24, 18, 30, 11, 75, DateTimeKind.Utc).AddTicks(7130),
                             Name = "RonesansHolding"
                         });
                 });
@@ -2931,6 +3000,59 @@ namespace formneo.repository.Migrations
                     b.ToTable("FormRuntime");
                 });
 
+            modelBuilder.Entity("formneo.core.Models.FormTenantRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MainClientId");
+
+                    b.ToTable("FormTenantRoles");
+                });
+
             modelBuilder.Entity("formneo.core.Models.Inventory.Inventory", b =>
                 {
                     b.Property<Guid>("Id")
@@ -3331,7 +3453,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 10, 13, 6, 49, 32, 831, DateTimeKind.Utc).AddTicks(6890),
+                            CreatedDate = new DateTime(2025, 10, 24, 18, 30, 11, 75, DateTimeKind.Utc).AddTicks(7890),
                             DomainVerified = false,
                             Email = "info@formneo.com",
                             FeatureFlags = "{}",
@@ -3693,7 +3815,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 10, 13, 6, 49, 32, 831, DateTimeKind.Utc).AddTicks(7000),
+                            CreatedDate = new DateTime(2025, 10, 24, 18, 30, 11, 75, DateTimeKind.Utc).AddTicks(7960),
                             Name = "RonesansHoldingTurkey"
                         });
                 });
@@ -6135,6 +6257,33 @@ namespace formneo.repository.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("formneo.core.Models.AspNetRolesTenantForm", b =>
+                {
+                    b.HasOne("formneo.core.Models.Form", "Form")
+                        .WithMany()
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.FormTenantRole", "FormTenantRole")
+                        .WithMany()
+                        .HasForeignKey("FormTenantRoleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Form");
+
+                    b.Navigation("FormTenantRole");
+
+                    b.Navigation("MainClient");
+                });
+
             modelBuilder.Entity("formneo.core.Models.AspNetRolesTenantMenu", b =>
                 {
                     b.HasOne("formneo.core.Models.Menu", "Menu")
@@ -6761,6 +6910,17 @@ namespace formneo.repository.Migrations
                         .IsRequired();
 
                     b.Navigation("Form");
+
+                    b.Navigation("MainClient");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.FormTenantRole", b =>
+                {
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("MainClient");
                 });

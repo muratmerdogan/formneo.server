@@ -17,6 +17,7 @@ using formneo.core.Models;
 using formneo.core.Models.FormEnums;
 using formneo.core.Repositories;
 using formneo.core.Services;
+using formneo.core.DTOs.Menu;
 
 namespace formneo.api.Controllers
 {
@@ -30,14 +31,16 @@ namespace formneo.api.Controllers
         private readonly IFormService _service;
         private readonly IServiceWithDto<FormRuleEngine, FormRuleEngineDto> _formRuleEngineService;
         private readonly IFormRepository _formRepository;
+        private readonly IGlobalServiceWithDto<Menu, MenuListDto> _menuService;
 
 
-        public FormDataController(IMapper mapper, IFormService formService, IServiceWithDto<FormRuleEngine, FormRuleEngineDto> formRuleEngineService, IFormRepository formRepository)
+        public FormDataController(IMapper mapper, IFormService formService, IServiceWithDto<FormRuleEngine, FormRuleEngineDto> formRuleEngineService, IFormRepository formRepository, IGlobalServiceWithDto<Menu, MenuListDto> menuService)
         {
             _mapper = mapper;
             _service = formService;
             _formRuleEngineService = formRuleEngineService;
             _formRepository = formRepository;
+            _menuService = menuService;
         }
         /// GET api/products
         [HttpGet]
@@ -74,8 +77,11 @@ namespace formneo.api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<FormDataListDto>> GetById(string id)
         {
-
-            var query = _formRepository.Where(x=>x.Id==new Guid(id)).Include(x => x.WorkFlowDefination);
+            if (!Guid.TryParse(id, out var guid))
+            {
+                return BadRequest("Geçersiz id formatı");
+            }
+            var query = _formRepository.Where(x=>x.Id==guid).Include(x => x.WorkFlowDefination);
             var dto = await query.Select(x => new FormDataListDto
             {
                 CreatedDate = x.CreatedDate,
@@ -121,7 +127,7 @@ namespace formneo.api.Controllers
                 result.ParentFormId = result.Id;
                 await _service.UpdateAsync(result);
             }
-            
+            // Yeni form Draft olacağından menü oluşturma yapılmaz; Publish/update sırasında senkronize edilir
 
             return CreateActionResult(CustomResponseDto<FormDataInsertDto>.Success(204));
 
@@ -151,6 +157,9 @@ namespace formneo.api.Controllers
 
             await _service.UpdateAsync(existing);
 
+            // Yayın/menü görünürlük koşullarına göre menü senkronizasyonu
+            await SyncFormMenuAsync(existing);
+
             return CreateActionResult(CustomResponseDto<FormDataUpdateDto>.Success(204));
         }
 
@@ -165,6 +174,8 @@ namespace formneo.api.Controllers
         public async Task<IActionResult> Publish(Guid id)
         {
             var published = await _service.PublishAsync(id);
+            // Yayınlanınca menü senkronizasyonu
+            await SyncFormMenuAsync(published);
             return Ok(new { id = published.Id, revision = published.Revision, status = published.PublicationStatus.ToString() });
         }
 
@@ -199,6 +210,54 @@ namespace formneo.api.Controllers
             return dto;
         }
 
+        // Aile bazında en son revizyonu döner (Published varsa onu, yoksa en yüksek revizyon)
+        [HttpGet("latest-per-family")]
+        public async Task<ActionResult<List<FormDataListDto>>> GetLatestPerFamily()
+        {
+            var all = await _service.GetAllAsync();
+            var list = all.ToList();
+            if (list == null || list.Count == 0) return new List<FormDataListDto>();
+
+            // ParentFormId null olanlar kendisi aile kökü sayılır
+            var families = list.GroupBy(f => f.ParentFormId ?? f.Id).ToList();
+            var latest = new List<Form>();
+            foreach (var fam in families)
+            {
+                var published = fam.Where(f => f.PublicationStatus == FormPublicationStatus.Published)
+                                   .OrderByDescending(f => f.Revision)
+                                   .FirstOrDefault();
+                var pick = published ?? fam.OrderByDescending(f => f.Revision).First();
+                latest.Add(pick);
+            }
+
+            var dto = latest.Select(x => new FormDataListDto
+            {
+                CreatedDate = x.CreatedDate,
+                FormCategory = x.FormCategory,
+                FormName = x.FormName,
+                FormCategoryText = x.FormCategory.GetDescription(),
+                FormDescription = x.FormDescription,
+                FormPriority = x.FormPriority,
+                FormType = x.FormType,
+                FormDesign = x.FormDesign,
+                FormPriorityText = x.FormPriority.GetDescription(),
+                FormTypeText = x.FormType.GetDescription(),
+                Id = x.Id,
+                IsActive = x.IsActive,
+                JavaScriptCode = x.JavaScriptCode,
+                Revision = x.Revision,
+                WorkFlowDefinationId = x.WorkFlowDefinationId,
+                WorkFlowName = null,
+                ParentFormId = x.ParentFormId,
+                CanEdit = x.CanEdit,
+                ShowInMenu = x.ShowInMenu,
+                PublicationStatus = x.PublicationStatus,
+                PublicationStatusText = x.PublicationStatus.GetDescription(),
+            }).ToList();
+
+            return dto;
+        }
+
         // DELETE api/products/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Remove(Guid id)
@@ -207,6 +266,9 @@ namespace formneo.api.Controllers
 
 
             await _service.RemoveAsync(form);
+
+            // Form silinince menü öğesini de kaldır
+            await RemoveFormMenuAsync(id);
 
             return CreateActionResult(CustomResponseDto<NoContentDto>.Success(204));
         }
@@ -342,6 +404,117 @@ namespace formneo.api.Controllers
             return attribute?.Description ?? value.ToString();
         }
 
+
+        // Yardımcı metotlar
+        private async Task<MenuListDto?> EnsureFormsRootAsync()
+        {
+            // FORMS_ROOT var mı?
+            var existingRootResp = await _menuService.Where(e => e.MenuCode == "FORMS_ROOT" && e.ParentMenuId == null);
+            var existingRoot = existingRootResp.Data.FirstOrDefault();
+            if (existingRoot != null) return existingRoot;
+
+            // Kök menüler arasından sipariş belirle
+            var rootsResp = await _menuService.Where(e => e.ParentMenuId == null && e.IsActive == true);
+            var nextOrder = (rootsResp?.Data?.Any() == true) ? rootsResp.Data.Max(m => m.Order) + 1 : 10000;
+
+            var root = new MenuListDto
+            {
+                Id = Guid.NewGuid(),
+                MenuCode = "FORMS_ROOT",
+                ParentMenuId = null,
+                Name = "Formlar",
+                Href = "/userFormList",
+                Icon = null,
+                IsActive = true,
+                ShowMenu = true,
+                IsTenantOnly = false,
+                IsGlobalOnly = false,
+                Order = nextOrder,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                Description = "",
+                SubMenus = null
+            };
+            var added = await _menuService.AddAsync(root);
+            return added.Data;
+        }
+
+        private async Task SyncFormMenuAsync(Form form)
+        {
+            // Form menü koşulu: Published + IsActive == 1 + ShowInMenu == true
+            bool shouldHaveMenu = form != null && form.PublicationStatus == FormPublicationStatus.Published && form.IsActive == 1 && form.ShowInMenu;
+            string menuCode = $"FORM_{form.Id}";
+
+            // Var olan menüyü bul
+            var existingResp = await _menuService.Where(m => m.MenuCode == menuCode);
+            var existing = existingResp.Data.FirstOrDefault();
+
+            if (!shouldHaveMenu)
+            {
+                if (existing != null)
+                {
+                    // Soft delete uygula
+                    await _menuService.SoftDeleteAsync(existing.Id);
+                }
+                return;
+            }
+
+            // Kökü hazırla
+            var root = await EnsureFormsRootAsync();
+            if (root == null) return;
+
+            // Çocuklar arasında sırayı belirle
+            var siblingsResp = await _menuService.Where(e => e.ParentMenuId == root.Id && e.IsActive == true);
+            var nextOrder = (siblingsResp?.Data?.Any() == true) ? siblingsResp.Data.Max(m => m.Order) + 1 : root.Order + 1;
+
+            if (existing == null)
+            {
+                var child = new MenuListDto
+                {
+                    Id = Guid.NewGuid(),
+                    MenuCode = menuCode,
+                    ParentMenuId = root.Id,
+                    Name = form.FormName,
+                    Href = $"/userFormList?formId={form.Id}",
+                    Icon = null,
+                    IsActive = true,
+                    ShowMenu = true,
+                    IsTenantOnly = false,
+                    IsGlobalOnly = false,
+                    Order = nextOrder,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    Description = "",
+                    SubMenus = null
+                };
+                await _menuService.AddAsync(child);
+            }
+            else
+            {
+                existing.ParentMenuId = root.Id;
+                existing.Name = form.FormName;
+                existing.Href = $"/userFormList?formId={form.Id}";
+                existing.IsActive = true;
+                existing.ShowMenu = true;
+                // Order'ı muhafaza et; yoksa sona taşı
+                if (existing.Order <= 0)
+                {
+                    existing.Order = nextOrder;
+                }
+                await _menuService.UpdateAsync(existing);
+            }
+        }
+
+        private async Task RemoveFormMenuAsync(Guid formId)
+        {
+            var menuCode = $"FORM_{formId}";
+            var existingResp = await _menuService.Where(m => m.MenuCode == menuCode);
+            var existing = existingResp.Data.FirstOrDefault();
+            if (existing != null)
+            {
+                await _menuService.SoftDeleteAsync(existing.Id);
+            }
+        }
 
     }
 }

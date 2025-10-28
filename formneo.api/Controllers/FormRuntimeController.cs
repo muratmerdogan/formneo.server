@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using NLayer.Core.Services;
 using System.Dynamic;
 using System.Text;
+using System.Linq;
 using formneo.api.Filters;
 using formneo.api.Helper;
 using formneo.core.DTOs;
@@ -66,8 +67,11 @@ namespace formneo.api.Controllers
         [HttpGet("{id}")]
         public async Task<FormRuntimeDto> GetById(string id)
         {
-
-            var form = await _service.GetByIdGuidAsync(new Guid(id));
+            if (!Guid.TryParse(id, out var guid))
+            {
+                return null;
+            }
+            var form = await _service.GetByIdGuidAsync(guid);
             var formDto = _mapper.Map<FormRuntimeDto>(form);
             return formDto;
         }
@@ -86,7 +90,11 @@ namespace formneo.api.Controllers
             if (formAssignId != null)
             {
                 var formAssigns = await _formAssignService.Include();
-                formAssigns = formAssigns.Where(e => e.Id == new Guid(formAssignId));
+                if (!Guid.TryParse(formAssignId, out var formAssignGuid))
+                {
+                    return BadRequest("Geçersiz formAssignId");
+                }
+                formAssigns = formAssigns.Where(e => e.Id == formAssignGuid);
 
                 var selectedAssign = _mapper.Map<FormAssignDto>(formAssigns.FirstOrDefault());
 
@@ -485,6 +493,77 @@ namespace formneo.api.Controllers
         }
 
 
+
+        [HttpGet("[action]/{parentId}")]
+        public async Task<IActionResult> GetLatestColumnsAndAllRevisionData(Guid parentId)
+        {
+            // Ailedeki tüm formları getir
+            var versions = await _formservice.GetVersionsAsync(parentId);
+            if (versions == null || versions.Count == 0)
+            {
+                return Ok(new { columns = new List<FormColumnDto>(), data = new List<object>() });
+            }
+
+            // Öncelik: Published en büyük revizyon; yoksa en büyük revizyon
+            var latestPublished = versions
+                .Where(f => f.PublicationStatus == FormPublicationStatus.Published)
+                .OrderByDescending(f => f.Revision)
+                .FirstOrDefault();
+            var latest = latestPublished ?? versions.OrderByDescending(f => f.Revision).First();
+
+            // Son revizyonun işaretli kolonlarını çıkar
+            var latestDesign = JObject.Parse(latest.FormDesign);
+            var marked = FindComponentsWithProp(latestDesign, "customBooleanProp", true);
+            var columnList = new List<FormColumnDto>();
+            foreach (var component in marked)
+            {
+                columnList.Add(new FormColumnDto
+                {
+                    ColumnName = component["key"].ToString(),
+                    ColumnLabel = component["label"].ToString(),
+                    Key = component["key"].ToString()
+                });
+            }
+
+            // Ailedeki tüm FormId'ler için runtime kayıtlarını getir
+            var familyFormIds = versions.Select(v => v.Id).ToList();
+            var runtimeResult = await _service.Where(r => familyFormIds.Contains(r.FormId));
+
+            var dataList = new List<dynamic>();
+            foreach (var item in runtimeResult.Data.OrderByDescending(e => e.CreatedDate))
+            {
+                dynamic expando = new ExpandoObject();
+                var dict = (IDictionary<string, object>)expando;
+                dict["id"] = item.Id;
+
+                if (!string.IsNullOrEmpty(item.ValuesJson))
+                {
+                    var jsonObject = JObject.Parse(item.ValuesJson);
+                    var dataToken = jsonObject["data"] as JObject;
+                    if (dataToken != null)
+                    {
+                        foreach (var col in columnList)
+                        {
+                            var valToken = dataToken[col.Key];
+                            if (valToken != null)
+                            {
+                                dict[col.Key] = valToken.Type == JTokenType.Boolean
+                                    ? (object)((bool)valToken)
+                                    : (object)valToken.ToString();
+                            }
+                            else
+                            {
+                                dict[col.Key] = null;
+                            }
+                        }
+                    }
+                }
+
+                dataList.Add(dict);
+            }
+
+            return Ok(new { columns = columnList, data = dataList });
+        }
 
     }
 }
