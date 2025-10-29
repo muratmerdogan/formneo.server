@@ -69,6 +69,7 @@ namespace formneo.repository
         public DbSet<UserTenant> UserTenants { get; set; }
         public DbSet<RoleTenant> RoleTenants { get; set; }
         public DbSet<UserTenantRole> UserTenantRoles { get; set; }
+        public DbSet<UserTenantFormRole> UserTenantFormRoles { get; set; }
 
         public DbSet<WorkCompanySystemInfo> WorkCompanySystemInfo { get; set; }
         public DbSet<WorkCompanyTicketMatris> WorkCompanyTicketMatris { get; set; }

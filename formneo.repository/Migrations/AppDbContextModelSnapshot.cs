@@ -2460,7 +2460,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 10, 24, 18, 30, 11, 75, DateTimeKind.Utc).AddTicks(7130),
+                            CreatedDate = new DateTime(2025, 10, 29, 18, 13, 22, 956, DateTimeKind.Utc).AddTicks(1360),
                             Name = "RonesansHolding"
                         });
                 });
@@ -3453,7 +3453,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 10, 24, 18, 30, 11, 75, DateTimeKind.Utc).AddTicks(7890),
+                            CreatedDate = new DateTime(2025, 10, 29, 18, 13, 22, 956, DateTimeKind.Utc).AddTicks(2140),
                             DomainVerified = false,
                             Email = "info@formneo.com",
                             FeatureFlags = "{}",
@@ -3815,7 +3815,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 10, 24, 18, 30, 11, 75, DateTimeKind.Utc).AddTicks(7960),
+                            CreatedDate = new DateTime(2025, 10, 29, 18, 13, 22, 956, DateTimeKind.Utc).AddTicks(2230),
                             Name = "RonesansHoldingTurkey"
                         });
                 });
@@ -5761,6 +5761,61 @@ namespace formneo.repository.Migrations
                         .IsUnique();
 
                     b.ToTable("UserTenants", (string)null);
+                });
+
+            modelBuilder.Entity("formneo.core.Models.UserTenantFormRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("FormTenantRoleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FormTenantRoleId");
+
+                    b.HasIndex("MainClientId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserTenantFormRoles");
                 });
 
             modelBuilder.Entity("formneo.core.Models.UserTenantRole", b =>
@@ -7736,6 +7791,33 @@ namespace formneo.repository.Migrations
                         .IsRequired();
 
                     b.Navigation("Tenant");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.UserTenantFormRole", b =>
+                {
+                    b.HasOne("formneo.core.Models.FormTenantRole", "FormTenantRole")
+                        .WithMany()
+                        .HasForeignKey("FormTenantRoleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.UserApp", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("FormTenantRole");
+
+                    b.Navigation("MainClient");
 
                     b.Navigation("User");
                 });
