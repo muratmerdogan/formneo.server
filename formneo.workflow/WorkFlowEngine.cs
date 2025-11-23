@@ -18,6 +18,8 @@ using System.Linq.Dynamic.Core;
 using Newtonsoft.Json.Linq;
 using JsonLogic.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Jint;
+using Jint.Native;
 
 public class WorkflowNode
 {
@@ -65,6 +67,14 @@ public class NodeData
     public string code { get; set; }
     public string sqlQuery { get; set; }
     public stoptype stoptype { get; set; }
+    /// <summary>
+    /// ScriptNode için JavaScript kodu
+    /// </summary>
+    public string script { get; set; }
+    /// <summary>
+    /// ScriptNode için processDataTree (form verilerine erişim için)
+    /// </summary>
+    public object processDataTree { get; set; }
 }
 
 public class stoptype
@@ -127,18 +137,27 @@ public class Workflow
     public string _payloadJson;
 
     public string _ApiSendUser { get; set; }
+    
+    /// <summary>
+    /// Form başlatılırken gönderilen action kodu (örn: SAVE, APPROVE)
+    /// </summary>
+    public string _Action { get; set; }
 
-    public void Start(string apiSendUser,string payloadJson)
+    public void Start(string apiSendUser, string payloadJson, string action = "")
     {
         _ApiSendUser = apiSendUser;
         _payloadJson = payloadJson;
+        _Action = action; // Action'ı set et - formNode'a gelince kullanılacak
+        
         // İş akışını başlatmak için ilk düğümü bulun
+        WorkflowNode startNode = Nodes.Find(node => node.Type == "startNode");
+        
+        if (startNode == null)
+        {
+            throw new Exception("StartNode bulunamadı!");
+        }
 
-        WorkflowNode startNode;
-
-        startNode = Nodes.Find(node => node.Type == "startNode");
-
-
+        // StartNode'dan başla - action formNode'a gelince kullanılacak
         ExecuteNode(startNode.Id, "");
     }
 
@@ -211,6 +230,20 @@ public class Workflow
 
         }
         
+        if (result.NodeType == "scriptNode")
+        {
+            string nextNode = ExecuteScriptNode(currentNode, result, Parameter);
+
+            if (nextNode != "" && nextNode != null)
+            {
+                ExecuteNode(nextNode);
+            }
+            else
+            {
+                return;
+            }
+        }
+        
         if (result.NodeType == "approverNode")
         {
             string nextNode = ExecuteApprove(currentNode, result, Parameter);
@@ -226,6 +259,32 @@ public class Workflow
             }
 
         }
+        if (result.NodeType == "formNode")
+        {
+            string nextNode = ExecuteFormNode(currentNode, result, Parameter);
+
+            if (nextNode != "" && nextNode != null)
+            {
+                ExecuteNode(nextNode);
+            }
+            else
+            {
+                return;
+            }
+        }
+        if (result.NodeType == "alertNode")
+        {
+            string nextNode = ExecuteAlertNode(currentNode, result, Parameter);
+
+            if (nextNode != "" && nextNode != null)
+            {
+                ExecuteNode(nextNode);
+            }
+            else
+            {
+                return;
+            }
+        }
         if (result.NodeType == "EmailNode")
         {
             //string nextNode = ExecuteMailNode(currentNode, result, Parameter);
@@ -240,7 +299,7 @@ public class Workflow
             //    return;
             //}
         }
-        if (result.NodeType != "EmailNode" && result.NodeType != "ApproverNode")
+        if (result.NodeType != "EmailNode" && result.NodeType != "ApproverNode" && result.NodeType != "formNode" && result.NodeType != "alertNode" && result.NodeType != "scriptNode")
         {
 
             if (_workFlowItems.Contains(result))
@@ -410,6 +469,352 @@ public class Workflow
 
     //    //return nextNodeId;
     //}
+
+    private string ExecuteFormNode(WorkflowNode currentNode, WorkflowItem workFlowItem, string parameter)
+    {
+        // FormNode işleme mantığı:
+        // Start'ta action ile başlatıldıysa → action'a göre edge bul ve devam et
+        // Action yoksa → pending olarak işaretle ve dur
+        
+        // Action kontrolü - Start'ta gönderilen action'ı kullan
+        string actionToUse = _Action;
+        
+        // Eğer action boşsa ve parameter varsa (Continue'dan geliyorsa), parameter'ı action olarak kullan
+        if (string.IsNullOrEmpty(actionToUse) && !string.IsNullOrEmpty(parameter))
+        {
+            actionToUse = parameter;
+        }
+        
+        if (string.IsNullOrEmpty(actionToUse))
+        {
+            // Action belirtilmemişse, formNode'u pending olarak işaretle ve durdur
+            // Kullanıcı formu doldurup butona basana kadar bekler
+            workFlowItem.workFlowNodeStatus = WorkflowStatus.Pending;
+            _workFlowItems.Add(workFlowItem);
+            return null; // Form doldurulana kadar durdur
+        }
+        
+        // Action belirtilmişse (Start'ta gönderilen action), o action'a göre edge bul ve devam et
+        workFlowItem.workFlowNodeStatus = WorkflowStatus.Completed;
+        _workFlowItems.Add(workFlowItem);
+        
+        // Action'a göre doğru edge'i bul
+        var nextNode = FindLinkForPort(currentNode.Id, actionToUse);
+        
+        // Action kullanıldıktan sonra temizle (sadece Start'tan gelen action için)
+        // NOT: Action sadece Start'ta gönderilen action için kullanılır
+        // Sonraki formNode'lar için action Continue ile gönderilir
+        if (actionToUse == _Action)
+        {
+            _Action = "";
+        }
+        
+        // Eğer action'a göre edge bulunamadıysa, formNode'dan çıkan ilk edge'i kullan
+        if (string.IsNullOrEmpty(nextNode))
+        {
+            List<Edges> outgoingLinks = Edges.FindAll(link => link.Source == currentNode.Id);
+            if (outgoingLinks.Count > 0)
+            {
+                nextNode = outgoingLinks[0].Target;
+            }
+        }
+        
+        return nextNode;
+    }
+
+    private string ExecuteAlertNode(WorkflowNode currentNode, WorkflowItem workFlowItem, string parameter)
+    {
+        // AlertNode işleme mantığı:
+        // 1. Start'ta alertNode'a gelince → pending olarak işaretle ve dur
+        // 2. Continue'da alertNode'dan devam edince → completed olarak işaretle ve sonraki node'a geç
+        
+        // Eğer workflowItem zaten pending ise (Continue'dan geliyorsa), alertNode'u completed yap ve devam et
+        if (workFlowItem.workFlowNodeStatus == WorkflowStatus.Pending)
+        {
+            // Continue durumu: AlertNode'u completed olarak işaretle
+            workFlowItem.workFlowNodeStatus = WorkflowStatus.Completed;
+            
+            // Completed alertNode'u listeye ekle (güncelleme için)
+            if (!_workFlowItems.Contains(workFlowItem))
+            {
+                _workFlowItems.Add(workFlowItem);
+            }
+            
+            // AlertNode'dan sonraki node'u bul
+            List<Edges> outgoingLinks = Edges.FindAll(link => link.Source == currentNode.Id);
+            
+            if (outgoingLinks.Count > 0)
+            {
+                // Sonraki node'a geç (eğer sonraki node da alertNode ise, o da pending olacak)
+                return outgoingLinks[0].Target;
+            }
+            
+            return null;
+        }
+        
+        // Start durumu: AlertNode'u pending olarak işaretle ve dur
+        workFlowItem.workFlowNodeStatus = WorkflowStatus.Pending;
+        _workFlowItems.Add(workFlowItem);
+        
+        // AlertNode'dan sonraki node'u bul (Continue için)
+        List<Edges> outgoingLinksForContinue = Edges.FindAll(link => link.Source == currentNode.Id);
+        
+        if (outgoingLinksForContinue.Count > 0)
+        {
+            // Sonraki node ID'sini döndür (Continue'da kullanılacak)
+            // NOT: Bu node execute edilmeyecek, sadece Continue'da kullanılacak
+            return outgoingLinksForContinue[0].Target;
+        }
+        
+        // Edge yoksa null döndür (workflow durur)
+        return null;
+    }
+
+    private string ExecuteScriptNode(WorkflowNode currentNode, WorkflowItem workFlowItem, string parameter)
+    {
+        // ScriptNode işleme mantığı:
+        // 1. Script'i çalıştır (JavaScript)
+        // 2. Script'e previousNodes ve workflow bilgilerini ver
+        // 3. Script true/false döndürür
+        // 4. True ise "yes" edge'ine, false ise "no" edge'ine git
+        
+        if (string.IsNullOrEmpty(currentNode.Data?.script))
+        {
+            // Script yoksa, scriptNode'u completed olarak işaretle ve sonraki node'a geç
+            workFlowItem.workFlowNodeStatus = WorkflowStatus.Completed;
+            _workFlowItems.Add(workFlowItem);
+            
+            List<Edges> outgoingLinks = Edges.FindAll(link => link.Source == currentNode.Id);
+            if (outgoingLinks.Count > 0)
+            {
+                return outgoingLinks[0].Target;
+            }
+            return null;
+        }
+        
+        try
+        {
+            // PreviousNodes yapısını oluştur (form verilerine erişim için)
+            var previousNodes = BuildPreviousNodes();
+            
+            // Workflow bilgilerini oluştur
+            var workflowInfo = new
+            {
+                instanceId = _HeadId.ToString(),
+                startTime = DateTime.Now,
+                currentStep = currentNode.Id,
+                formId = "",
+                formName = ""
+            };
+            
+            // Script context'ini oluştur
+            var scriptContext = new
+            {
+                workflow = workflowInfo,
+                previousNodes = previousNodes
+            };
+            
+            // JavaScript engine oluştur
+            var engine = new Engine();
+            
+            // Context'i JavaScript'e aktar
+            // Jint, Dictionary<string, object> tipini otomatik olarak JavaScript object'e çevirir
+            // previousNodes.PERSONELTALEP.uuk80m63ix3 şeklinde erişim için nested dictionary'leri doğru aktar
+            engine.SetValue("previousNodes", previousNodes);
+            
+            // workflow bilgilerini aktar
+            var workflowDict = new Dictionary<string, object>
+            {
+                ["instanceId"] = workflowInfo.instanceId,
+                ["startTime"] = workflowInfo.startTime,
+                ["currentStep"] = workflowInfo.currentStep,
+                ["formId"] = workflowInfo.formId,
+                ["formName"] = workflowInfo.formName
+            };
+            engine.SetValue("workflow", workflowDict);
+            
+            // Script'i çalıştır
+            var scriptResult = engine.Evaluate(currentNode.Data.script);
+            
+            // Sonucu boolean'a çevir
+            bool result = false;
+            if (scriptResult != null)
+            {
+                if (scriptResult.IsBoolean())
+                {
+                    result = scriptResult.AsBoolean();
+                }
+                else if (scriptResult.IsString())
+                {
+                    result = scriptResult.AsString().ToLower() == "true";
+                }
+                else if (scriptResult.IsNumber())
+                {
+                    result = scriptResult.AsNumber() != 0;
+                }
+            }
+            
+            // ScriptNode'u completed olarak işaretle
+            workFlowItem.workFlowNodeStatus = WorkflowStatus.Completed;
+            _workFlowItems.Add(workFlowItem);
+            
+            // Sonuca göre edge bul
+            string port = result ? "yes" : "no";
+            var nextNode = FindLinkForPort(currentNode.Id, port);
+            
+            // Eğer port'a göre edge bulunamadıysa, ilk edge'i kullan
+            if (string.IsNullOrEmpty(nextNode))
+            {
+                List<Edges> outgoingLinks = Edges.FindAll(link => link.Source == currentNode.Id);
+                if (outgoingLinks.Count > 0)
+                {
+                    nextNode = outgoingLinks[0].Target;
+                }
+            }
+            
+            return nextNode;
+        }
+        catch (Exception ex)
+        {
+            // Script hatası durumunda, scriptNode'u completed olarak işaretle ve sonraki node'a geç
+            workFlowItem.workFlowNodeStatus = WorkflowStatus.Completed;
+            _workFlowItems.Add(workFlowItem);
+            
+            List<Edges> outgoingLinks = Edges.FindAll(link => link.Source == currentNode.Id);
+            if (outgoingLinks.Count > 0)
+            {
+                return outgoingLinks[0].Target;
+            }
+            return null;
+        }
+    }
+    
+    /// <summary>
+    /// PreviousNodes yapısını oluşturur (form verilerine erişim için)
+    /// Script içinde previousNodes.PERSONELTALEP.uuk80m63ix3 şeklinde erişim sağlar
+    /// </summary>
+    private Dictionary<string, object> BuildPreviousNodes()
+    {
+        var previousNodes = new Dictionary<string, object>();
+        
+        // PayloadJson'dan form verilerini parse et
+        JObject payload = null;
+        if (!string.IsNullOrEmpty(_payloadJson))
+        {
+            try
+            {
+                payload = JObject.Parse(_payloadJson);
+            }
+            catch
+            {
+                // Parse hatası durumunda boş payload
+            }
+        }
+        
+        // Workflow items'tan formNode'ları bul (completed olanlar)
+        var completedFormNodes = _workFlowItems
+            .Where(item => item.NodeType == "formNode" && item.workFlowNodeStatus == WorkflowStatus.Completed)
+            .ToList();
+        
+        foreach (var formNodeItem in completedFormNodes)
+        {
+            // FormNode'un adını bul
+            var formNode = Nodes.FirstOrDefault(n => n.Id == formNodeItem.NodeId);
+            if (formNode == null) continue;
+            
+            string formNodeName = formNode.Data?.Name ?? formNodeItem.NodeName;
+            
+            // Form verilerini oluştur
+            var formNodeData = new Dictionary<string, object>();
+            
+            // Payload'dan form field'larını al
+            if (payload != null)
+            {
+                foreach (var prop in payload.Properties())
+                {
+                    // JToken'ı uygun tipe çevir
+                    var value = prop.Value;
+                    if (value.Type == JTokenType.String)
+                    {
+                        formNodeData[prop.Name] = value.ToString();
+                    }
+                    else if (value.Type == JTokenType.Integer)
+                    {
+                        formNodeData[prop.Name] = value.ToObject<int>();
+                    }
+                    else if (value.Type == JTokenType.Float)
+                    {
+                        formNodeData[prop.Name] = value.ToObject<double>();
+                    }
+                    else if (value.Type == JTokenType.Boolean)
+                    {
+                        formNodeData[prop.Name] = value.ToObject<bool>();
+                    }
+                    else if (value.Type == JTokenType.Null)
+                    {
+                        formNodeData[prop.Name] = null;
+                    }
+                    else
+                    {
+                        formNodeData[prop.Name] = value.ToString();
+                    }
+                }
+            }
+            
+            // PreviousNodes'a ekle
+            // previousNodes.PERSONELTALEP.uuk80m63ix3 şeklinde erişim için
+            previousNodes[formNodeName] = formNodeData;
+        }
+        
+        // Eğer hiç formNode yoksa ama payload varsa, payload'ı direkt ekle
+        if (previousNodes.Count == 0 && payload != null)
+        {
+            var defaultFormData = new Dictionary<string, object>();
+            foreach (var prop in payload.Properties())
+            {
+                var value = prop.Value;
+                if (value.Type == JTokenType.String)
+                {
+                    defaultFormData[prop.Name] = value.ToString();
+                }
+                else if (value.Type == JTokenType.Integer)
+                {
+                    defaultFormData[prop.Name] = value.ToObject<int>();
+                }
+                else if (value.Type == JTokenType.Float)
+                {
+                    defaultFormData[prop.Name] = value.ToObject<double>();
+                }
+                else if (value.Type == JTokenType.Boolean)
+                {
+                    defaultFormData[prop.Name] = value.ToObject<bool>();
+                }
+                else if (value.Type == JTokenType.Null)
+                {
+                    defaultFormData[prop.Name] = null;
+                }
+                else
+                {
+                    defaultFormData[prop.Name] = value.ToString();
+                }
+            }
+            
+            // Varsayılan form adı kullan (eğer processDataTree'de form adı varsa onu kullan)
+            string defaultFormName = "FORM";
+            if (Nodes.Any(n => n.Type == "formNode"))
+            {
+                var firstFormNode = Nodes.FirstOrDefault(n => n.Type == "formNode");
+                if (firstFormNode != null && !string.IsNullOrEmpty(firstFormNode.Data?.Name))
+                {
+                    defaultFormName = firstFormNode.Data.Name;
+                }
+            }
+            
+            previousNodes[defaultFormName] = defaultFormData;
+        }
+        
+        return previousNodes;
+    }
 
     private string FindLinkForPort(string fromNode, string port)
     {

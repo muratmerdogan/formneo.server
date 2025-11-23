@@ -64,19 +64,33 @@ namespace formneo.service.Services
 
         public async Task<IEnumerable<UserTenantFullDto>> GetByUserAsync(string userId)
         {
-            // kullanıcıya ait tüm tenantları, tenant ismiyle birlikte getirmek için include'lu listeyi kullan
-            var all = await _repository.GetAllWithIncludesAsync();
-            var filtered = all.Where(x => x.UserId == userId).ToList();
-            var result = filtered.Select(x => new UserTenantFullDto
+            // Tek sorguda sadece gerekli alanları çek (Include yok, projection + AsNoTracking)
+            var rows = await _genericRepository.Where(x => x.UserId == userId)
+                .AsNoTracking()
+                .Select(x => new
+                {
+                    x.Id,
+                    x.UserId,
+                    x.TenantId,
+                    x.IsActive,
+                    UserFirstName = x.User.FirstName,
+                    UserLastName = x.User.LastName,
+                    UserEmail = x.User.Email,
+                    TenantName = x.Tenant.Name,
+                    TenantSlug = x.Tenant.Slug
+                })
+                .ToListAsync();
+
+            var result = rows.Select(x => new UserTenantFullDto
             {
                 Id = x.Id,
                 UserId = x.UserId,
                 TenantId = x.TenantId,
                 IsActive = x.IsActive,
-                UserFullName = ((x.User?.FirstName ?? "").Trim() + " " + (x.User?.LastName ?? "").Trim()).Trim(),
-                UserEmail = x.User?.Email ?? string.Empty,
-                TenantName = x.Tenant?.Name ?? string.Empty,
-                TenantSlug = x.Tenant?.Slug ?? string.Empty
+                UserFullName = ((x.UserFirstName ?? "").Trim() + " " + (x.UserLastName ?? "").Trim()).Trim(),
+                UserEmail = x.UserEmail ?? string.Empty,
+                TenantName = x.TenantName ?? string.Empty,
+                TenantSlug = x.TenantSlug ?? string.Empty
             }).ToList();
             return result;
         }

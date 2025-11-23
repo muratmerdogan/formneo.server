@@ -23,6 +23,10 @@
 
         public string Note { get; set; }
         public string? NumberManDay { get; set; }
+        /// <summary>
+        /// Form üzerindeki butonun action kodu (örn: SAVE, APPROVE)
+        /// </summary>
+        public string? Action { get; set; }
 
     }
     public class WorkFlowContiuneApiDto
@@ -46,5 +50,13 @@
         public string WorkFlowInfo { get; set; }
         public string? DefinationId { get; set; }
         public string? UserName { get; set; }
+        /// <summary>
+        /// Form verileri (JSON formatında)
+        /// </summary>
+        public string? FormData { get; set; }
+        /// <summary>
+        /// Form üzerindeki butonun action kodu (örn: SAVE, APPROVE)
+        /// </summary>
+        public string? Action { get; set; }
     }
 }

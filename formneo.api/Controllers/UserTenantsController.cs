@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ using formneo.core.DTOs;
 using formneo.core.DTOs.UserTenants;
 using formneo.core.Models;
 using formneo.core.Services;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.EntityFrameworkCore;
 
 namespace formneo.api.Controllers
 {
@@ -20,12 +23,14 @@ namespace formneo.api.Controllers
         private readonly IUserTenantService _service;
         private readonly IUserTenantRoleService _userTenantRoleService;
         private readonly IConfiguration _configuration;
+        private readonly IMemoryCache _memoryCache;
 
-        public UserTenantsController(IUserTenantService service, IUserTenantRoleService userTenantRoleService, IConfiguration configuration)
+        public UserTenantsController(IUserTenantService service, IUserTenantRoleService userTenantRoleService, IConfiguration configuration, IMemoryCache memoryCache)
         {
 			_service = service;
             _userTenantRoleService = userTenantRoleService;
             _configuration = configuration;
+            _memoryCache = memoryCache;
         }
 
         [HttpGet]
@@ -46,63 +51,68 @@ namespace formneo.api.Controllers
 	[HttpGet("by-user/{userId}")]
         public async Task<ActionResult<IEnumerable<UserTenantWithAdminFlagDto>>> GetByUser(string userId)
 	{
+		// Hız için sonuçları kısa süreli cache'le (örn. 2 dk)
+		var cacheKey = $"userTenants:{userId}";
+		if (_memoryCache.TryGetValue(cacheKey, out List<UserTenantWithAdminFlagDto> cached))
+		{
+			return Ok(cached);
+		}
+
 		var list = await _service.GetByUserAsync(userId);
 		var tenantAdminRoleId = _configuration.GetValue<string>("RoleScope:TenantAdminRoleId") ?? "7f3d3baf-2f5c-4f6c-9d1e-6b6d3b25a001";
 		var result = new List<UserTenantWithAdminFlagDto>();
+
+		// Tüm tenantId'leri tek seferde topla
+		var tenantIds = new HashSet<Guid>();
 		foreach (var item in list)
 		{
-			// item'in TenantId alanı olduğu varsayımıyla
 			var tenantIdProp = item.GetType().GetProperty("TenantId");
-			Guid tenantId = Guid.Empty;
 			if (tenantIdProp != null)
 			{
 				var val = tenantIdProp.GetValue(item);
-				if (val is Guid g) tenantId = g;
+				if (val is Guid g && g != Guid.Empty)
+				{
+					tenantIds.Add(g);
+				}
 			}
+		}
 
-			bool isTenantAdmin = false;
-			if (tenantId != Guid.Empty && !string.IsNullOrWhiteSpace(userId))
-			{
-				var roles = await _userTenantRoleService.GetByUserAndTenantAsync(userId, tenantId);
-				if (roles != null)
-				{
-					isTenantAdmin = roles.Any(r => r?.RoleTenant?.RoleId == tenantAdminRoleId);
-					
-					// Debug: Kullanıcının rollerini logla
-					System.Diagnostics.Debug.WriteLine($"User {userId} in Tenant {tenantId}: {roles.Count} roles found");
-					foreach (var role in roles)
-					{
-						System.Diagnostics.Debug.WriteLine($"  - RoleId: {role?.RoleTenant?.RoleId}, IsActive: {role?.IsActive}");
-					}
-				}
-			}
+		// Kullanıcının bu tenant'lardaki aktif rollerini TEK sorguda çek
+		var rolesByTenant = await _userTenantRoleService
+			.Where(x => x.UserId == userId && tenantIds.Contains(x.RoleTenant.TenantId) && x.IsActive && x.RoleTenant.IsActive)
+			.Select(x => new { x.RoleTenant.TenantId, x.RoleTenant.RoleId })
+			.AsNoTracking()
+			.ToListAsync();
 
-            var dto = UserTenantWithAdminFlagDto.From(item, isTenantAdmin);
-			
-			// Tenant ismi ve slug'ını ekle (reflection ile kopyalama işlemi çalışmıyorsa manuel olarak ekle)
-			var tenantNameProp = item.GetType().GetProperty("TenantName");
-			var tenantSlugProp = item.GetType().GetProperty("TenantSlug");
-			
-			if (tenantNameProp != null)
+		var adminTenants = rolesByTenant
+			.GroupBy(r => r.TenantId)
+			.Where(g => g.Any(r => r.RoleId == tenantAdminRoleId))
+			.Select(g => g.Key)
+			.ToHashSet();
+		foreach (var item in list)
+		{
+			var ut = item as formneo.core.DTOs.UserTenants.UserTenantFullDto;
+			Guid tenantId = ut?.TenantId ?? Guid.Empty;
+
+			bool isTenantAdmin = tenantId != Guid.Empty && adminTenants.Contains(tenantId);
+
+			var dto = new UserTenantWithAdminFlagDto
 			{
-				var tenantNameValue = tenantNameProp.GetValue(item)?.ToString();
-				if (!string.IsNullOrEmpty(tenantNameValue))
-				{
-					dto.TenantName = tenantNameValue;
-				}
-			}
-			
-			if (tenantSlugProp != null)
-			{
-				var tenantSlugValue = tenantSlugProp.GetValue(item)?.ToString();
-				if (!string.IsNullOrEmpty(tenantSlugValue))
-				{
-					dto.TenantSlug = tenantSlugValue;
-				}
-			}
+				Id = ut?.Id ?? Guid.Empty,
+				UserId = ut?.UserId ?? string.Empty,
+				TenantId = ut?.TenantId ?? Guid.Empty,
+				IsActive = ut?.IsActive ?? false,
+				CreatedDate = default,
+				UpdatedDate = null,
+				TenantName = ut?.TenantName ?? string.Empty,
+				TenantSlug = ut?.TenantSlug ?? string.Empty,
+				IsTenantAdmin = isTenantAdmin
+			};
 			
 			result.Add(dto);
 		}
+		// Cache'e yaz
+		_memoryCache.Set(cacheKey, result, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(2)));
 		return Ok(result);
 	}
 

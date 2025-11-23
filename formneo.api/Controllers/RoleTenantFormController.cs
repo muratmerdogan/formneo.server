@@ -54,7 +54,7 @@ namespace formneo.api.Controllers
 
         // Update: role id + formlar
         [HttpPost("update")]
-        public async Task<ActionResult<Guid>> Update(RoleTenantFormUpdateDto dto)
+        public async Task<ActionResult<Guid>> TUpdate(RoleTenantFormUpdateDto dto)
         {
             var id = await _service.UpdateAsync(dto);
             return Ok(id);

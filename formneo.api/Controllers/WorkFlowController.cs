@@ -2,8 +2,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using NLayer.Core.Services;
 using NLayer.Service.Services;
+using System.Linq;
+using formneo.core;
 using formneo.core.DTOs;
 using formneo.core.DTOs.Budget.JobCodeRequest;
 using formneo.core.Models;
@@ -26,8 +30,9 @@ namespace formneo.api.Controllers
         private readonly IApproveItemsService _approveItemsService;
         private readonly IServiceWithDto<WorkFlowDefination, WorkFlowDefinationDto> _workFlowDefinationDto;
         private readonly IServiceWithDto<WorkflowHead, WorkFlowHeadDto> _workFlowHeadService;
+        private readonly IServiceWithDto<WorkflowItem, WorkFlowItemDto> _workFlowItemService;
         private readonly ITicketServices _ticketService;
-        public WorkFlowController(IMapper mapper, IWorkFlowService workFlowService, IWorkFlowItemService workFlowItemservice, IApproveItemsService approveItemsService, IServiceWithDto<WorkFlowDefination, WorkFlowDefinationDto> definationdto, IServiceWithDto<WorkflowHead, WorkFlowHeadDto> workFlowHeadService, ITicketServices ticketServices)
+        public WorkFlowController(IMapper mapper, IWorkFlowService workFlowService, IWorkFlowItemService workFlowItemservice, IApproveItemsService approveItemsService, IServiceWithDto<WorkFlowDefination, WorkFlowDefinationDto> definationdto, IServiceWithDto<WorkflowHead, WorkFlowHeadDto> workFlowHeadService, IServiceWithDto<WorkflowItem, WorkFlowItemDto> workFlowItemService, ITicketServices ticketServices)
         {
 
             _mapper = mapper;
@@ -36,6 +41,7 @@ namespace formneo.api.Controllers
             _workFlowItemservice = workFlowItemservice;
             _approveItemsService = approveItemsService;
             _workFlowHeadService = workFlowHeadService;
+            _workFlowItemService = workFlowItemService;
             _ticketService = ticketServices;
 
         }
@@ -70,6 +76,35 @@ namespace formneo.api.Controllers
 
             var result = await execute.StartAsync(workFlowDto, parameters, null);
             var mapResult = _mapper.Map<WorkFlowHeadDtoResultStartOrContinue>(result);
+            
+            // AlertNode bilgilerini ekle (Continue için de)
+            if (result != null && result.workFlowStatus == formneo.core.Models.WorkflowStatus.Pending)
+            {
+                var pendingAlertNode = result.workflowItems?.FirstOrDefault(item => 
+                    item.NodeType == "alertNode" && item.workFlowNodeStatus == formneo.core.Models.WorkflowStatus.Pending);
+                
+                if (pendingAlertNode != null && result.WorkFlowDefinationJson != null)
+                {
+                    var workflowJson = JObject.Parse(result.WorkFlowDefinationJson);
+                    var nodes = workflowJson["nodes"] as JArray;
+                    var alertNode = nodes?.FirstOrDefault(n => n["id"]?.ToString() == pendingAlertNode.NodeId);
+                    
+                    if (alertNode != null)
+                    {
+                        var alertData = alertNode["data"];
+                        mapResult.AlertInfo = new AlertNodeInfo
+                        {
+                            Title = alertData?["title"]?.ToString() ?? "Bildirim",
+                            Message = alertData?["message"]?.ToString() ?? "",
+                            Type = alertData?["type"]?.ToString() ?? "info",
+                            NodeId = pendingAlertNode.NodeId
+                        };
+                        mapResult.PendingNodeId = pendingAlertNode.NodeId;
+                    }
+                }
+            }
+            
+            mapResult.WorkFlowStatus = result?.workFlowStatus;
 
             return mapResult;
         }
@@ -87,13 +122,57 @@ namespace formneo.api.Controllers
 
 
             workFlowDto.WorkFlowDefinationId = new Guid(workFlowApiDto.DefinationId);
-            workFlowDto.UserName = workFlowApiDto.UserName;
-
+            workFlowDto.UserName = workFlowApiDto.UserName ?? User.Identity.Name;
             workFlowDto.WorkFlowInfo = workFlowApiDto.WorkFlowInfo;
+            workFlowDto.Action = workFlowApiDto.Action;
 
+            // FormData'yı payloadJson olarak gönder
+            var payloadJson = workFlowApiDto.FormData;
 
-            var result = await execute.StartAsync(workFlowDto, parameters, null);
+            var result = await execute.StartAsync(workFlowDto, parameters, payloadJson);
             var mapResult = _mapper.Map<WorkFlowHeadDtoResultStartOrContinue>(result);
+            
+            // Start sırasında alertNode'a gelip pending durumunda kaldıysa alert bilgilerini ekle
+            if (result != null && result.workFlowStatus == formneo.core.Models.WorkflowStatus.Pending)
+            {
+                var pendingAlertNode = result.workflowItems?.FirstOrDefault(item => 
+                    item.NodeType == "alertNode" && item.workFlowNodeStatus == formneo.core.Models.WorkflowStatus.Pending);
+                
+                if (pendingAlertNode != null && result.WorkFlowDefinationJson != null)
+                {
+                    var workflowJson = JObject.Parse(result.WorkFlowDefinationJson);
+                    var nodes = workflowJson["nodes"] as JArray;
+                    var alertNode = nodes?.FirstOrDefault(n => n["id"]?.ToString() == pendingAlertNode.NodeId);
+                    
+                    if (alertNode != null)
+                    {
+                        var alertData = alertNode["data"];
+                        mapResult.AlertInfo = new AlertNodeInfo
+                        {
+                            Title = alertData?["title"]?.ToString() ?? "Bildirim",
+                            Message = alertData?["message"]?.ToString() ?? "",
+                            Type = alertData?["type"]?.ToString() ?? "info",
+                            NodeId = pendingAlertNode.NodeId
+                        };
+                        mapResult.PendingNodeId = pendingAlertNode.NodeId;
+                    }
+                }
+            }
+            
+            // FormNode completed kontrolü - Form kapanmalı mı?
+            if (result != null)
+            {
+                var completedFormNode = result.workflowItems?.FirstOrDefault(item => 
+                    item.NodeType == "formNode" && item.workFlowNodeStatus == formneo.core.Models.WorkflowStatus.Completed);
+                
+                if (completedFormNode != null)
+                {
+                    mapResult.FormNodeCompleted = true;
+                    mapResult.CompletedFormNodeId = completedFormNode.NodeId;
+                }
+            }
+            
+            mapResult.WorkFlowStatus = result?.workFlowStatus;
 
             return mapResult;
         }
@@ -139,6 +218,44 @@ namespace formneo.api.Controllers
 
 
 
+        }
+
+        /// <summary>
+        /// Workflow detail bilgilerini getirir (nodes, edges, approve items dahil)
+        /// </summary>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<WorkFlowHeadDetailDto>> GetDetail(Guid id)
+        {
+            var workFlowHead = await _workFlowHeadService.GetByIdGuidAsync(id);
+            if (workFlowHead.Data == null)
+            {
+                return NotFound();
+            }
+
+            // Workflow items ve approve items'ları dahil et (WorkFlowItemController'daki gibi)
+            var workflowItemsQuery = await _workFlowItemService.Include();
+            var itemsWithApproves = workflowItemsQuery
+                .Where(e => e.WorkflowHeadId == id)
+                .Include(e => e.approveItems)
+                .ToList();
+            
+            // Workflow definition'dan nodes ve edges bilgilerini al
+            var workFlowDefination = await _workFlowDefinationDto.GetByIdGuidAsync(workFlowHead.Data.WorkFlowDefinationId);
+            
+            var detailDto = new WorkFlowHeadDetailDto
+            {
+                Id = id.ToString(), // Id'yi parametreden al
+                WorkflowName = workFlowHead.Data.WorkflowName,
+                WorkFlowInfo = workFlowHead.Data.WorkFlowInfo,
+                WorkFlowStatus = workFlowHead.Data.workFlowStatus,
+                CreateUser = workFlowHead.Data.CreateUser,
+                UniqNumber = workFlowHead.Data.UniqNumber,
+                WorkFlowDefinationId = workFlowHead.Data.WorkFlowDefinationId,
+                WorkflowItems = _mapper.Map<List<WorkFlowItemDtoWithApproveItems>>(itemsWithApproves),
+                WorkFlowDefinationJson = workFlowDefination?.Data?.Defination
+            };
+
+            return detailDto;
         }
 
         private void Validations()

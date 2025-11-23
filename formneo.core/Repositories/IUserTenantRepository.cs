@@ -9,6 +9,7 @@ namespace formneo.core.Repositories
     {
         Task<UserTenant> GetByUserAndTenantAsync(string userId, Guid tenantId);
         Task<List<UserTenant>> GetAllWithIncludesAsync();
+        Task<List<UserTenant>> GetByUserWithIncludesAsync(string userId);
         Task<List<UserTenant>> GetByTenantWithIncludesAsync(Guid tenantId);
         Task<Dictionary<Guid, int>> GetUserCountsByTenantAsync();
     }

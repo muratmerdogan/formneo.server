@@ -34,6 +34,16 @@ namespace formneo.repository.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<UserTenant>> GetByUserWithIncludesAsync(string userId)
+        {
+            return await _context.Set<UserTenant>()
+                .AsNoTracking()
+                .Include(x => x.User)
+                .Include(x => x.Tenant)
+                .Where(x => x.UserId == userId)
+                .ToListAsync();
+        }
+
         public async Task<List<UserTenant>> GetByTenantWithIncludesAsync(Guid tenantId)
         {
             return await _context.Set<UserTenant>()

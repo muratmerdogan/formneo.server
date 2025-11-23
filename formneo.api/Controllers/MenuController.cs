@@ -14,6 +14,8 @@ using formneo.core.Models;
 using formneo.core.Repositories;
 using formneo.core.Services;
 using formneo.core.Options;
+using System.Linq;
+using formneo.core.Models.FormEnums;
 
 namespace formneo.api.Controllers
 {
@@ -39,10 +41,12 @@ namespace formneo.api.Controllers
         private readonly IUserTenantRoleService _userTenantRoleService;
         private readonly IUserTenantService _userTenantService;
         private readonly IOptions<RoleScopeOptions> _roleScopeOptions;
+        private readonly IRoleTenantFormService _roleTenantFormService;
+        private readonly IUserTenantFormRoleService _userTenantFormRoleService;
 
         public MenuController(IMapper mapper, IGlobalServiceWithDto<Menu, MenuListDto> Service, IServiceWithDto<FormRuleEngine, FormRuleEngineDto> formRuleEngineService,
             IFormService formService, IGlobalServiceWithDto<AspNetRolesMenu, RoleMenuListDto> roleMenuService, IMemoryCache memoryCache, RoleManager<IdentityRole> roleManager, UserManager<UserApp> userManager, IFormRepository formRepository,
-            IServiceWithDto<FormAuth, FormAuthDto> formAuthService, IUserService userService, ITenantContext tenantContext, IRoleTenantMenuService roleTenantMenuService, IUserTenantRoleService userTenantRoleService, IUserTenantService userTenantService, IOptions<RoleScopeOptions> roleScopeOptions)
+            IServiceWithDto<FormAuth, FormAuthDto> formAuthService, IUserService userService, ITenantContext tenantContext, IRoleTenantMenuService roleTenantMenuService, IUserTenantRoleService userTenantRoleService, IUserTenantService userTenantService, IOptions<RoleScopeOptions> roleScopeOptions, IRoleTenantFormService roleTenantFormService, IUserTenantFormRoleService userTenantFormRoleService)
         {
 
             _menuService = Service;
@@ -62,6 +66,8 @@ namespace formneo.api.Controllers
             _userTenantRoleService = userTenantRoleService;
             _userTenantService = userTenantService;
             _roleScopeOptions = roleScopeOptions;
+            _roleTenantFormService = roleTenantFormService;
+            _userTenantFormRoleService = userTenantFormRoleService;
         }
         private async Task<bool> IsCurrentUserGlobalAdminAsync()
         {
@@ -228,8 +234,55 @@ namespace formneo.api.Controllers
             // Parent menüleri de listeye ekle (eğer zaten listede yoksa)
             var parentMenus = menus.Where(m => parentMenuIds.Contains(m.Id) && !authorizedMenus.Any(am => am.Id == m.Id)).ToList();
             authorizedMenus.AddRange(parentMenus);
-            
-            return authorizedMenus;
+
+            // Kullanıcının form rollerine göre form menülerini ekle ve her zaman üst "Formlar" menüsünü dahil et
+            var tenantId = _tenantContext?.CurrentTenantId;
+            if (tenantId.HasValue && tenantId.Value != Guid.Empty)
+            {
+                var formMenus = await GetAuthorizedFormMenusForCurrentUserAsync();
+                if (formMenus.Count > 0)
+                {
+                    var existingIds = new HashSet<Guid>(authorizedMenus.Select(x => x.Id));
+                    foreach (var fm in formMenus)
+                    {
+                        if (!existingIds.Contains(fm.Id))
+                        {
+                            authorizedMenus.Add(fm);
+                            existingIds.Add(fm.Id);
+                        }
+                    }
+                }
+            }
+
+            // Tekilleştir
+            authorizedMenus = authorizedMenus
+                .GroupBy(m => m.Id)
+                .Select(g => g.First())
+                .ToList();
+
+            // FORMS_GENERIC_ROOT'u bul ve ParentMenuId'sini null yap (root yap)
+            var genericRootMenu = authorizedMenus.FirstOrDefault(m => m.MenuCode == "FORMS_GENERIC_ROOT");
+            if (genericRootMenu != null)
+            {
+                genericRootMenu.ParentMenuId = null;
+                
+                // FORMS_ROOT'u bul ve ona bağlı formları FORMS_GENERIC_ROOT'a taşı
+                var formsRootMenu = authorizedMenus.FirstOrDefault(m => m.MenuCode == "FORMS_ROOT");
+                if (formsRootMenu != null)
+                {
+                    // FORMS_ROOT'un altındaki tüm form menülerini FORMS_GENERIC_ROOT'un altına taşı
+                    foreach (var menu in authorizedMenus.Where(m => m.ParentMenuId == formsRootMenu.Id))
+                    {
+                        menu.ParentMenuId = genericRootMenu.Id;
+                    }
+                    // FORMS_ROOT'u listeden çıkar
+                    authorizedMenus = authorizedMenus.Where(m => m.MenuCode != "FORMS_ROOT").ToList();
+                }
+            }
+
+            // Ağaç yapısına dönüştür (kökler + SubMenus)
+            var tree = BuildMenuTree(authorizedMenus);
+            return tree;
         }
 
         // GET: api/Menu/all-without-auth
@@ -494,9 +547,7 @@ namespace formneo.api.Controllers
                 {
                     return new List<Menu>();
                 }
-                
-                
-                
+
                 // User.Identity.Name null ise cache kullanma
                 var currentUserName = User.Identity?.Name;
                 if (!string.IsNullOrEmpty(currentUserName))
@@ -511,7 +562,7 @@ namespace formneo.api.Controllers
                 var allMenusGlobal = menusQueryGlobal
                     .Where(m => m.IsDelete == false && m.IsTenantOnly==false)
                     .ToList();
-                
+
                 // Cache'e kaydet (sadece currentUserName varsa)
                 if (!string.IsNullOrEmpty(currentUserName))
                 {
@@ -537,7 +588,7 @@ namespace formneo.api.Controllers
                 return new List<Menu>();
             }
 
-            // Kullanıcının aktif tenant'taki rol kimliklerini al
+            // Kullanıcının aktif tenant'taki rol kimliklerini al (menü yetkileri için)
             var userTenantRoles = await _userTenantRoleService.GetByUserAndTenantAsync(user.Id, tenantId.Value);
             var roleIds = userTenantRoles
                 .Where(x => x.IsActive && x.RoleTenant != null && x.RoleTenant.IsActive)
@@ -545,28 +596,384 @@ namespace formneo.api.Controllers
                 .Distinct()
                 .ToList();
 
-            if (roleIds.Count == 0)
+            var combinedMenus = new List<Menu>();
+
+            if (roleIds.Count > 0)
             {
-                return new List<Menu>();
+                // Tenant + rol bazlı menü izinlerinden görüntüleyebilecekleri çek
+                var query = await _roleTenantMenuService.Include();
+                var allowedMenus = await query
+                    .Where(x => x.TenantId == tenantId.Value && roleIds.Contains(x.RoleId) && x.CanView)
+                    .AsNoTracking()
+                    .Include(x => x.Menu)
+                    .Select(x => x.Menu)
+                    .ToListAsync();
+
+                // Tekilleştir ve ekle
+                var menus = allowedMenus
+                    .Where(m => m != null && m.IsDelete == false)
+                    .GroupBy(m => m.Id)
+                    .Select(g => g.First())
+                    .ToList();
+
+                combinedMenus.AddRange(menus);
             }
 
-            // Tenant + rol bazlı menü izinlerinden görüntüleyebilecekleri çek
-            var query = await _roleTenantMenuService.Include();
-            var allowedMenus = await query
-                .Where(x => x.TenantId == tenantId.Value && roleIds.Contains(x.RoleId) && x.CanView)
-                .Include(x => x.Menu)
-                .Select(x => x.Menu)
-                .ToListAsync();
+            // EK: Kullanıcının FormTenantRole yetkilerine göre formları da menü olarak ekle
+            var userFormRoles = await _userTenantFormRoleService.GetByUserAsync(user.Id);
+            var formRoleIds = userFormRoles
+                .Where(x => x.IsActive)
+                .Select(x => x.FormTenantRoleId)
+                .Distinct()
+                .ToList();
+
+            if (formRoleIds.Count > 0)
+            {
+                // FORMS_GENERIC_ROOT'u (varsa) bul veya oluştur
+                var genericRootDtoResp = await _menuService.Where(e => e.MenuCode == "FORMS_GENERIC_ROOT" && e.IsActive && e.IsDelete == false);
+                var genericRootDto = genericRootDtoResp.Data.FirstOrDefault();
+                var genericRootId = genericRootDto?.Id ?? Guid.NewGuid();
+
+                var genericRoot = new Menu
+                {
+                    Id = genericRootId,
+                    MenuCode = "FORMS_GENERIC_ROOT",
+                    ParentMenuId = null,
+                    Name = "Formlar",
+                    Href = null,
+                    Icon = null,
+                    IsActive = true,
+                    IsDelete = false,
+                    IsTenantOnly = true,
+                    IsGlobalOnly = false,
+                    Order = genericRootDto?.Order ?? 10000,
+                    Description = genericRootDto?.Description ?? string.Empty
+                };
+
+                // Yetkili formlar: sadece gerekli kolonları proje et (FormDesign/JavaScriptCode çekme)
+                var formPermQuery = await _roleTenantFormService.Include();
+                var allowedFormInfos = await formPermQuery
+                    .Where(x => formRoleIds.Contains(x.FormTenantRoleId) && x.CanView)
+                    .AsNoTracking()
+                    .Select(x => new
+                    {
+                        x.FormId,
+                        x.Form.FormName,
+                        x.Form.PublicationStatus,
+                        x.Form.IsActive,
+                        x.Form.ShowInMenu
+                    })
+                    .ToListAsync();
+
+                // Yayında + aktif + menüde göster olanları filtrele ve tekilleştir
+                var filteredForms = allowedFormInfos
+                    .Where(f => f != null && f.PublicationStatus == FormPublicationStatus.Published && f.IsActive == 1)
+                    .GroupBy(f => f.FormId)
+                    .Select(g => g.First())
+                    .ToList();
+
+                if (filteredForms.Count > 0)
+                {
+                    // Root'u ekle (eğer zaten yoksa eklenmiş sayılacak şekilde)
+                    combinedMenus.Add(genericRoot);
+
+                    // Mevcut form menülerini tek seferde al
+                    var formMenuCodes = filteredForms.Select(f => $"FORM_{f.FormId}").ToList();
+                    var existingMenusResp = await _menuService.Where(m => m.IsDelete == false && formMenuCodes.Contains(m.MenuCode));
+                    var existingMenusByCode = (existingMenusResp?.Data ?? new List<MenuListDto>())
+                        .GroupBy(m => m.MenuCode)
+                        .ToDictionary(g => g.Key, g => g.First());
+
+                    int orderCounter = 1;
+                    foreach (var f in filteredForms)
+                    {
+                        var code = $"FORM_{f.FormId}";
+                        existingMenusByCode.TryGetValue(code, out var existingMenuDto);
+
+                        var menuId = existingMenuDto?.Id ?? Guid.NewGuid();
+                        var name = existingMenuDto?.Name ?? f.FormName;
+                        var href = $"/userForm/{f.FormId}";
+
+                        combinedMenus.Add(new Menu
+                        {
+                            Id = menuId,
+                            MenuCode = code,
+                            ParentMenuId = genericRootId,
+                            Name = name,
+                            Href = href,
+                            Icon = null,
+                            IsActive = true,
+                            IsDelete = false,
+                            IsTenantOnly = true,
+                            IsGlobalOnly = false,
+                            Order = (genericRootDto?.Order ?? 10000) + orderCounter++,
+                            Description = string.Empty
+                        });
+                    }
+                }
+            }
 
             // Tekilleştir
-            var menus = allowedMenus
-                .Where(m => m != null && m.IsDelete == false)
+            combinedMenus = combinedMenus
+                .Where(m => m != null)
                 .GroupBy(m => m.Id)
                 .Select(g => g.First())
                 .ToList();
 
-            _memoryCache.Set(cacheKey, menus, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
-            return menus;
+            // FORMS_GENERIC_ROOT'u bul ve ParentMenuId'sini null yap (root yap)
+            var genericRootMenu = combinedMenus.FirstOrDefault(m => m.MenuCode == "FORMS_GENERIC_ROOT");
+            if (genericRootMenu != null)
+            {
+                genericRootMenu.ParentMenuId = null;
+                
+                // FORMS_ROOT'u bul ve ona bağlı formları FORMS_GENERIC_ROOT'a taşı
+                var formsRootMenu = combinedMenus.FirstOrDefault(m => m.MenuCode == "FORMS_ROOT");
+                if (formsRootMenu != null)
+                {
+                    // FORMS_ROOT'un altındaki tüm form menülerini FORMS_GENERIC_ROOT'un altına taşı
+                    foreach (var menu in combinedMenus.Where(m => m.ParentMenuId == formsRootMenu.Id))
+                    {
+                        menu.ParentMenuId = genericRootMenu.Id;
+                    }
+                    // FORMS_ROOT'u listeden çıkar
+                    combinedMenus = combinedMenus.Where(m => m.MenuCode != "FORMS_ROOT").ToList();
+                }
+            }
+
+            // Dinamik form menüleri için üst-alt ilişkisini kur (normal menülerdeki gibi)
+            var rootMenusForForms = combinedMenus.Where(m => m.ParentMenuId == null && m.IsDelete == false).ToList();
+            foreach (var rootMenu in rootMenusForForms)
+            {
+                AddSubMenus(rootMenu, combinedMenus.OrderBy(e => e.Order).ToList());
+            }
+
+            // Cache'e yaz
+            _memoryCache.Set(cacheKey, combinedMenus, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+            return combinedMenus;
+        }
+
+        private async Task<List<MenuListDto>> GetAuthorizedFormMenusForCurrentUserAsync()
+        {
+            var result = new List<MenuListDto>();
+            var tenantId = _tenantContext?.CurrentTenantId;
+            if (!tenantId.HasValue || tenantId.Value == Guid.Empty)
+            {
+                return result;
+            }
+
+            string userName = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                return result;
+            }
+
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return result;
+            }
+
+            // Kullanıcının atanmış form tenant rollerini al
+            var userFormRoles = await _userTenantFormRoleService.GetByUserAsync(user.Id);
+            var roleIds = userFormRoles
+                .Where(x => x.IsActive)
+                .Select(x => x.FormTenantRoleId)
+                .Distinct()
+                .ToList();
+
+            // Her durumda üst menüyü eklemek için root'u hazırla
+            var genericRootMenuDto = await TryGetFormsGenericRootAsync() ?? new MenuListDto
+            {
+                Id = new Guid("78681502-ac05-4a53-8b88-dc5b1231d3bb"),
+                MenuCode = "FORMS_GENERIC_ROOT",
+                ParentMenuId = null,
+                Name = "Formlar",
+                Href = "/userFormList",
+                Icon = null,
+                IsActive = true,
+                ShowMenu = true,
+                IsTenantOnly = true,
+                IsGlobalOnly = false,
+                Order = 10000,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                Description = string.Empty,
+                SubMenus = null
+            };
+ 
+            // Her zaman üst menüyü ekle
+            result.Add(genericRootMenuDto);
+ 
+            if (roleIds.Count == 0)
+            {
+                return result;
+            }
+ 
+            // Bu roller için görüntülenebilir formlar
+            var query = await _roleTenantFormService.Include();
+            var allowedFormInfos = await query
+                .Where(x => roleIds.Contains(x.FormTenantRoleId) && x.CanView)
+                .AsNoTracking()
+                .Select(x => new
+                {
+                    x.FormId,
+                    x.Form.FormName,
+                    x.Form.PublicationStatus,
+                    x.Form.IsActive,
+                    x.Form.ShowInMenu
+                })
+                .ToListAsync();
+
+            if (allowedFormInfos == null || allowedFormInfos.Count == 0)
+            {
+                return result;
+            }
+
+            // Yayında/aktif formlar (ShowInMenu filtrelenmedi ise üstteki değişiklikle uyumlu kalır)
+            var filteredForms = allowedFormInfos
+                .Where(f => f != null && f.PublicationStatus == FormPublicationStatus.Published && f.IsActive == 1)
+                .GroupBy(f => f.FormId)
+                .Select(g => g.First())
+                .ToList();
+
+            if (filteredForms.Count == 0)
+            {
+                return result;
+            }
+
+            // Mevcut menüleri tek sorguda çek
+            var formCodes = filteredForms.Select(f => $"FORM_{f.FormId}").ToList();
+            var existingMenusResp = await _menuService.Where(m => m.IsDelete == false && formCodes.Contains(m.MenuCode));
+            var existingByCode = (existingMenusResp?.Data ?? new List<MenuListDto>())
+                .GroupBy(m => m.MenuCode)
+                .ToDictionary(g => g.Key, g => g.First());
+
+            int orderCounter = 1;
+            foreach (var f in filteredForms)
+            {
+                var code = $"FORM_{f.FormId}";
+                existingByCode.TryGetValue(code, out var existing);
+                if (existing != null)
+                {
+                    existing.ParentMenuId = genericRootMenuDto.Id;
+                    existing.Route = $"/userForm/{f.FormId}";
+                    existing.Href = $"/userForm/{f.FormId}";
+                    existing.IsTenantOnly = true;
+                    existing.Order = genericRootMenuDto.Order + orderCounter++;
+                    result.Add(existing);
+                    continue;
+                }
+
+                var child = new MenuListDto
+                {
+                    Id = Guid.NewGuid(),
+                    MenuCode = code,
+                    ParentMenuId = genericRootMenuDto.Id,
+                    Name = f.FormName,
+                    Route = $"/userForm/{f.FormId}",
+                    Href = $"/userForm/{f.FormId}",
+                    Icon = null,
+                    IsActive = true,
+                    ShowMenu = true,
+                    IsTenantOnly = true,
+                    IsGlobalOnly = false,
+                    Order = genericRootMenuDto.Order + orderCounter++,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    Description = string.Empty,
+                    SubMenus = null
+                };
+                result.Add(child);
+            }
+ 
+            result = result.GroupBy(x => x.Id).Select(g => g.First()).ToList();
+            
+            // FORMS_GENERIC_ROOT'u bul ve ParentMenuId'sini null yap (root yap)
+            var genericRootMenu = result.FirstOrDefault(m => m.MenuCode == "FORMS_GENERIC_ROOT");
+            if (genericRootMenu != null)
+            {
+                genericRootMenu.ParentMenuId = null;
+                
+                // FORMS_ROOT'u bul ve ona bağlı formları FORMS_GENERIC_ROOT'a taşı
+                var formsRootMenu = result.FirstOrDefault(m => m.MenuCode == "FORMS_ROOT");
+                if (formsRootMenu != null)
+                {
+                    // FORMS_ROOT'un altındaki tüm form menülerini FORMS_GENERIC_ROOT'un altına taşı
+                    foreach (var menu in result.Where(m => m.ParentMenuId == formsRootMenu.Id))
+                    {
+                        menu.ParentMenuId = genericRootMenu.Id;
+                    }
+                    // FORMS_ROOT'u listeden çıkar
+                    result = result.Where(m => m.MenuCode != "FORMS_ROOT").ToList();
+                }
+            }
+            
+            return result;
+        }
+ 
+        private async Task<MenuListDto?> TryGetFormsRootAsync()
+        {
+            var existingRootResp = await _menuService.Where(e => e.MenuCode == "FORMS_ROOT" && e.ParentMenuId == null);
+            return existingRootResp?.Data?.FirstOrDefault();
+        }
+
+        private async Task<MenuListDto?> TryGetFormsGenericRootAsync()
+        {
+            var existingRootResp = await _menuService.Where(e => e.MenuCode == "FORMS_GENERIC_ROOT" && e.IsActive && e.IsDelete == false);
+            return existingRootResp?.Data?.FirstOrDefault();
+        }
+
+        private static List<MenuListDto> BuildMenuTree(List<MenuListDto> flat)
+        {
+            var byId = flat.ToDictionary(m => m.Id, m => new MenuListDto
+            {
+                Id = m.Id,
+                MenuCode = m.MenuCode,
+                ParentMenuId = m.ParentMenuId,
+                SubMenus = new List<MenuListDto>(),
+                Name = m.Name,
+                Route = m.Route,
+                Href = (m.MenuCode == "FORMS_ROOT" || m.MenuCode == "FORMS_GENERIC_ROOT") ? null : m.Href,
+                Icon = m.Icon,
+                IsActive = m.IsActive,
+                Order = m.Order,
+                CreatedAt = m.CreatedAt,
+                UpdatedAt = m.UpdatedAt,
+                Description = m.Description,
+                ShowMenu = m.ShowMenu,
+                IsTenantOnly = m.IsTenantOnly,
+                IsGlobalOnly = m.IsGlobalOnly
+            });
+
+            var roots = new List<MenuListDto>();
+            foreach (var item in byId.Values)
+            {
+                if (item.ParentMenuId.HasValue && byId.TryGetValue(item.ParentMenuId.Value, out var parent))
+                {
+                    (parent.SubMenus ??= new List<MenuListDto>()).Add(item);
+                }
+                else
+                {
+                    roots.Add(item);
+                }
+            }
+
+            // Sıralama
+            void SortTree(IEnumerable<MenuListDto> nodes)
+            {
+                foreach (var n in nodes)
+                {
+                    if (n.SubMenus != null && n.SubMenus.Count > 0)
+                    {
+                        n.SubMenus = n.SubMenus.OrderBy(x => x.Order).ToList();
+                        SortTree(n.SubMenus);
+                    }
+                }
+            }
+
+            roots = roots.OrderBy(r => r.Order).ToList();
+            SortTree(roots);
+            return roots;
         }
     }
 }

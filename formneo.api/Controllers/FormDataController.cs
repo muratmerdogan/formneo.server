@@ -419,7 +419,7 @@ namespace formneo.api.Controllers
 
             var root = new MenuListDto
             {
-                Id = Guid.NewGuid(),
+                Id = new Guid("78681502-ac05-4a53-8b88-dc5b1231d3bb"),
                 MenuCode = "FORMS_ROOT",
                 ParentMenuId = null,
                 Name = "Formlar",

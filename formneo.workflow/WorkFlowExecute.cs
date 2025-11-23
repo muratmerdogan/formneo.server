@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLayer.Core.Services;
 using NLayer.Service.Services;
+using System.Linq;
 using System.Net.Mail;
 using System.Net;
 using formneo.core.DTOs;
@@ -155,7 +157,10 @@ namespace formneo.workflow
                 head.WorkFlowDefinationJson = workFlowDefination!.Data.Defination!;
                 head.workFlowStatus = WorkflowStatus.InProgress;
 
-                workflow.Start(dto.UserName, payloadJson);
+                // Action'ı workflow'a geçir
+                // NOT: Action Start metodunda set edilir ve formNode'a gelince kullanılır
+                string actionToPass = dto.Action ?? "";
+                workflow.Start(dto.UserName, payloadJson, actionToPass);
 
                 head.workflowItems = workflow._workFlowItems;
 
@@ -176,6 +181,17 @@ namespace formneo.workflow
                                 SendMail(MailStatus.OnayınızaSunuldu, mail.ApproveUser, mail.ApproveUserNameSurname, head.UniqNumber.ToString(), head.WorkFlowInfo);
                             }
                         }
+                    }
+                    
+                    // Eğer workflow execution sırasında alertNode'a gelip pending durumunda kaldıysa
+                    // workflow status'ü pending olarak işaretle
+                    var pendingAlertNode = head.workflowItems.FirstOrDefault(item => 
+                        item.NodeType == "alertNode" && item.workFlowNodeStatus == WorkflowStatus.Pending);
+                    
+                    if (pendingAlertNode != null)
+                    {
+                        result.workFlowStatus = WorkflowStatus.Pending;
+                        result.CurrentNodeId = pendingAlertNode.NodeId;
                     }
                 }
 
