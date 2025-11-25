@@ -6,8 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using formneo.core.Models;
 
-using formneo.core.Models;
-
 namespace formneo.core.DTOs
 {
     public class WorkFlowHeadDtoResultStartOrContinue
@@ -17,36 +15,38 @@ namespace formneo.core.DTOs
         public string? WorkFlowInfo { get; set; }
         
         /// <summary>
-        /// Eğer workflow bir alertNode'a geldiyse, alert bilgileri burada döner
-        /// </summary>
-        public AlertNodeInfo? AlertInfo { get; set; }
-        
-        /// <summary>
         /// Workflow'un durumu (Pending ise kullanıcıdan aksiyon bekleniyor)
         /// </summary>
         public WorkflowStatus? WorkFlowStatus { get; set; }
         
         /// <summary>
-        /// Pending durumundaki node'un ID'si (alert veya form için)
+        /// Pending durumundaki node'un ID'si (alert, form veya approver için)
         /// </summary>
         public string? PendingNodeId { get; set; }
         
         /// <summary>
-        /// FormNode completed oldu mu? (Form kapanmalı mı?)
+        /// Mevcut node'un detaylı bilgileri (generic yapı - her node tipi için özel bilgiler içerir)
         /// </summary>
-        public bool FormNodeCompleted { get; set; }
+        public NodeResultInfo? CurrentNodeInfo { get; set; }
         
         /// <summary>
-        /// Completed olan formNode'un ID'si
+        /// Workflow tamamlandı mı?
         /// </summary>
+        public bool IsCompleted { get; set; }
+        
+        /// <summary>
+        /// Workflow başarıyla tamamlandı mı? (StopNode'a ulaştıysa true)
+        /// </summary>
+        public bool IsSuccessfullyCompleted { get; set; }
+        
+        // Backward compatibility için eski property'ler (deprecated - CurrentNodeInfo kullanılmalı)
+        [Obsolete("Use CurrentNodeInfo instead")]
+        public AlertNodeInfo? AlertInfo { get; set; }
+        
+        [Obsolete("Use CurrentNodeInfo instead")]
+        public bool FormNodeCompleted { get; set; }
+        
+        [Obsolete("Use CurrentNodeInfo instead")]
         public string? CompletedFormNodeId { get; set; }
-    }
-    
-    public class AlertNodeInfo
-    {
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public string Type { get; set; } // info, success, warning, error
-        public string NodeId { get; set; }
     }
 }

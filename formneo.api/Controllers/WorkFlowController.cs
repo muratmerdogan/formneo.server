@@ -15,6 +15,7 @@ using formneo.core.Operations;
 using formneo.core.Services;
 using formneo.service.Services;
 using formneo.workflow;
+using formneo.workflow.Services;
 using WorkflowCore.Models;
 using WorkflowCore.Services;
 namespace formneo.api.Controllers
@@ -32,9 +33,18 @@ namespace formneo.api.Controllers
         private readonly IServiceWithDto<WorkflowHead, WorkFlowHeadDto> _workFlowHeadService;
         private readonly IServiceWithDto<WorkflowItem, WorkFlowItemDto> _workFlowItemService;
         private readonly ITicketServices _ticketService;
-        public WorkFlowController(IMapper mapper, IWorkFlowService workFlowService, IWorkFlowItemService workFlowItemservice, IApproveItemsService approveItemsService, IServiceWithDto<WorkFlowDefination, WorkFlowDefinationDto> definationdto, IServiceWithDto<WorkflowHead, WorkFlowHeadDto> workFlowHeadService, IServiceWithDto<WorkflowItem, WorkFlowItemDto> workFlowItemService, ITicketServices ticketServices)
+        private readonly WorkflowResponseBuilder _responseBuilder;
+        
+        public WorkFlowController(
+            IMapper mapper, 
+            IWorkFlowService workFlowService, 
+            IWorkFlowItemService workFlowItemservice, 
+            IApproveItemsService approveItemsService, 
+            IServiceWithDto<WorkFlowDefination, WorkFlowDefinationDto> definationdto, 
+            IServiceWithDto<WorkflowHead, WorkFlowHeadDto> workFlowHeadService, 
+            IServiceWithDto<WorkflowItem, WorkFlowItemDto> workFlowItemService, 
+            ITicketServices ticketServices)
         {
-
             _mapper = mapper;
             _service = workFlowService;
             _workFlowDefinationDto = definationdto;
@@ -43,7 +53,7 @@ namespace formneo.api.Controllers
             _workFlowHeadService = workFlowHeadService;
             _workFlowItemService = workFlowItemService;
             _ticketService = ticketServices;
-
+            _responseBuilder = new WorkflowResponseBuilder(mapper);
         }
         [HttpPost]
         public async Task<ActionResult<WorkFlowHeadDtoResultStartOrContinue>> Contiune(WorkFlowContiuneApiDto workFlowApiDto)
@@ -75,36 +85,9 @@ namespace formneo.api.Controllers
             workFlowDto.NumberManDay = workFlowApiDto.NumberManDay;
 
             var result = await execute.StartAsync(workFlowDto, parameters, null);
-            var mapResult = _mapper.Map<WorkFlowHeadDtoResultStartOrContinue>(result);
             
-            // AlertNode bilgilerini ekle (Continue için de)
-            if (result != null && result.workFlowStatus == formneo.core.Models.WorkflowStatus.Pending)
-            {
-                var pendingAlertNode = result.workflowItems?.FirstOrDefault(item => 
-                    item.NodeType == "alertNode" && item.workFlowNodeStatus == formneo.core.Models.WorkflowStatus.Pending);
-                
-                if (pendingAlertNode != null && result.WorkFlowDefinationJson != null)
-                {
-                    var workflowJson = JObject.Parse(result.WorkFlowDefinationJson);
-                    var nodes = workflowJson["nodes"] as JArray;
-                    var alertNode = nodes?.FirstOrDefault(n => n["id"]?.ToString() == pendingAlertNode.NodeId);
-                    
-                    if (alertNode != null)
-                    {
-                        var alertData = alertNode["data"];
-                        mapResult.AlertInfo = new AlertNodeInfo
-                        {
-                            Title = alertData?["title"]?.ToString() ?? "Bildirim",
-                            Message = alertData?["message"]?.ToString() ?? "",
-                            Type = alertData?["type"]?.ToString() ?? "info",
-                            NodeId = pendingAlertNode.NodeId
-                        };
-                        mapResult.PendingNodeId = pendingAlertNode.NodeId;
-                    }
-                }
-            }
-            
-            mapResult.WorkFlowStatus = result?.workFlowStatus;
+            // Generic response builder kullan
+            var mapResult = _responseBuilder.BuildResponse(result);
 
             return mapResult;
         }
@@ -130,49 +113,9 @@ namespace formneo.api.Controllers
             var payloadJson = workFlowApiDto.FormData;
 
             var result = await execute.StartAsync(workFlowDto, parameters, payloadJson);
-            var mapResult = _mapper.Map<WorkFlowHeadDtoResultStartOrContinue>(result);
             
-            // Start sırasında alertNode'a gelip pending durumunda kaldıysa alert bilgilerini ekle
-            if (result != null && result.workFlowStatus == formneo.core.Models.WorkflowStatus.Pending)
-            {
-                var pendingAlertNode = result.workflowItems?.FirstOrDefault(item => 
-                    item.NodeType == "alertNode" && item.workFlowNodeStatus == formneo.core.Models.WorkflowStatus.Pending);
-                
-                if (pendingAlertNode != null && result.WorkFlowDefinationJson != null)
-                {
-                    var workflowJson = JObject.Parse(result.WorkFlowDefinationJson);
-                    var nodes = workflowJson["nodes"] as JArray;
-                    var alertNode = nodes?.FirstOrDefault(n => n["id"]?.ToString() == pendingAlertNode.NodeId);
-                    
-                    if (alertNode != null)
-                    {
-                        var alertData = alertNode["data"];
-                        mapResult.AlertInfo = new AlertNodeInfo
-                        {
-                            Title = alertData?["title"]?.ToString() ?? "Bildirim",
-                            Message = alertData?["message"]?.ToString() ?? "",
-                            Type = alertData?["type"]?.ToString() ?? "info",
-                            NodeId = pendingAlertNode.NodeId
-                        };
-                        mapResult.PendingNodeId = pendingAlertNode.NodeId;
-                    }
-                }
-            }
-            
-            // FormNode completed kontrolü - Form kapanmalı mı?
-            if (result != null)
-            {
-                var completedFormNode = result.workflowItems?.FirstOrDefault(item => 
-                    item.NodeType == "formNode" && item.workFlowNodeStatus == formneo.core.Models.WorkflowStatus.Completed);
-                
-                if (completedFormNode != null)
-                {
-                    mapResult.FormNodeCompleted = true;
-                    mapResult.CompletedFormNodeId = completedFormNode.NodeId;
-                }
-            }
-            
-            mapResult.WorkFlowStatus = result?.workFlowStatus;
+            // Generic response builder kullan
+            var mapResult = _responseBuilder.BuildResponse(result);
 
             return mapResult;
         }
@@ -197,7 +140,9 @@ namespace formneo.api.Controllers
 
 
             var result = await execute.StartAsync(workFlowDto, parameters, null);
-            var mapResult = _mapper.Map<WorkFlowHeadDtoResultStartOrContinue>(result);
+            
+            // Generic response builder kullan
+            var mapResult = _responseBuilder.BuildResponse(result);
 
             return mapResult;
 

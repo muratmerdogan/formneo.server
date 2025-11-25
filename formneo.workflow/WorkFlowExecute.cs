@@ -164,6 +164,23 @@ namespace formneo.workflow
 
                 head.workflowItems = workflow._workFlowItems;
 
+                // AlertNode kontrolü - AlertNode'a gelirse rollback yapılacak
+                // AlertNode sadece error ve warning için kullanılır, success ve info mesajları normal component'te gösterilir
+                // AlertNode'a gelince işlem durdurulur ve rollback yapılır
+                var pendingAlertNode = head.workflowItems.FirstOrDefault(item => 
+                    item.NodeType == "alertNode" && item.workFlowNodeStatus == WorkflowStatus.Pending);
+                
+                // Eğer alertNode'a gelindi ise, rollback yap (işlemi geri al)
+                if (pendingAlertNode != null)
+                {
+                    // Rollback: WorkflowHead ve WorkflowItem'ları kaydetme
+                    // Alert bilgilerini response'da döndürmek için head'i işaretle
+                    // Id'yi Empty yap = rollback flag (response builder bunu algılayacak)
+                    head.Id = Guid.Empty; // Rollback flag
+                    head.workFlowStatus = WorkflowStatus.Pending;
+                    return head; // Alert bilgileriyle birlikte döndür, ama veritabanına kaydetme
+                }
+
                 var result = await parameters.workFlowService.AddAsync(head);
 
 
@@ -184,14 +201,20 @@ namespace formneo.workflow
                     }
                     
                     // Eğer workflow execution sırasında alertNode'a gelip pending durumunda kaldıysa
-                    // workflow status'ü pending olarak işaretle
-                    var pendingAlertNode = head.workflowItems.FirstOrDefault(item => 
-                        item.NodeType == "alertNode" && item.workFlowNodeStatus == WorkflowStatus.Pending);
-                    
+                    // (ama error/warning değilse, sadece info ise)
                     if (pendingAlertNode != null)
                     {
-                        result.workFlowStatus = WorkflowStatus.Pending;
-                        result.CurrentNodeId = pendingAlertNode.NodeId;
+                        var workflowJson = JObject.Parse(head.WorkFlowDefinationJson);
+                        var nodes = workflowJson["nodes"] as JArray;
+                        var alertNodeDef = nodes?.FirstOrDefault(n => n["id"]?.ToString() == pendingAlertNode.NodeId);
+                        var alertType = alertNodeDef?["data"]?["type"]?.ToString()?.ToLower() ?? "info";
+                        
+                        // Info tipindeki alert'ler için rollback yapma, sadece pending olarak işaretle
+                        if (alertType == "info" || alertType == "success")
+                        {
+                            result.workFlowStatus = WorkflowStatus.Pending;
+                            result.CurrentNodeId = pendingAlertNode.NodeId;
+                        }
                     }
                 }
 

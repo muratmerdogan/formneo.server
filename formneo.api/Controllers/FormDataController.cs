@@ -354,6 +354,25 @@ namespace formneo.api.Controllers
 
             return dto;
         }
+        /// <summary>
+        /// Tüm formların sadece ID ve adını getirir
+        /// </summary>
+        /// <returns>Form ID ve adı listesi</returns>
+        [HttpGet("names")]
+        public async Task<ActionResult<List<FormNameIdDto>>> GetFormNames()
+        {
+            var forms = await _formRepository.GetAll()
+                .Select(x => new FormNameIdDto
+                {
+                    Id = x.Id,
+                    FormName = x.FormName
+                })
+                .OrderBy(x => x.FormName)
+                .ToListAsync();
+
+            return forms;
+        }
+
         [HttpGet("GetFormPrioritiesEnum")]
         public IActionResult GetFormPrioritiesEnum()
         {

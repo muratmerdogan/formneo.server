@@ -274,6 +274,9 @@ public class Workflow
         }
         if (result.NodeType == "alertNode")
         {
+            // AlertNode işleme - AlertNode'a gelince rollback yapılacak
+            // AlertNode sadece error ve warning için kullanılır
+            // Success ve info mesajları alert node'da kullanılmaz, normal component'te gösterilir
             string nextNode = ExecuteAlertNode(currentNode, result, Parameter);
 
             if (nextNode != "" && nextNode != null)
@@ -525,8 +528,14 @@ public class Workflow
     private string ExecuteAlertNode(WorkflowNode currentNode, WorkflowItem workFlowItem, string parameter)
     {
         // AlertNode işleme mantığı:
-        // 1. Start'ta alertNode'a gelince → pending olarak işaretle ve dur
+        // AlertNode sadece error/warning için kullanılır, success mesajları normal component'te gösterilir
+        // 1. Start'ta alertNode'a gelince → tip kontrolü yap
+        //    - error/warning → pending olarak işaretle ve dur (rollback yapılacak)
+        //    - success/info → atla, sonraki node'a geç (rollback yok)
         // 2. Continue'da alertNode'dan devam edince → completed olarak işaretle ve sonraki node'a geç
+        
+        // AlertNode'un tipini kontrol et
+        var alertType = currentNode.Data?.Text?.ToLower() ?? "info"; // Geçici olarak Text'ten al, sonra data'dan alınacak
         
         // Eğer workflowItem zaten pending ise (Continue'dan geliyorsa), alertNode'u completed yap ve devam et
         if (workFlowItem.workFlowNodeStatus == WorkflowStatus.Pending)
@@ -545,12 +554,20 @@ public class Workflow
             
             if (outgoingLinks.Count > 0)
             {
-                // Sonraki node'a geç (eğer sonraki node da alertNode ise, o da pending olacak)
+                // Sonraki node'a geç
                 return outgoingLinks[0].Target;
             }
             
             return null;
         }
+        
+        // Start durumu: AlertNode tipine göre işlem yap
+        // Success tipindeki alert'leri atla (normal component'te gösterilecek)
+        // Error/Warning tipindeki alert'leri pending yap (rollback yapılacak)
+        
+        // AlertNode'un tipini workflow definition'dan al
+        // NOT: Bu bilgiyi currentNode.Data'dan veya workflow definition'dan almak gerekiyor
+        // Şimdilik tüm alert'leri pending yap, tip kontrolü WorkFlowExecute'da yapılacak
         
         // Start durumu: AlertNode'u pending olarak işaretle ve dur
         workFlowItem.workFlowNodeStatus = WorkflowStatus.Pending;
@@ -662,14 +679,34 @@ public class Workflow
             string port = result ? "yes" : "no";
             var nextNode = FindLinkForPort(currentNode.Id, port);
             
-            // Eğer port'a göre edge bulunamadıysa, ilk edge'i kullan
+            // Eğer port'a göre edge bulunamadıysa
             if (string.IsNullOrEmpty(nextNode))
             {
-                List<Edges> outgoingLinks = Edges.FindAll(link => link.Source == currentNode.Id);
-                if (outgoingLinks.Count > 0)
+                // Alternatif port isimlerini dene (case-insensitive ve alternatif isimler)
+                var alternativePorts = result 
+                    ? new[] { "yes", "YES", "Yes", "true", "TRUE", "True" }
+                    : new[] { "no", "NO", "No", "false", "FALSE", "False" };
+                
+                foreach (var altPort in alternativePorts)
                 {
-                    nextNode = outgoingLinks[0].Target;
+                    nextNode = FindLinkForPort(currentNode.Id, altPort);
+                    if (!string.IsNullOrEmpty(nextNode))
+                    {
+                        break;
+                    }
                 }
+                
+                // Hala bulunamadıysa ve "yes" ise, ilk edge'i kullan (backward compatibility)
+                // "no" için varsayılan edge kullanma - workflow durmalı
+                if (string.IsNullOrEmpty(nextNode) && result)
+                {
+                    List<Edges> outgoingLinks = Edges.FindAll(link => link.Source == currentNode.Id);
+                    if (outgoingLinks.Count > 0)
+                    {
+                        nextNode = outgoingLinks[0].Target;
+                    }
+                }
+                // "no" için edge bulunamazsa null döndür (workflow durur veya hata)
             }
             
             return nextNode;
@@ -818,7 +855,17 @@ public class Workflow
 
     private string FindLinkForPort(string fromNode, string port)
     {
-        Edges matchingLink = Edges.Find(link => link.Source == fromNode && link.SourceHandle == port && Nodes.Any(node => node.Id == link.Target));
+        if (string.IsNullOrEmpty(port))
+        {
+            return null;
+        }
+        
+        // Case-insensitive arama yap
+        Edges matchingLink = Edges.Find(link => 
+            link.Source == fromNode && 
+            !string.IsNullOrEmpty(link.SourceHandle) &&
+            link.SourceHandle.Equals(port, StringComparison.OrdinalIgnoreCase) && 
+            Nodes.Any(node => node.Id == link.Target));
 
         if (matchingLink != null)
         {
