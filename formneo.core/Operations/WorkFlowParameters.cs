@@ -17,6 +17,7 @@ namespace formneo.core.Operations
 
         public ITicketServices _ticketService { get; set; }
         public IApproveItemsService _approverItemsService { get; set; }
+        public IFormItemsService _formItemsService { get; set; }
         public  IServiceWithDto<WorkFlowDefination, WorkFlowDefinationDto>  _workFlowDefination { get; set; }
 
     }

@@ -485,8 +485,11 @@ namespace formneo.api.Controllers
             // Id (x-designable-id)
             dto.Id = element["x-designable-id"]?.ToString() ?? string.Empty;
 
-            // Name (title)
-            dto.Name = element["title"]?.ToString();
+            // Title
+            dto.Title = element["title"]?.ToString();
+
+            // Name (name veya title - önce name, yoksa title)
+            dto.Name = element["name"]?.ToString() ?? element["name"]?.ToString();
 
             // Type
             dto.Type = element["type"]?.ToString();

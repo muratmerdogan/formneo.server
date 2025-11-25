@@ -2460,7 +2460,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 10, 29, 18, 13, 22, 956, DateTimeKind.Utc).AddTicks(1360),
+                            CreatedDate = new DateTime(2025, 11, 25, 18, 34, 47, 13, DateTimeKind.Utc).AddTicks(250),
                             Name = "RonesansHolding"
                         });
                 });
@@ -2888,6 +2888,81 @@ namespace formneo.repository.Migrations
                     b.HasIndex("MainClientId");
 
                     b.ToTable("FormAuth");
+                });
+
+            modelBuilder.Entity("formneo.core.Models.FormItems", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("FormData")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FormDescription")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FormDesign")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("FormId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("FormItemStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FormTaskMessage")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FormUser")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FormUserMessage")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FormUserNameSurname")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("MainClientId")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("UniqNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UniqNumber"));
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("WorkflowItemId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FormId");
+
+                    b.HasIndex("MainClientId");
+
+                    b.HasIndex("WorkflowItemId");
+
+                    b.ToTable("FormItems");
                 });
 
             modelBuilder.Entity("formneo.core.Models.FormRuleEngine", b =>
@@ -3453,7 +3528,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 10, 29, 18, 13, 22, 956, DateTimeKind.Utc).AddTicks(2140),
+                            CreatedDate = new DateTime(2025, 11, 25, 18, 34, 47, 13, DateTimeKind.Utc).AddTicks(960),
                             DomainVerified = false,
                             Email = "info@formneo.com",
                             FeatureFlags = "{}",
@@ -3815,7 +3890,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 10, 29, 18, 13, 22, 956, DateTimeKind.Utc).AddTicks(2230),
+                            CreatedDate = new DateTime(2025, 11, 25, 18, 34, 47, 13, DateTimeKind.Utc).AddTicks(1030),
                             Name = "RonesansHoldingTurkey"
                         });
                 });
@@ -6931,6 +7006,32 @@ namespace formneo.repository.Migrations
                     b.Navigation("MainClient");
                 });
 
+            modelBuilder.Entity("formneo.core.Models.FormItems", b =>
+                {
+                    b.HasOne("formneo.core.Models.Form", "Form")
+                        .WithMany()
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("formneo.core.Models.MainClient", "MainClient")
+                        .WithMany()
+                        .HasForeignKey("MainClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("formneo.core.Models.WorkflowItem", "WorkflowItem")
+                        .WithMany("formItems")
+                        .HasForeignKey("WorkflowItemId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Form");
+
+                    b.Navigation("MainClient");
+
+                    b.Navigation("WorkflowItem");
+                });
+
             modelBuilder.Entity("formneo.core.Models.FormRuleEngine", b =>
                 {
                     b.HasOne("formneo.core.Models.MainClient", "MainClient")
@@ -8080,6 +8181,8 @@ namespace formneo.repository.Migrations
             modelBuilder.Entity("formneo.core.Models.WorkflowItem", b =>
                 {
                     b.Navigation("approveItems");
+
+                    b.Navigation("formItems");
                 });
 #pragma warning restore 612, 618
         }

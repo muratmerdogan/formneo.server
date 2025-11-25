@@ -29,6 +29,7 @@ namespace formneo.api.Controllers
         private readonly IWorkFlowService _service;
         private readonly IWorkFlowItemService _workFlowItemservice;
         private readonly IApproveItemsService _approveItemsService;
+        private readonly IFormItemsService _formItemsService;
         private readonly IServiceWithDto<WorkFlowDefination, WorkFlowDefinationDto> _workFlowDefinationDto;
         private readonly IServiceWithDto<WorkflowHead, WorkFlowHeadDto> _workFlowHeadService;
         private readonly IServiceWithDto<WorkflowItem, WorkFlowItemDto> _workFlowItemService;
@@ -39,7 +40,8 @@ namespace formneo.api.Controllers
             IMapper mapper, 
             IWorkFlowService workFlowService, 
             IWorkFlowItemService workFlowItemservice, 
-            IApproveItemsService approveItemsService, 
+            IApproveItemsService approveItemsService,
+            IFormItemsService formItemsService,
             IServiceWithDto<WorkFlowDefination, WorkFlowDefinationDto> definationdto, 
             IServiceWithDto<WorkflowHead, WorkFlowHeadDto> workFlowHeadService, 
             IServiceWithDto<WorkflowItem, WorkFlowItemDto> workFlowItemService, 
@@ -50,6 +52,7 @@ namespace formneo.api.Controllers
             _workFlowDefinationDto = definationdto;
             _workFlowItemservice = workFlowItemservice;
             _approveItemsService = approveItemsService;
+            _formItemsService = formItemsService;
             _workFlowHeadService = workFlowHeadService;
             _workFlowItemService = workFlowItemService;
             _ticketService = ticketServices;
@@ -66,6 +69,7 @@ namespace formneo.api.Controllers
             parameters.workFlowItemService = _workFlowItemservice;
             parameters._workFlowDefination = _workFlowDefinationDto;
             parameters._approverItemsService = _approveItemsService;
+            parameters._formItemsService = _formItemsService;
             parameters._ticketService = _ticketService;
 
 
@@ -102,12 +106,13 @@ namespace formneo.api.Controllers
             parameters.workFlowService = _service;
             parameters.workFlowItemService = _workFlowItemservice;
             parameters._workFlowDefination = _workFlowDefinationDto;
-
+            parameters._formItemsService = _formItemsService;
 
             workFlowDto.WorkFlowDefinationId = new Guid(workFlowApiDto.DefinationId);
             workFlowDto.UserName = workFlowApiDto.UserName ?? User.Identity.Name;
             workFlowDto.WorkFlowInfo = workFlowApiDto.WorkFlowInfo;
             workFlowDto.Action = workFlowApiDto.Action;
+            workFlowDto.Note = workFlowApiDto.Note;
 
             // FormData'yı payloadJson olarak gönder
             var payloadJson = workFlowApiDto.FormData;
@@ -130,8 +135,8 @@ namespace formneo.api.Controllers
             parameters.workFlowService = _service;
             parameters.workFlowItemService = _workFlowItemservice;
             parameters._workFlowDefination = _workFlowDefinationDto;
+            parameters._formItemsService = _formItemsService;
             workFlowApiDto.UserName = User.Identity.Name;
-
 
             workFlowDto.WorkFlowDefinationId = new Guid(workFlowApiDto.DefinationId);
             workFlowDto.UserName = workFlowApiDto.UserName;

@@ -42,6 +42,7 @@ public class WorkflowNode
 
         WorkflowItem item = new WorkflowItem();
         item.approveItems = new List<ApproveItems>();
+        item.formItems = new List<FormItems>();
 
         item.WorkflowHeadId = HeadId;
         item.NodeName = Data.Name != null ? Data.Name : "WorkFlowName";
@@ -75,6 +76,18 @@ public class NodeData
     /// ScriptNode için processDataTree (form verilerine erişim için)
     /// </summary>
     public object processDataTree { get; set; }
+    /// <summary>
+    /// FormTaskNode için mesaj (component'te gösterilecek)
+    /// </summary>
+    public string message { get; set; }
+    /// <summary>
+    /// FormTaskNode için mesaj (alternatif alan adı)
+    /// </summary>
+    public string formTaskMessage { get; set; }
+    /// <summary>
+    /// FormTaskNode için açıklama/mesaj (alternatif alan adı)
+    /// </summary>
+    public string description { get; set; }
 }
 
 public class stoptype
@@ -272,6 +285,19 @@ public class Workflow
                 return;
             }
         }
+        if (result.NodeType == "formTaskNode")
+        {
+            string nextNode = ExecuteFormTaskNode(currentNode, result, Parameter);
+
+            if (nextNode != "" && nextNode != null)
+            {
+                ExecuteNode(nextNode);
+            }
+            else
+            {
+                return;
+            }
+        }
         if (result.NodeType == "alertNode")
         {
             // AlertNode işleme - AlertNode'a gelince rollback yapılacak
@@ -302,7 +328,7 @@ public class Workflow
             //    return;
             //}
         }
-        if (result.NodeType != "EmailNode" && result.NodeType != "ApproverNode" && result.NodeType != "formNode" && result.NodeType != "alertNode" && result.NodeType != "scriptNode")
+        if (result.NodeType != "EmailNode" && result.NodeType != "ApproverNode" && result.NodeType != "formNode" && result.NodeType != "formTaskNode" && result.NodeType != "alertNode" && result.NodeType != "scriptNode")
         {
 
             if (_workFlowItems.Contains(result))
@@ -522,6 +548,103 @@ public class Workflow
             }
         }
         
+        return nextNode;
+    }
+
+    private string ExecuteFormTaskNode(WorkflowNode currentNode, WorkflowItem workFlowItem, string parameter)
+    {
+        // FormTaskNode işleme mantığı:
+        // Parameter boşsa → FormItem oluştur ve pending yap
+        // Parameter varsa (form doldurulduysa) → completed yap ve devam et
+        
+        if (parameter == "")
+        {
+            // FormTaskNode'a ilk gelindiğinde FormItem oluştur
+            _workFlowItems.Add(workFlowItem);
+            
+            Utils utils = new Utils();
+            
+            // FormTaskNode'un Data'sından form bilgilerini al
+            string formDesign = currentNode.Data?.Text ?? ""; // FormDesign JSON'u
+            string formId = currentNode.Data?.code ?? ""; // Form ID (Guid string olarak)
+            string formUser = _ApiSendUser; // Formu dolduran kullanıcı
+            string formUserNameSurname = utils.GetNameAndSurnameAsync(_ApiSendUser).ToString();
+            string formDescription = currentNode.Data?.Name ?? ""; // Form açıklaması
+            
+            // FormTaskNode'un Data'sından mesajı al (component'te gösterilecek)
+            string formTaskMessage = "";
+            if (currentNode.Data != null)
+            {
+                // NodeData'dan mesaj alanını al (message, formTaskMessage veya description)
+                // Önce direkt property'den kontrol et, yoksa JSON'dan parse et
+                formTaskMessage = currentNode.Data.message 
+                    ?? currentNode.Data.formTaskMessage 
+                    ?? currentNode.Data.description 
+                    ?? "";
+                
+                // Eğer hala boşsa ve JSON'dan parse edilmişse, JObject'ten al
+                if (string.IsNullOrEmpty(formTaskMessage))
+                {
+                    try
+                    {
+                        var nodeDataJson = JsonConvert.SerializeObject(currentNode.Data);
+                        var nodeDataObj = JObject.Parse(nodeDataJson);
+                        formTaskMessage = nodeDataObj["message"]?.ToString() 
+                            ?? nodeDataObj["formTaskMessage"]?.ToString() 
+                            ?? nodeDataObj["description"]?.ToString() 
+                            ?? "";
+                    }
+                    catch
+                    {
+                        // Parse hatası durumunda boş string kalır
+                    }
+                }
+            }
+            
+            // FormItem oluştur
+            var formItem = new FormItems
+            {
+                WorkflowItemId = workFlowItem.Id,
+                FormDesign = formDesign,
+                FormId = !string.IsNullOrEmpty(formId) && Guid.TryParse(formId, out Guid parsedFormId) ? parsedFormId : null,
+                FormUser = formUser,
+                FormUserNameSurname = formUserNameSurname,
+                FormDescription = formDescription,
+                FormTaskMessage = formTaskMessage, // FormTaskNode oluşturulurken kaydedilen mesaj
+                FormItemStatus = FormItemStatus.Pending
+            };
+            
+            // WorkflowItem'a FormItem ekle
+            if (workFlowItem.formItems == null)
+            {
+                workFlowItem.formItems = new List<FormItems>();
+            }
+            workFlowItem.formItems.Add(formItem);
+            
+            workFlowItem.workFlowNodeStatus = WorkflowStatus.Pending;
+            return ""; // Form doldurulana kadar durdur
+        }
+        
+        // Parameter varsa (form doldurulduysa), completed yap ve devam et
+        if (!string.IsNullOrEmpty(parameter))
+        {
+            workFlowItem.workFlowNodeStatus = WorkflowStatus.Completed;
+            
+            // FormItem'ı güncelle (eğer varsa)
+            if (workFlowItem.formItems != null && workFlowItem.formItems.Count > 0)
+            {
+                var formItem = workFlowItem.formItems.FirstOrDefault();
+                if (formItem != null)
+                {
+                    formItem.FormItemStatus = FormItemStatus.Completed;
+                    // Parameter'dan form verilerini alabilirsiniz (JSON string olarak)
+                    // formItem.FormData = parameter;
+                }
+            }
+        }
+        
+        // Düğüme bağlı çıkış bağlantılarını bulun
+        var nextNode = FindLinkForPort(currentNode.Id, parameter);
         return nextNode;
     }
 

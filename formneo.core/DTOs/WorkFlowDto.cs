@@ -58,5 +58,9 @@
         /// Form üzerindeki butonun action kodu (örn: SAVE, APPROVE)
         /// </summary>
         public string? Action { get; set; }
+        /// <summary>
+        /// Kullanıcının workflow'da yazdığı mesaj/not
+        /// </summary>
+        public string? Note { get; set; }
     }
 }

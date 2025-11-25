@@ -14,9 +14,14 @@ namespace formneo.core.DTOs
         public string Id { get; set; }
 
         /// <summary>
-        /// Element'in adı/label'ı (title)
+        /// Element'in adı/label'ı (title veya name)
         /// </summary>
         public string? Name { get; set; }
+
+        /// <summary>
+        /// Element'in title değeri (eğer varsa)
+        /// </summary>
+        public string? Title { get; set; }
 
         /// <summary>
         /// Element'in tipi (type - string, number, boolean vb.)

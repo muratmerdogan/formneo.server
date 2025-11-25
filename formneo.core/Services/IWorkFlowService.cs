@@ -13,6 +13,6 @@ namespace formneo.core.Services
 
         Task<WorkflowHead> GetWorkFlowWitId(Guid guid);
 
-        Task<bool> UpdateWorkFlowAndRelations(WorkflowHead head, List<WorkflowItem> workflowItems, ApproveItems approveItems = null);
+        Task<bool> UpdateWorkFlowAndRelations(WorkflowHead head, List<WorkflowItem> workflowItems, ApproveItems approveItems = null, FormItems formItem = null);
     }
 }

@@ -24,12 +24,13 @@ namespace formneo.service.Services
         private readonly IWorkflowRepository _workFlowRepository;
         private readonly IWorkFlowItemRepository _workFlowItemRepository;
         private readonly IApproveItemsRepository _approveItemsRepository;
+        private readonly IFormItemsRepository _formItemsRepository;
 
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public WorkFlowService(IGenericRepository<WorkflowHead> repository, IUnitOfWork unitOfWork, IMapper mapper, IWorkflowRepository workFlowRepository, IWorkFlowItemRepository workFlowItemRepository, IApproveItemsRepository approveItemsRepository) : base(repository, unitOfWork)
+        public WorkFlowService(IGenericRepository<WorkflowHead> repository, IUnitOfWork unitOfWork, IMapper mapper, IWorkflowRepository workFlowRepository, IWorkFlowItemRepository workFlowItemRepository, IApproveItemsRepository approveItemsRepository, IFormItemsRepository formItemsRepository) : base(repository, unitOfWork)
         {
             _mapper = mapper;
 
@@ -38,6 +39,7 @@ namespace formneo.service.Services
             _workFlowRepository = workFlowRepository;
             _workFlowItemRepository = workFlowItemRepository;
             _approveItemsRepository = approveItemsRepository;
+            _formItemsRepository = formItemsRepository;
 
             _unitOfWork = unitOfWork;
         }
@@ -49,7 +51,7 @@ namespace formneo.service.Services
             return result;
         }
 
-        public async Task<bool> UpdateWorkFlowAndRelations(WorkflowHead head, List<WorkflowItem> workflowItems, ApproveItems approveItem)
+        public async Task<bool> UpdateWorkFlowAndRelations(WorkflowHead head, List<WorkflowItem> workflowItems, ApproveItems approveItem = null, FormItems formItem = null)
         {
 
 
@@ -60,9 +62,41 @@ namespace formneo.service.Services
 
             //_workFlowItemRepository.AddRangeAsync(workflowItems);
 
-            _approveItemsRepository.Update(approveItem);
+            if (approveItem != null)
+            {
+                _approveItemsRepository.Update(approveItem);
+            }
 
+            if (formItem != null)
+            {
+                if (formItem.Id == Guid.Empty)
+                {
+                    await _formItemsRepository.AddAsync(formItem);
+                }
+                else
+                {
+                    _formItemsRepository.Update(formItem);
+                }
+            }
 
+            // WorkflowItems içindeki FormItems'ları kaydet
+            foreach (var item in workflowItems)
+            {
+                if (item.formItems != null && item.formItems.Count > 0)
+                {
+                    foreach (var fi in item.formItems)
+                    {
+                        if (fi.Id == Guid.Empty)
+                        {
+                            await _formItemsRepository.AddAsync(fi);
+                        }
+                        else
+                        {
+                            _formItemsRepository.Update(fi);
+                        }
+                    }
+                }
+            }
 
             await _unitOfWork.CommitAsync();
 

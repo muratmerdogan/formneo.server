@@ -101,7 +101,24 @@ namespace formneo.workflow
 
                 workflow.Continue(startNode, startNode.NodeId, dto.UserName, dto.Input, head);
 
-                var result = await parameters.workFlowService.UpdateWorkFlowAndRelations(head, workFlowItems, ApproverItem);
+                // FormItems'ı bul ve kaydet
+                FormItems formItemToSave = null;
+                foreach (var item in head.workflowItems)
+                {
+                    if (item.formItems != null && item.formItems.Count > 0)
+                    {
+                        formItemToSave = item.formItems.FirstOrDefault();
+                        // Kullanıcı mesajını ekle
+                        if (formItemToSave != null && dto.Note != null)
+                        {
+                            formItemToSave.FormUserMessage = dto.Note;
+                        }
+                        break;
+                    }
+                }
+
+                // Continue metodunda head.workflowItems'i gönder (FormItems'ları kaydetmek için)
+                var result = await parameters.workFlowService.UpdateWorkFlowAndRelations(head, head.workflowItems, ApproverItem, formItemToSave);
 
                 if (result != null)
                 {
@@ -183,6 +200,13 @@ namespace formneo.workflow
 
                 var result = await parameters.workFlowService.AddAsync(head);
 
+                // FormItems'ları kaydet (UpdateWorkFlowAndRelations ile - ApproveItems mantığı gibi)
+                // FormTaskNode'a gelindiğinde FormItems oluşturuldu ve workFlowItem.formItems'e eklendi
+                // UpdateWorkFlowAndRelations içinde FormItems'lar kaydedilecek
+                if (result != null && result.workflowItems != null)
+                {
+                    await parameters.workFlowService.UpdateWorkFlowAndRelations(result, result.workflowItems, null, null);
+                }
 
                 if (result != null)
                 {
