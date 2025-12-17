@@ -433,6 +433,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
+// Statik dosyalar için wwwroot klasörünü kullan
+app.UseStaticFiles();
+
+// Default files (index.html) desteği
+app.UseDefaultFiles();
+
 app.UseCustomException();
 
 // Türkçe localization middleware

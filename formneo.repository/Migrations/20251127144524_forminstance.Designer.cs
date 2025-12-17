@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using formneo.repository;
@@ -11,9 +12,11 @@ using formneo.repository;
 namespace formneo.repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251127144524_forminstance")]
+    partial class forminstance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2460,7 +2463,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 12, 12, 20, 26, 41, 780, DateTimeKind.Utc).AddTicks(4070),
+                            CreatedDate = new DateTime(2025, 11, 27, 14, 45, 23, 408, DateTimeKind.Utc).AddTicks(2910),
                             Name = "RonesansHolding"
                         });
                 });
@@ -3589,7 +3592,7 @@ namespace formneo.repository.Migrations
                         new
                         {
                             Id = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
-                            CreatedDate = new DateTime(2025, 12, 12, 20, 26, 41, 780, DateTimeKind.Utc).AddTicks(4850),
+                            CreatedDate = new DateTime(2025, 11, 27, 14, 45, 23, 408, DateTimeKind.Utc).AddTicks(3730),
                             DomainVerified = false,
                             Email = "info@formneo.com",
                             FeatureFlags = "{}",
@@ -3951,7 +3954,7 @@ namespace formneo.repository.Migrations
                         {
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
-                            CreatedDate = new DateTime(2025, 12, 12, 20, 26, 41, 780, DateTimeKind.Utc).AddTicks(4930),
+                            CreatedDate = new DateTime(2025, 11, 27, 14, 45, 23, 408, DateTimeKind.Utc).AddTicks(3810),
                             Name = "RonesansHoldingTurkey"
                         });
                 });
@@ -6248,9 +6251,6 @@ namespace formneo.repository.Migrations
                     b.Property<string>("CurrentNodeName")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("FormId")
-                        .HasColumnType("uuid");
-
                     b.Property<bool>("IsDelete")
                         .HasColumnType("boolean");
 
@@ -6289,8 +6289,6 @@ namespace formneo.repository.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FormId");
 
                     b.HasIndex("MainClientId");
 
@@ -8106,11 +8104,6 @@ namespace formneo.repository.Migrations
 
             modelBuilder.Entity("formneo.core.Models.WorkflowHead", b =>
                 {
-                    b.HasOne("formneo.core.Models.Form", "Form")
-                        .WithMany()
-                        .HasForeignKey("FormId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("formneo.core.Models.MainClient", "MainClient")
                         .WithMany()
                         .HasForeignKey("MainClientId")
@@ -8122,8 +8115,6 @@ namespace formneo.repository.Migrations
                         .HasForeignKey("WorkFlowDefinationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Form");
 
                     b.Navigation("MainClient");
 

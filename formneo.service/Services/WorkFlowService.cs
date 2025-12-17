@@ -25,12 +25,13 @@ namespace formneo.service.Services
         private readonly IWorkFlowItemRepository _workFlowItemRepository;
         private readonly IApproveItemsRepository _approveItemsRepository;
         private readonly IFormItemsRepository _formItemsRepository;
+        private readonly IFormInstanceRepository _formInstanceRepository;
 
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public WorkFlowService(IGenericRepository<WorkflowHead> repository, IUnitOfWork unitOfWork, IMapper mapper, IWorkflowRepository workFlowRepository, IWorkFlowItemRepository workFlowItemRepository, IApproveItemsRepository approveItemsRepository, IFormItemsRepository formItemsRepository) : base(repository, unitOfWork)
+        public WorkFlowService(IGenericRepository<WorkflowHead> repository, IUnitOfWork unitOfWork, IMapper mapper, IWorkflowRepository workFlowRepository, IWorkFlowItemRepository workFlowItemRepository, IApproveItemsRepository approveItemsRepository, IFormItemsRepository formItemsRepository, IFormInstanceRepository formInstanceRepository) : base(repository, unitOfWork)
         {
             _mapper = mapper;
 
@@ -40,6 +41,7 @@ namespace formneo.service.Services
             _workFlowItemRepository = workFlowItemRepository;
             _approveItemsRepository = approveItemsRepository;
             _formItemsRepository = formItemsRepository;
+            _formInstanceRepository = formInstanceRepository;
 
             _unitOfWork = unitOfWork;
         }
@@ -51,7 +53,7 @@ namespace formneo.service.Services
             return result;
         }
 
-        public async Task<bool> UpdateWorkFlowAndRelations(WorkflowHead head, List<WorkflowItem> workflowItems, ApproveItems approveItem = null, FormItems formItem = null)
+        public async Task<bool> UpdateWorkFlowAndRelations(WorkflowHead head, List<WorkflowItem> workflowItems, ApproveItems approveItems = null, FormItems formItem = null, FormInstance formInstance = null)
         {
 
 
@@ -62,9 +64,9 @@ namespace formneo.service.Services
 
             //_workFlowItemRepository.AddRangeAsync(workflowItems);
 
-            if (approveItem != null)
+            if (approveItems != null)
             {
-                _approveItemsRepository.Update(approveItem);
+                _approveItemsRepository.Update(approveItems);
             }
 
             if (formItem != null)
@@ -76,6 +78,18 @@ namespace formneo.service.Services
                 else
                 {
                     _formItemsRepository.Update(formItem);
+                }
+            }
+
+            if (formInstance != null)
+            {
+                if (formInstance.Id == Guid.Empty)
+                {
+                    await _formInstanceRepository.AddAsync(formInstance);
+                }
+                else
+                {
+                    _formInstanceRepository.Update(formInstance);
                 }
             }
 

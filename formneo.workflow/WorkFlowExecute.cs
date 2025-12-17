@@ -12,6 +12,7 @@ using formneo.core.Services;
 using formneo.service.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using formneo.core.DTOs.Budget.SF;
 
 namespace formneo.workflow
@@ -66,13 +67,19 @@ namespace formneo.workflow
 
                 var ApproverItem = await _parameters._approverItemsService.GetByIdStringGuidAsync(new Guid(dto.ApproverItemId));
 
-                if (dto.Input == "yes")
+                // Buton bazlı sistem: Action'a göre durum belirlenir (APPROVE, REJECT, vb.)
+                // Artık Input ile "yes/no" mantığı yok
+                if (!string.IsNullOrEmpty(dto.Action))
                 {
-                    ApproverItem.ApproverStatus = ApproverStatus.Approve;
-                }
-                if (dto.Input == "no")
-                {
-                    ApproverItem.ApproverStatus = ApproverStatus.Reject;
+                    string actionUpper = dto.Action.ToUpper();
+                    if (actionUpper == "APPROVE" || actionUpper == "ONAYLA" || actionUpper == "YES")
+                    {
+                        ApproverItem.ApproverStatus = ApproverStatus.Approve;
+                    }
+                    else if (actionUpper == "REJECT" || actionUpper == "REDDET" || actionUpper == "NO")
+                    {
+                        ApproverItem.ApproverStatus = ApproverStatus.Reject;
+                    }
                 }
 
                 if (dto.Note != null)
@@ -99,26 +106,111 @@ namespace formneo.workflow
 
                 workflow._HeadId = new Guid(dto.WorkFlowId);
 
-                workflow.Continue(startNode, startNode.NodeId, dto.UserName, dto.Input, head);
+                // Continue metoduna payloadJson'ı da geç (FormData için)
+                // Artık Input yerine Action kullanılıyor (buton bazlı sistem)
+                string actionToPass = dto.Action ?? "";
+                workflow.Continue(startNode, startNode.NodeId, dto.UserName, actionToPass, head, null, payloadJson);
 
-                // FormItems'ı bul ve kaydet
+                // FormInstance güncellemesi sadece FormTaskNode'dan geliyorsa yapılır
+                // ApproverNode (UserTask)'dan geliyorsa FormInstance güncellenmez
+                FormInstance formInstanceToSave = null;
                 FormItems formItemToSave = null;
-                foreach (var item in head.workflowItems)
+                
+                // Hangi node'dan geldiğini kontrol et
+                // Sadece FormTaskNode'dan geliyorsa FormInstance işlemleri yapılır
+                // ApproverNode (UserTask)'dan geliyorsa FormInstance güncellenmez
+                if (startNode.NodeType == "formTaskNode")
                 {
-                    if (item.formItems != null && item.formItems.Count > 0)
+                    // FormItems'ı bul ve kaydet (sadece FormTaskNode için)
+                    WorkflowItem formTaskWorkflowItem = null;
+                    foreach (var item in head.workflowItems)
                     {
-                        formItemToSave = item.formItems.FirstOrDefault();
-                        // Kullanıcı mesajını ekle
-                        if (formItemToSave != null && dto.Note != null)
+                        // FormTaskNode kontrolü - sadece formTaskNode için FormInstance güncelle
+                        if (item.NodeType == "formTaskNode" && item.formItems != null && item.formItems.Count > 0)
                         {
-                            formItemToSave.FormUserMessage = dto.Note;
+                            formItemToSave = item.formItems.FirstOrDefault();
+                            formTaskWorkflowItem = item;
+                            // Kullanıcı mesajını ekle
+                            if (formItemToSave != null && dto.Note != null)
+                            {
+                                formItemToSave.FormUserMessage = dto.Note;
+                            }
+                            // Form verilerini kaydet: payloadJson (FormTaskNode'dan geliyorsa FormData gelir)
+                            if (formItemToSave != null && !string.IsNullOrEmpty(payloadJson))
+                            {
+                                formItemToSave.FormData = payloadJson;
+                            }
+                            break;
                         }
-                        break;
+                    }
+
+                    // FormId'yi WorkflowHead'e set et (tek ana form için)
+                    if (formItemToSave != null && formItemToSave.FormId.HasValue)
+                    {
+                        head.FormId = formItemToSave.FormId;
+                    }
+
+                    // FormInstance'ı güncelle veya oluştur (her zaman son/güncel form verisi)
+                    // Sadece FormTaskNode tamamlandığında FormInstance güncellenir
+                    if (formTaskWorkflowItem != null && formItemToSave != null && !string.IsNullOrEmpty(payloadJson))
+                {
+                    // FormDesign'i belirle: FormItem'dan veya FormId varsa Form tablosundan
+                    string formDesign = formItemToSave.FormDesign;
+                    
+                    // Eğer FormDesign boşsa ve FormId varsa, Form tablosundan al
+                    if (string.IsNullOrEmpty(formDesign) && formItemToSave.FormId.HasValue && parameters._formService != null)
+                    {
+                        try
+                        {
+                            var form = await parameters._formService.GetByIdStringGuidAsync(formItemToSave.FormId.Value);
+                            if (form != null && !string.IsNullOrEmpty(form.FormDesign))
+                            {
+                                formDesign = form.FormDesign;
+                                // FormItem'daki FormDesign'i de güncelle
+                                formItemToSave.FormDesign = formDesign;
+                            }
+                        }
+                        catch
+                        {
+                            // Form bulunamazsa devam et
+                        }
+                    }
+                    
+                    // Mevcut FormInstance'ı kontrol et
+                    var existingFormInstanceQuery = parameters._formInstanceService.Where(e => e.WorkflowHeadId == head.Id);
+                    var existingFormInstance = await existingFormInstanceQuery.FirstOrDefaultAsync();
+
+                    string userNameSurname = utils.GetNameAndSurnameAsync(dto.UserName).ToString();
+
+                    if (existingFormInstance != null)
+                    {
+                        // Mevcut FormInstance'ı güncelle
+                        existingFormInstance.FormData = payloadJson; // FormData (payloadJson)
+                        existingFormInstance.FormDesign = formDesign; // Güncellenmiş FormDesign'i kullan
+                        existingFormInstance.FormId = formItemToSave.FormId;
+                        existingFormInstance.UpdatedBy = dto.UserName;
+                        existingFormInstance.UpdatedByNameSurname = userNameSurname;
+                        existingFormInstance.UpdatedDate = DateTime.Now;
+                        formInstanceToSave = existingFormInstance;
+                    }
+                    else
+                    {
+                        // Yeni FormInstance oluştur
+                        formInstanceToSave = new FormInstance
+                        {
+                            WorkflowHeadId = head.Id,
+                            FormId = formItemToSave.FormId,
+                            FormDesign = formDesign, // Güncellenmiş FormDesign'i kullan
+                            FormData = payloadJson, // FormData (payloadJson)
+                            UpdatedBy = dto.UserName,
+                            UpdatedByNameSurname = userNameSurname
+                        };
+                    }
                     }
                 }
 
                 // Continue metodunda head.workflowItems'i gönder (FormItems'ları kaydetmek için)
-                var result = await parameters.workFlowService.UpdateWorkFlowAndRelations(head, head.workflowItems, ApproverItem, formItemToSave);
+                var result = await parameters.workFlowService.UpdateWorkFlowAndRelations(head, head.workflowItems, ApproverItem, formItemToSave, formInstanceToSave);
 
                 if (result != null)
                 {
@@ -181,6 +273,21 @@ namespace formneo.workflow
 
                 head.workflowItems = workflow._workFlowItems;
 
+                // FormTaskNode'dan FormId'yi al ve WorkflowHead'e set et (tek ana form için)
+                if (head.workflowItems != null)
+                {
+                    var formTaskNodeItem = head.workflowItems.FirstOrDefault(item => 
+                        item.NodeType == "formTaskNode" && item.formItems != null && item.formItems.Count > 0);
+                    if (formTaskNodeItem != null && formTaskNodeItem.formItems != null)
+                    {
+                        var formItem = formTaskNodeItem.formItems.FirstOrDefault();
+                        if (formItem != null && formItem.FormId.HasValue)
+                        {
+                            head.FormId = formItem.FormId;
+                        }
+                    }
+                }
+
                 // AlertNode kontrolü - AlertNode'a gelirse rollback yapılacak
                 // AlertNode sadece error ve warning için kullanılır, success ve info mesajları normal component'te gösterilir
                 // AlertNode'a gelince işlem durdurulur ve rollback yapılır
@@ -203,9 +310,71 @@ namespace formneo.workflow
                 // FormItems'ları kaydet (UpdateWorkFlowAndRelations ile - ApproveItems mantığı gibi)
                 // FormTaskNode'a gelindiğinde FormItems oluşturuldu ve workFlowItem.formItems'e eklendi
                 // UpdateWorkFlowAndRelations içinde FormItems'lar kaydedilecek
+                
+                // FormTaskNode için FormInstance oluştur (ilk kez oluşturulduğunda)
+                FormItems formItemToSave = null;
+                FormInstance formInstanceToSave = null;
+                
                 if (result != null && result.workflowItems != null)
                 {
-                    await parameters.workFlowService.UpdateWorkFlowAndRelations(result, result.workflowItems, null, null);
+                    // FormTaskNode kontrolü - FormTaskNode'a gelindiğinde FormInstance oluştur
+                    foreach (var item in result.workflowItems)
+                    {
+                        if (item.NodeType == "formTaskNode" && item.formItems != null && item.formItems.Count > 0)
+                        {
+                            formItemToSave = item.formItems.FirstOrDefault();
+                            if (formItemToSave != null)
+                            {
+                                // FormDesign'i belirle: FormItem'dan veya FormId varsa Form tablosundan
+                                string formDesign = formItemToSave.FormDesign;
+                                
+                                // Eğer FormDesign boşsa ve FormId varsa, Form tablosundan al
+                                // Bu işlem async olduğu için Start metodunda yapılır (ExecuteFormTaskNode senkron)
+                                if (string.IsNullOrEmpty(formDesign) && formItemToSave.FormId.HasValue && parameters._formService != null)
+                                {
+                                    try
+                                    {
+                                        var form = await parameters._formService.GetByIdStringGuidAsync(formItemToSave.FormId.Value);
+                                        if (form != null && !string.IsNullOrEmpty(form.FormDesign))
+                                        {
+                                            formDesign = form.FormDesign;
+                                            // FormItem'daki FormDesign'i de güncelle
+                                            formItemToSave.FormDesign = formDesign;
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        // Form bulunamazsa devam et
+                                    }
+                                }
+                                
+                                // FormInstance oluştur (FormDesign boş olsa bile oluştur, sonra güncellenebilir)
+                                Utils utils = new Utils();
+                                string userNameSurname = utils.GetNameAndSurnameAsync(dto.UserName).ToString();
+                                
+                                // FormData her zaman gelir (formdan butonla action ve form verisi gelir)
+                                // FormItem'a da FormData'yı kaydet
+                                if (!string.IsNullOrEmpty(payloadJson))
+                                {
+                                    formItemToSave.FormData = payloadJson;
+                                }
+                                
+                                // FormInstance oluştur (FormDesign boş olsa bile, sonra güncellenebilir)
+                                formInstanceToSave = new FormInstance
+                                {
+                                    WorkflowHeadId = result.Id,
+                                    FormId = formItemToSave.FormId,
+                                    FormDesign = formDesign, // FormDesign varsa kullan, yoksa null olabilir
+                                    FormData = payloadJson, // FormData her zaman gelir
+                                    UpdatedBy = dto.UserName,
+                                    UpdatedByNameSurname = userNameSurname
+                                };
+                            }
+                            break;
+                        }
+                    }
+                    
+                    await parameters.workFlowService.UpdateWorkFlowAndRelations(result, result.workflowItems, null, formItemToSave, formInstanceToSave);
                 }
 
                 if (result != null)
@@ -246,6 +415,7 @@ namespace formneo.workflow
             }
         }
 
+            
         // JSON verisini Workflow nesnesine dönüştüren metod
         private static Workflow ConvertJsonToWorkflow(string jsonData)
         {

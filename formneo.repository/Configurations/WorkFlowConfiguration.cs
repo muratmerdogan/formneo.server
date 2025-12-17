@@ -13,15 +13,13 @@ namespace formneo.repository.Configurations
     {
         public void Configure(EntityTypeBuilder<WorkflowHead> builder)
         {
-
-
-
-
-
-  
-
             builder.ToTable("WorkflowHead");
 
+            // Form ile ilişki
+            builder.HasOne(e => e.Form)
+                .WithMany()
+                .HasForeignKey(e => e.FormId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

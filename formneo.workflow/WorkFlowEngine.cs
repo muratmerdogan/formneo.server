@@ -88,6 +88,14 @@ public class NodeData
     /// FormTaskNode için açıklama/mesaj (alternatif alan adı)
     /// </summary>
     public string description { get; set; }
+    /// <summary>
+    /// FormNode ve FormTaskNode için formId (Guid string olarak)
+    /// </summary>
+    public string formId { get; set; }
+    /// <summary>
+    /// FormNode ve FormTaskNode için formName
+    /// </summary>
+    public string formName { get; set; }
 }
 
 public class stoptype
@@ -179,6 +187,11 @@ public class Workflow
 
 
         _ApiSendUser = apiSendUser;
+        // payloadJson'ı set et (FormData için)
+        if (!string.IsNullOrEmpty(payloadJson))
+        {
+            _payloadJson = payloadJson;
+        }
         // İş akışını başlatmak için ilk düğümü bulun
         WorkflowNode startNode;
         _workFlowHead = head;
@@ -565,11 +578,46 @@ public class Workflow
             Utils utils = new Utils();
             
             // FormTaskNode'un Data'sından form bilgilerini al
-            string formDesign = currentNode.Data?.Text ?? ""; // FormDesign JSON'u
-            string formId = currentNode.Data?.code ?? ""; // Form ID (Guid string olarak)
+            // FormTaskNode'da FormDesign yok, sadece formId var
+            // FormDesign Form tablosundan alınacak (Start metodunda async olarak)
+            string formDesign = ""; // FormTaskNode'da FormDesign yok, Form tablosundan alınacak
+            string formId = ""; // Form ID (Guid string olarak)
             string formUser = _ApiSendUser; // Formu dolduran kullanıcı
             string formUserNameSurname = utils.GetNameAndSurnameAsync(_ApiSendUser).ToString();
             string formDescription = currentNode.Data?.Name ?? ""; // Form açıklaması
+            
+            // FormTaskNode'un Data'sından formId'yi al
+            // Önce direkt property'den kontrol et, yoksa JSON'dan parse et
+            if (currentNode.Data != null)
+            {
+                // Önce direkt property'den formId'yi al
+                formId = currentNode.Data.formId 
+                    ?? currentNode.Data.code 
+                    ?? "";
+                
+                // Eğer hala boşsa, JSON'dan parse et (backward compatibility için)
+                if (string.IsNullOrEmpty(formId))
+                {
+                    try
+                    {
+                        var nodeDataJson = JsonConvert.SerializeObject(currentNode.Data);
+                        var nodeDataObj = JObject.Parse(nodeDataJson);
+                        
+                        // formId'yi al: formId (FormTaskNode'da bu şekilde tutuluyor) veya code (eski format)
+                        formId = nodeDataObj["formId"]?.ToString() 
+                            ?? nodeDataObj["FormId"]?.ToString() 
+                            ?? nodeDataObj["code"]?.ToString() 
+                            ?? "";
+                    }
+                    catch
+                    {
+                        // Parse hatası durumunda boş string kalır
+                    }
+                }
+                
+                // NOT: FormTaskNode'da FormDesign yok, sadece formId var
+                // FormDesign Form tablosundan alınacak (Start metodunda async olarak)
+            }
             
             // FormTaskNode'un Data'sından mesajı al (component'te gösterilecek)
             string formTaskMessage = "";

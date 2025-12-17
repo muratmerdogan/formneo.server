@@ -36,6 +36,10 @@ namespace formneo.repository
         public DbSet<Company> Companies { get; set; }
         public DbSet<Plant> Plant { get; set; }
         public DbSet<BudgetPeriod> BudgetPeriod { get; set; }
+        public DbSet<WorkflowItem> WorkflowItem { get; set; }
+        public DbSet<ApproveItems> ApproveItems { get; set; }
+        public DbSet<FormItems> FormItems { get; set; }
+        public DbSet<FormInstance> FormInstance { get; set; }
         public DbSet<WorkflowHead> WorkflowHead { get; set; }
         public DbSet<BudgetJobCodeRequest> BudgetJobCodeRequest { get; set; }
         public DbSet<BudgetNormCodeRequest> BudgetNormCodeRequest { get; set; }

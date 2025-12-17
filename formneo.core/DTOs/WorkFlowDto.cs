@@ -38,7 +38,16 @@
 
         public string? UserName { get; set; }
 
-        public string? Input { get; set; }
+        /// <summary>
+        /// Form üzerindeki butonun action kodu (örn: SAVE, APPROVE, REJECT)
+        /// Artık Input ile "yes/no" mantığı yok, buton bazlı sistem kullanılıyor
+        /// </summary>
+        public string? Action { get; set; }
+        
+        /// <summary>
+        /// Form verileri (JSON formatında) - payloadJson olarak kullanılır
+        /// </summary>
+        public string? FormData { get; set; }
 
         public string Note { get; set; }
         public string? NumberManDay { get; set; }

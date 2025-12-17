@@ -71,6 +71,9 @@ namespace formneo.service.Mapping
             CreateMap<WorkFlowDefination, WorkFlowDefinationDto>().ReverseMap();
             CreateMap<WorkFlowDefination, WorkFlowDefinationDto>().ReverseMap();
             CreateMap<ApproveItems, ApproveItemsDto>().ReverseMap();
+            CreateMap<FormItems, FormItemsDto>()
+                .ForMember(dest => dest.WorkFlowHead, opt => opt.MapFrom(src => src.WorkflowItem != null ? src.WorkflowItem.WorkflowHead : null))
+                .ReverseMap();
             CreateMap<WorkflowHead, WorkFlowHeadDto>().ReverseMap();
             CreateMap<Form, FormDataListDto>().ReverseMap();
             CreateMap<FormRuleEngineDto, FormRuleEngine>().ReverseMap();

@@ -23,5 +23,7 @@ namespace formneo.core
         public WorkflowStatus workFlowNodeStatus { get; set; }
 
         public virtual List<ApproveItemsDto>? approveItems { get; set; }
+
+        public virtual List<FormItemsDto>? formItems { get; set; }
     }
 }

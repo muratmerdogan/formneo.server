@@ -36,6 +36,21 @@ namespace formneo.core.Models
 
         public virtual List<WorkflowItem>? workflowItems { get; set; }
 
+        /// <summary>
+        /// WorkflowHead'e bağlı form instance'ı (son/güncel form verisi)
+        /// </summary>
+        public virtual FormInstance? FormInstance { get; set; }
+
+        /// <summary>
+        /// Ana form ID (tek ana form üzerinden ilerleme için)
+        /// </summary>
+        [ForeignKey("Form")]
+        public Guid? FormId { get; set; }
+
+        /// <summary>
+        /// Form ile ilişki
+        /// </summary>
+        public virtual Form? Form { get; set; }
 
         [ForeignKey("WorkFlowDefination")]
         public Guid WorkFlowDefinationId { get; set; }
