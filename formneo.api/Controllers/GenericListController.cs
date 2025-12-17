@@ -16,7 +16,7 @@ using formneo.core.GenericListDto;
 using formneo.core.Models.BudgetManagement;
 using formneo.core.Services;
 
-namespace vesa.api.Controllers
+namespace formneo.api.Controllers
 {
 
     public enum GenericList
