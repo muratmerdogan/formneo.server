@@ -8,17 +8,14 @@ using NLayer.Core.Services;
 using System.ComponentModel;
 using System.Net.Http.Headers;
 using System.Runtime.Caching;
-using vesa.api.Controllers.MyApplication.Services;
-using vesa.core.DTOs.Budget.PeriodUserDto;
-using vesa.core.DTOs.Budget.SF;
-using vesa.core.DTOs.Clients;
-using vesa.core.EnumExtensions;
-using vesa.core.Models.BudgetManagement;
-
-namespace vesa.api.Controllers
+using formneo.api.Controllers.MyApplication.Services;
+using formneo.core.DTOs.Budget.PeriodUserDto;
+using formneo.core.DTOs.Budget.SF;
+using formneo.core.DTOs.Clients;
+using formneo.core.EnumExtensions;
+using formneo.core.Models.BudgetManagement;
+namespace formneo.api.Controllers
 {
-
-
     public enum PickList
     {
         [Description("Regular Temporary")]
