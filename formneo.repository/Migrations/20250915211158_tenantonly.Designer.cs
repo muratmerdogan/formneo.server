@@ -493,7 +493,7 @@ namespace formneo.repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Cust_Ronesanskademe")
+                    b.Property<string>("Cust_formneokademe")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -754,10 +754,10 @@ namespace formneo.repository.Migrations
                     b.Property<DateTime?>("cust_plannedEndDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("cust_ronesansKademe")
+                    b.Property<string>("cust_formneoKademe")
                         .HasColumnType("text");
 
-                    b.Property<string>("cust_ronesansjoblevel")
+                    b.Property<string>("cust_formneojoblevel")
                         .HasColumnType("text");
 
                     b.Property<string>("cust_sub_division")
@@ -2719,7 +2719,7 @@ namespace formneo.repository.Migrations
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
                             CreatedDate = new DateTime(2025, 9, 15, 21, 11, 55, 793, DateTimeKind.Utc).AddTicks(8352),
-                            Name = "RonesansHolding"
+                            Name = "formneoHolding"
                         });
                 });
 
@@ -3751,7 +3751,7 @@ namespace formneo.repository.Migrations
                             Email = "info@formneo.com",
                             FeatureFlags = "{}",
                             IsActive = true,
-                            Name = "RonesansHolding",
+                            Name = "formneoHolding",
                             PhoneNumber = "5069112452",
                             Plan = 0,
                             Quotas = "{}",
@@ -4030,7 +4030,7 @@ namespace formneo.repository.Migrations
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             CreatedDate = new DateTime(2025, 9, 15, 21, 11, 55, 794, DateTimeKind.Utc).AddTicks(721),
-                            Name = "RonesansHoldingTurkey"
+                            Name = "formneoHoldingTurkey"
                         });
                 });
 

@@ -14,15 +14,7 @@ namespace formneo.repository.Seeds
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
 
-            //builder.HasData(
-            //    new Employee { Id = Guid.NewGuid(), Client = "00", Company = "01", Plant = "01", PersId = "14", Name = "Murat", Surname = "Merdoğan", Email = "murat.merdogan@formneo.com", City = "Eskişehir"  },
-            //    new Employee { Id = Guid.NewGuid(), Client = "00", Company = "01", Plant = "01", PersId = "24", Name = "Muhammed", Surname = "Kadan", Email = "murat.merdogan@formneo.com", City = "Eskişehir",  },
-            //    new Employee { Id = Guid.NewGuid(), Client = "00", Company = "01", Plant = "01", PersId = "43", Name = "Bolat", Surname = "Çiftçi", Email = "murat.merdogan@formneo.com", City = "Eskişehir" });
-
-
-            //builder.HasData(
-            //   new Departments { Guid = Guid.NewGuid().ToString(), Client = "00", Company = "01", Plant = "01", DepartmentId = "1",  DepartmentText = "Yönetim" });
-
+  
 
         }
     }

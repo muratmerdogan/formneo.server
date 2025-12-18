@@ -2719,7 +2719,7 @@ namespace formneo.repository.Migrations
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
                             CreatedDate = new DateTime(2025, 9, 14, 18, 23, 33, 406, DateTimeKind.Utc).AddTicks(1319),
-                            Name = "RonesansHolding"
+                            Name = "formneo"
                         });
                 });
 
@@ -3751,7 +3751,7 @@ namespace formneo.repository.Migrations
                             Email = "info@formneo.com",
                             FeatureFlags = "{}",
                             IsActive = true,
-                            Name = "RonesansHolding",
+                            Name = "formneo",
                             PhoneNumber = "5069112452",
                             Plan = 0,
                             Quotas = "{}",
@@ -4027,7 +4027,7 @@ namespace formneo.repository.Migrations
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             CreatedDate = new DateTime(2025, 9, 14, 18, 23, 33, 406, DateTimeKind.Utc).AddTicks(3067),
-                            Name = "RonesansHoldingTurkey"
+                            Name = "formneo"
                         });
                 });
 

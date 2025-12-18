@@ -20,7 +20,7 @@ namespace formneo.repository.Seeds
             string currentPlant = "0779dd43-6047-400d-968d-e6f1b0c3b286";
 
             builder.HasData(
-                new Plant { Id = new Guid(currentPlant), Name = "RonesansHoldingTurkey", CompanyId = new Guid(currentCompany) });
+                new Plant { Id = new Guid(currentPlant), Name = "formneo", CompanyId = new Guid(currentCompany) });
 
             //builder.HasData(
             //   new Departments { Guid = Guid.NewGuid().ToString(), Client = "00", Company = "01", Plant = "01", DepartmentId = "1",  DepartmentText = "Yönetim" });

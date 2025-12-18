@@ -22,9 +22,8 @@ namespace formneo.api.Controllers.utils
         {
             List<string> tolist = new List<string>();
             tolist.Add("murat.merdogan@formneo.com");
-            tolist.Add("kardelen.baltaci@formneo.com");
             tolist.Add("muratmerdogan@gmail.com");
-            tolist.Add("busraydemir.26@gmail.com");
+       
 
             return tolist;
         }

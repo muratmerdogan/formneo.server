@@ -4041,7 +4041,7 @@ namespace formneo.repository.Migrations
                             Id = new Guid("0779dd43-6047-400d-968d-e6f1b0c3b286"),
                             CompanyId = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             CreatedDate = new DateTime(2025, 9, 21, 17, 38, 2, 312, DateTimeKind.Utc).AddTicks(9440),
-                            Name = "RonesansHoldingTurkey"
+                            Name = "formneo"
                         });
                 });
 

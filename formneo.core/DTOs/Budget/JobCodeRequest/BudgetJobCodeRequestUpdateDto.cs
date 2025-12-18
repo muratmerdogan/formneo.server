@@ -90,7 +90,7 @@ namespace formneo.core.DTOs.Budget.JobCodeRequest
 
         public string Cust_Bolum { get; set; }
 
-        [Required(ErrorMessage = "Gelir Seviyesi- ronesanskademe bilgisi gereklidir")]
+        [Required(ErrorMessage = "Gelir Seviyesi- formneo bilgisi gereklidir")]
         public string Cust_Ronesanskademe { get; set; }
 
         [Required(ErrorMessage = "Hay Kademe bilgisi gereklidir")]

@@ -2395,7 +2395,7 @@ namespace formneo.repository.Migrations
                             Id = new Guid("1bf2fc2e-0e25-46a8-aa96-8f1480331b5b"),
                             ClientId = new Guid("77df6fbd-4160-4cea-8f24-96564b54e5ac"),
                             CreatedDate = new DateTime(2025, 10, 5, 11, 54, 16, 137, DateTimeKind.Utc).AddTicks(1440),
-                            Name = "RonesansHolding"
+                            Name = "formneo"
                         });
                 });
 

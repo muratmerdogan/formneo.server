@@ -144,8 +144,8 @@ namespace formneo.api.Controllers
                                 Title = user.Positions?.Name,
                                 Email = user.Email,
                                 Photo = user.photo,
-                                ClassName = user.Email == "muhammed.kadan@formneo.com" ? "ceo-node" :
-                                           (user.Email == "veysel.karani@formneo.com" || user.Email == "bolat.ciftci@formneo.com") ? "executive-node" :
+                                ClassName = user.Email == "murat.merdogan@formneo.com" ? "ceo-node" :
+                                           (user.Email == "murat.merdogan@formneo.com" || user.Email == "murat.merdogan@formneo.com") ? "executive-node" :
                                            "employee-node",
                                 Children = new List<OrganizationDto>()
                             };

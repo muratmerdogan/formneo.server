@@ -329,7 +329,6 @@ namespace formneo.api.Controllers
         private async Task SendMailFormUpdate(string userName, string formName, string valuesJson, string formDesign)
         {
             List<string> tolist = new List<string>();
-            tolist.Add("busra.aydemir@formneo.com");
             tolist.Add("murat.merdogan@formneo.com");
 
             JObject dataObj = JObject.Parse(valuesJson);
