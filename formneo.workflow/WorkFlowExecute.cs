@@ -60,65 +60,30 @@ namespace formneo.workflow
             //Daha önce var devam et
             if (!String.IsNullOrEmpty(dto.WorkFlowId))
             {
-
-
-                /// Onay Kaydı Bul
-                /// 
-
-                var ApproverItem = await _parameters._approverItemsService.GetByIdStringGuidAsync(new Guid(dto.ApproverItemId));
-
-                // Buton bazlı sistem: Action'a göre durum belirlenir (APPROVE, REJECT, vb.)
-                // Artık Input ile "yes/no" mantığı yok
-                if (!string.IsNullOrEmpty(dto.Action))
-                {
-                    string actionUpper = dto.Action.ToUpper();
-                    if (actionUpper == "APPROVE" || actionUpper == "ONAYLA" || actionUpper == "YES")
-                    {
-                        ApproverItem.ApproverStatus = ApproverStatus.Approve;
-                    }
-                    else if (actionUpper == "REJECT" || actionUpper == "REDDET" || actionUpper == "NO")
-                    {
-                        ApproverItem.ApproverStatus = ApproverStatus.Reject;
-                    }
-                }
-
-                if (dto.Note != null)
-                {
-                    ApproverItem.ApprovedUser_RuntimeNote = dto.Note;
-                }
-                if (dto.NumberManDay != null)
-                {
-                    ApproverItem.ApprovedUser_RuntimeNumberManDay = dto.NumberManDay;
-                }
-
-                Utils utils = new Utils();
-
-                var approverUser = utils.GetNameAndSurnameAsync(dto.UserName);
-                ApproverItem.ApprovedUser_RuntimeNameSurname = approverUser;
-
-                ApproverItem.ApprovedUser_Runtime = dto.UserName;
-
-
                 Guid g = new Guid(dto.WorkFlowId);
                 head = await parameters.workFlowService.GetWorkFlowWitId(g);
                 workflow._workFlowItems = head.workflowItems;
                 var startNode = head.workflowItems.Where(e => e.Id == new Guid(dto.NodeId)).FirstOrDefault();
 
+                if (startNode == null)
+                {
+                    throw new Exception($"WorkflowItem with id '{dto.NodeId}' not found");
+                }
+
                 workflow._HeadId = new Guid(dto.WorkFlowId);
 
                 // Continue metoduna payloadJson'ı da geç (FormData için)
                 // Artık Input yerine Action kullanılıyor (buton bazlı sistem)
+                // Start mantığı ile aynı - var olan forma devam ediyor
                 string actionToPass = dto.Action ?? "";
                 workflow.Continue(startNode, startNode.NodeId, dto.UserName, actionToPass, head, null, payloadJson);
 
-                // FormInstance güncellemesi sadece FormTaskNode'dan geliyorsa yapılır
-                // ApproverNode (UserTask)'dan geliyorsa FormInstance güncellenmez
+                Utils utils = new Utils();
                 FormInstance formInstanceToSave = null;
                 FormItems formItemToSave = null;
                 
-                // Hangi node'dan geldiğini kontrol et
-                // Sadece FormTaskNode'dan geliyorsa FormInstance işlemleri yapılır
-                // ApproverNode (UserTask)'dan geliyorsa FormInstance güncellenmez
+                // Sadece FormTaskNode için FormInstance ve FormItem işlemleri yapılır
+                // ApproverNode (UserTask) için sadece WorkflowItem durumu yönetilir (ApproveItem artık kullanılmıyor)
                 if (startNode.NodeType == "formTaskNode")
                 {
                     // FormItems'ı bul ve kaydet (sadece FormTaskNode için)
@@ -208,9 +173,11 @@ namespace formneo.workflow
                     }
                     }
                 }
+                // ApproverNode (UserTask) için sadece WorkflowItem durumu yönetilir (ApproveItem artık kullanılmıyor)
 
                 // Continue metodunda head.workflowItems'i gönder (FormItems'ları kaydetmek için)
-                var result = await parameters.workFlowService.UpdateWorkFlowAndRelations(head, head.workflowItems, ApproverItem, formItemToSave, formInstanceToSave);
+                // Sadece FormTaskNode için FormInstance ve FormItem kaydedilir
+                var result = await parameters.workFlowService.UpdateWorkFlowAndRelations(head, head.workflowItems, null, formItemToSave, formInstanceToSave);
 
                 if (result != null)
                 {
@@ -222,35 +189,8 @@ namespace formneo.workflow
                         SendMail(MailStatus.OnaySureciTamamlandı, head.CreateUser, "", getUniqApproveId);
                     }
 
-                    foreach (var item in head.workflowItems)
-                    {
-
-
-
-                        if (item.approveItems != null)
-                        {
-                            foreach (var mail in item.approveItems!)
-                            {
-
-
-
-
-                                //string getUniqApproveId = Utils.ShortenGuid(head.Id);
-
-
-                                if (mail.ApproverStatus == ApproverStatus.Pending)
-                                {
-                                    SendMail(MailStatus.OnayınızaSunuldu, mail.ApproveUser, mail.ApproveUserNameSurname, head.UniqNumber.ToString(), head.WorkFlowInfo);
-                                }
-                                if (mail.ApproverStatus == ApproverStatus.Reject)
-                                {
-
-
-                                    SendMail(MailStatus.Reddedildi, mail.ApprovedUser_Runtime, mail.ApproveUserNameSurname, head.UniqNumber.ToString(), head.WorkFlowInfo);
-                                }
-                            }
-                        }
-                    }
+                    // ApproveItem artık kullanılmıyor, mail gönderme işlemi kaldırıldı
+                    // Mail gönderme işlemleri gerekirse WorkflowItem durumuna göre yapılabilir
                 }
                 return null;
             }
@@ -379,19 +319,8 @@ namespace formneo.workflow
 
                 if (result != null)
                 {
-                    foreach (var item in head.workflowItems)
-                    {
-                        foreach (var mail in item.approveItems!)
-                        {
-                            if (mail.ApproverStatus == ApproverStatus.Pending)
-                            {
-
-
-                                string getUniqApproveId = Utils.ShortenGuid(head.Id);
-                                SendMail(MailStatus.OnayınızaSunuldu, mail.ApproveUser, mail.ApproveUserNameSurname, head.UniqNumber.ToString(), head.WorkFlowInfo);
-                            }
-                        }
-                    }
+                    // ApproveItem artık kullanılmıyor, mail gönderme işlemi kaldırıldı
+                    // Mail gönderme işlemleri gerekirse WorkflowItem durumuna göre yapılabilir
                     
                     // Eğer workflow execution sırasında alertNode'a gelip pending durumunda kaldıysa
                     // (ama error/warning değilse, sadece info ise)
@@ -411,7 +340,7 @@ namespace formneo.workflow
                     }
                 }
 
-                return result;
+                    return result;
             }
         }
 

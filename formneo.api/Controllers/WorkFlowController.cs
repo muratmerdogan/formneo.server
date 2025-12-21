@@ -67,45 +67,81 @@ namespace formneo.api.Controllers
         [HttpPost]
         public async Task<ActionResult<WorkFlowHeadDtoResultStartOrContinue>> Contiune(WorkFlowContiuneApiDto workFlowApiDto)
         {
+            try
+            {
+                WorkFlowExecute execute = new WorkFlowExecute();
+                WorkFlowDto workFlowDto = new WorkFlowDto();
+                WorkFlowParameters parameters = new WorkFlowParameters();
+                parameters.workFlowService = _service;
+                parameters.workFlowItemService = _workFlowItemservice;
+                parameters._workFlowDefination = _workFlowDefinationDto;
+                parameters._approverItemsService = _approveItemsService;
+                parameters._formItemsService = _formItemsService;
+                parameters._formInstanceService = _formInstanceService;
+                parameters._formService = _formService;
+                parameters._ticketService = _ticketService;
 
-            WorkFlowExecute execute = new WorkFlowExecute();
-            WorkFlowDto workFlowDto = new WorkFlowDto();
-            WorkFlowParameters parameters = new WorkFlowParameters();
-            parameters.workFlowService = _service;
-            parameters.workFlowItemService = _workFlowItemservice;
-            parameters._workFlowDefination = _workFlowDefinationDto;
-            parameters._approverItemsService = _approveItemsService;
-            parameters._formItemsService = _formItemsService;
-            parameters._formInstanceService = _formInstanceService;
-            parameters._formService = _formService;
-            parameters._ticketService = _ticketService;
+                workFlowApiDto.UserName = User.Identity.Name;
+
+                // WorkflowItemId kontrolü
+                if (string.IsNullOrEmpty(workFlowApiDto.workFlowItemId))
+                {
+                    return BadRequest("workFlowItemId is required");
+                }
+
+                // WorkflowItem'ı bul
+                Guid workflowItemId;
+                if (!Guid.TryParse(workFlowApiDto.workFlowItemId, out workflowItemId))
+                {
+                    return BadRequest($"Invalid workFlowItemId format: {workFlowApiDto.workFlowItemId}");
+                }
+
+                var workFlowItem = await _workFlowItemservice.GetByIdStringGuidAsync(workflowItemId);
+                
+                if (workFlowItem == null)
+                {
+                    return NotFound($"WorkflowItem with id '{workflowItemId}' not found");
+                }
+
+                // WorkflowHead'i bul
+                var workFlowHeadResponse = await _workFlowHeadService.GetByIdGuidAsync(workFlowItem.WorkflowHeadId);
+                
+                if (workFlowHeadResponse == null || workFlowHeadResponse.Data == null)
+                {
+                    return NotFound($"WorkflowHead with id '{workFlowItem.WorkflowHeadId}' not found");
+                }
+
+                var workFlowHead = workFlowHeadResponse.Data;
 
 
-            workFlowApiDto.UserName = User.Identity.Name;
+                workFlowDto.WorkFlowDefinationId = workFlowHead.WorkFlowDefinationId;
+                workFlowDto.NodeId = workFlowItem.Id.ToString();
+                workFlowDto.WorkFlowId = workFlowItem.WorkflowHeadId.ToString();
+                // Artık ApproveItem DTO'dan gelmiyor, node tipine göre node'dan bulunacak
+                // Start mantığı ile aynı - var olan forma devam ediyor
+                workFlowDto.Action = workFlowApiDto.Action;
+                workFlowDto.UserName = workFlowApiDto.UserName;
+                workFlowDto.Note = workFlowApiDto.Note;
+ 
 
-            var workFlowItem = await _workFlowItemservice.GetByIdStringGuidAsync(new Guid(workFlowApiDto.workFlowItemId));
-            var workFlowHead = await _workFlowHeadService.GetByIdGuidAsync(new Guid(workFlowItem.WorkflowHeadId.ToString()));
+                // FormData'yı payloadJson olarak gönder (Continue metodunda kullanılacak)
+                var payloadJson = workFlowApiDto.FormData;
 
+                var result = await execute.StartAsync(workFlowDto, parameters, payloadJson);
+                
+                // Generic response builder kullan
+                var mapResult = _responseBuilder.BuildResponse(result);
 
-            workFlowDto.WorkFlowDefinationId = workFlowHead.Data.WorkFlowDefinationId;
-            workFlowDto.NodeId = workFlowItem.Id.ToString();
-            workFlowDto.WorkFlowId = workFlowItem.WorkflowHeadId.ToString(); ;
-            workFlowDto.ApproverItemId = workFlowApiDto.ApproveItem;
-            // Artık Input yerine Action kullanılıyor (buton bazlı sistem)
-            workFlowDto.Action = workFlowApiDto.Action;
-            workFlowDto.UserName = workFlowApiDto.UserName;
-            workFlowDto.Note = workFlowApiDto.Note;
-            workFlowDto.NumberManDay = workFlowApiDto.NumberManDay;
-
-            // FormData'yı payloadJson olarak gönder (Continue metodunda kullanılacak)
-            var payloadJson = workFlowApiDto.FormData;
-
-            var result = await execute.StartAsync(workFlowDto, parameters, payloadJson);
-            
-            // Generic response builder kullan
-            var mapResult = _responseBuilder.BuildResponse(result);
-
-            return mapResult;
+                return mapResult;
+            }
+            catch (formneo.service.Exceptions.NotFoundExcepiton ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error continuing workflow: {ex.Message}");
+            }
         }
 
         [HttpPost]
@@ -631,7 +667,7 @@ namespace formneo.api.Controllers
             return Ok(taskFormDto);
         }
 
-        private void Validations()
+        private void Validations()      
         {
 
 
