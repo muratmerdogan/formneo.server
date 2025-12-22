@@ -477,3 +477,5 @@ startNode → formNode → scriptNode → [yes/no] → approverNode → stopNode
 
 Formneo Workflow sistemi, esnek ve güçlü bir iş süreci yönetim sistemi sunar. Node tabanlı yapısı sayesinde karmaşık iş akışları kolayca modellenebilir ve yönetilebilir. FormTask ve UserTask ayrımı sayesinde farklı görev tipleri net bir şekilde yönetilir.
 
+
+

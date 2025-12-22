@@ -182,6 +182,11 @@ namespace formneo.core.DTOs
         /// </summary>
         public FormItemStatus? FormItemStatus { get; set; }
 
+        /// <summary>
+        /// FormTask için: FieldScript (workflow definition'dan alınan fieldScript)
+        /// </summary>
+        public string? FieldScript { get; set; }
+
         // ========== UserTask (approverNode) için bilgiler ==========
         
         /// <summary>

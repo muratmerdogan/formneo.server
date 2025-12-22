@@ -16,7 +16,10 @@
 
         public string? Input { get; set; }
 
-        public string ApproverItemId { get; set; }
+        /// <summary>
+        /// ApproveItem ID (sadece approverNode için gerekli, formTaskNode için null olabilir)
+        /// </summary>
+        public string? ApproverItemId { get; set; }
 
         public string WorkFlowInfo { get; set; }
 
@@ -31,6 +34,11 @@
     }
     public class WorkFlowContiuneApiDto
     {
+        /// <summary>
+        /// ApproveItem ID (sadece approverNode için gerekli, formTaskNode için null olabilir)
+        /// </summary>
+        public string? ApproveItem { get; set; }
+
         public string workFlowItemId { get; set; }
 
         public string? UserName { get; set; }
@@ -38,7 +46,6 @@
         /// <summary>
         /// Form üzerindeki butonun action kodu (örn: SAVE, APPROVE, REJECT)
         /// Artık Input ile "yes/no" mantığı yok, buton bazlı sistem kullanılıyor
-        /// Start mantığı ile aynı - var olan forma devam ediyor
         /// </summary>
         public string? Action { get; set; }
         
@@ -48,6 +55,7 @@
         public string? FormData { get; set; }
 
         public string Note { get; set; }
+        public string? NumberManDay { get; set; }
 
     }
 

@@ -41,7 +41,7 @@ public class WorkflowNode
     {
 
         WorkflowItem item = new WorkflowItem();
-        // ApproveItem artık kullanılmıyor, sadece FormItems kullanılıyor
+        item.approveItems = new List<ApproveItems>();
         item.formItems = new List<FormItems>();
 
         item.WorkflowHeadId = HeadId;
@@ -409,27 +409,41 @@ public class Workflow
 
     private  string ExecuteApprove(WorkflowNode currentNode,WorkflowItem workFlowItem ,string parameter)
     {
-        // ApproverNode işleme mantığı:
-        // Parameter boşsa → Pending yap ve durdur
-        // Parameter varsa (action geldiyse) → Completed yap ve devam et
-        // ApproveItem artık kullanılmıyor, sadece WorkflowItem durumu yönetiliyor
-        
+        //too
+
         if (parameter == "")
         {
-            // ApproverNode'a ilk gelindiğinde Pending olarak işaretle
             _workFlowItems.Add(workFlowItem);
+
+            Utils utils = new Utils();
+            string approverUserNameSurname = utils.GetNameAndSurnameAsync(currentNode.Data!.code).ToString();
+
             workFlowItem.workFlowNodeStatus = WorkflowStatus.Pending;
-            return ""; // Kullanıcı onay/red yapana kadar durdur
-        }
-        
-        // Parameter varsa (action geldiyse): Completed yap ve devam et
-        if (!string.IsNullOrEmpty(parameter))
-        {
-            workFlowItem.workFlowNodeStatus = WorkflowStatus.Completed;
+            if (currentNode.Data.isManager == true)
+            {
+                var x = _ApiSendUser;
+
+                PositionCreateRunner runner = new PositionCreateRunner();
+                string managerId = runner.GetManagerId(_ApiSendUser).Result.ToString();
+                var managerDisplayName =  runner.GetManagerDisplayName(managerId).Result.ToString();
+                workFlowItem.approveItems.Add(new ApproveItems { ApproveUser = managerId, WorkFlowDescription = "", ApproveUserNameSurname = managerDisplayName });
+                return "";
+            }
+            else
+            {
+                workFlowItem.approveItems.Add(new ApproveItems { ApproveUser = currentNode.Data!.code, WorkFlowDescription = "", ApproveUserNameSurname = approverUserNameSurname });
+                return "";
+            }
+            return "";
         }
         
         // Düğüme bağlı çıkış bağlantılarını bulun
-        var nextNode = FindLinkForPort(currentNode.Id, parameter);
+
+        if (parameter == "yes" || parameter == "no")
+        {
+            workFlowItem.workFlowNodeStatus = WorkflowStatus.Completed;
+        }
+        var nextNode=  FindLinkForPort(currentNode.Id, parameter);
         return nextNode;
     }
     private string ExecuteStopNode(WorkflowNode currentNode, WorkflowItem workFlowItem, string parameter)
