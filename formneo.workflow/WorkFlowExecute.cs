@@ -26,8 +26,7 @@ namespace formneo.workflow
             _parameters = parameters;
 
 
-
-
+            
             List<WorkflowItem> workFlowItems = new List<WorkflowItem>();
 
             WorkflowHead head = new WorkflowHead();
@@ -41,9 +40,7 @@ namespace formneo.workflow
 
             if (workFlowDefination == null)
             {
-
-
-
+                throw new Exception($"WorkflowDefinition with id '{dto.WorkFlowDefinationId}' not found");
             }
             Workflow workflow = JsonConvert.DeserializeObject<Workflow>(workFlowDefination!.Data.Defination!, settings);
 
@@ -175,6 +172,23 @@ namespace formneo.workflow
                 }
                 // ApproverNode (UserTask) için sadece WorkflowItem durumu yönetilir (ApproveItem artık kullanılmıyor)
 
+                // AlertNode kontrolü - Continue işleminden sonra yeni bir alertNode'a gelinirse rollback yapılacak
+                // AlertNode sadece error ve warning için kullanılır, success ve info mesajları normal component'te gösterilir
+                // AlertNode'a gelince işlem durdurulur ve rollback yapılır
+                var pendingAlertNode = head.workflowItems.FirstOrDefault(item => 
+                    item.NodeType == "alertNode" && item.workFlowNodeStatus == WorkflowStatus.Pending);
+                
+                // Eğer alertNode'a gelindi ise, rollback yap (işlemi geri al)
+                if (pendingAlertNode != null)
+                {
+                    // Rollback: WorkflowHead ve WorkflowItem'ları kaydetme
+                    // Alert bilgilerini response'da döndürmek için head'i işaretle
+                    // Id'yi Empty yap = rollback flag (response builder bunu algılayacak)
+                    head.Id = Guid.Empty; // Rollback flag
+                    head.workFlowStatus = WorkflowStatus.Pending;
+                    return head; // Alert bilgileriyle birlikte döndür, ama veritabanına kaydetme
+                }
+
                 // Continue metodunda head.workflowItems'i gönder (FormItems'ları kaydetmek için)
                 // Sadece FormTaskNode için FormInstance ve FormItem kaydedilir
                 var result = await parameters.workFlowService.UpdateWorkFlowAndRelations(head, head.workflowItems, null, formItemToSave, formInstanceToSave);
@@ -231,7 +245,7 @@ namespace formneo.workflow
                 // AlertNode kontrolü - AlertNode'a gelirse rollback yapılacak
                 // AlertNode sadece error ve warning için kullanılır, success ve info mesajları normal component'te gösterilir
                 // AlertNode'a gelince işlem durdurulur ve rollback yapılır
-                var pendingAlertNode = head.workflowItems.FirstOrDefault(item => 
+                    var pendingAlertNode = head.workflowItems.FirstOrDefault(item => 
                     item.NodeType == "alertNode" && item.workFlowNodeStatus == WorkflowStatus.Pending);
                 
                 // Eğer alertNode'a gelindi ise, rollback yap (işlemi geri al)
