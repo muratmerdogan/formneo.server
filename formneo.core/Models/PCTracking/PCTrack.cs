@@ -5,7 +5,7 @@ namespace formneo.core.Models.PCTracking
     public class PCTrack : BaseEntity
     {
         public string? PCname { get; set; }
-        public DateTime? ProcessTime { get; set; }
+        public DateTime? ProWorkFlowDefinationcessTime { get; set; }
         public ProcessTypes? ProcessType { get; set; }
         public LoginType? LoginType { get; set; }
         public string? LoginProcessName { get; set; }

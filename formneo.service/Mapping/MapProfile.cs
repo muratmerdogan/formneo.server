@@ -68,8 +68,10 @@ namespace formneo.service.Mapping
 
             CreateMap<UserApp, CreateUserDto>().ReverseMap();
             CreateMap<UserApp, UpdateUserDto>().ReverseMap();
-            CreateMap<WorkFlowDefination, WorkFlowDefinationDto>().ReverseMap();
-            CreateMap<WorkFlowDefination, WorkFlowDefinationDto>().ReverseMap();
+            // WorkFlowDefinationDto: Entity -> DTO'da Defination exclude edilir (performans için)
+            // DTO -> Entity mapping'i kullanılmıyor (Save/Update için InsertDto/UpdateDto kullanılıyor)
+            CreateMap<WorkFlowDefination, WorkFlowDefinationDto>()
+                .ForMember(dest => dest.Defination, opt => opt.Ignore());
             CreateMap<ApproveItems, ApproveItemsDto>().ReverseMap();
             CreateMap<FormItems, FormItemsDto>()
                 .ForMember(dest => dest.WorkFlowHead, opt => opt.MapFrom(src => src.WorkflowItem != null ? src.WorkflowItem.WorkflowHead : null))
@@ -164,7 +166,9 @@ namespace formneo.service.Mapping
             CreateMap<WorkFlowItemDtoWithApproveItems, WorkflowItem>().ReverseMap();
 
 
+            CreateMap<WorkFlowDefination, WorkFlowDefinationListDto>();
             CreateMap<WorkFlowDefinationListDto, WorkFlowDefination>().ReverseMap();
+            CreateMap<WorkFlowDefinationUpdateDto, WorkFlowDefination>().ReverseMap();
             CreateMap<WorkFlowDefinationInsertDto, WorkFlowDefination>().ReverseMap();
             CreateMap<WorkFlowDefinationUpdateDto, WorkFlowDefination>().ReverseMap();
 

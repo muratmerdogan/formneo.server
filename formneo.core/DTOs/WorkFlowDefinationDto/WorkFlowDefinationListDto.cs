@@ -14,6 +14,19 @@ namespace formneo.core.DTOs
 
         public Guid Id { get; set; }
         public string? WorkflowName { get; set; }
+        public Boolean IsActive { get; set; }
+
+        public int Revision { get; set; }
+
+
+    }
+    
+    public class WorkFlowDefinationDetailDto
+    {
+
+
+        public Guid Id { get; set; }
+        public string? WorkflowName { get; set; }
         public string Defination { get; set; }
 
         public Boolean IsActive { get; set; }
