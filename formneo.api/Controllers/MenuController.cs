@@ -204,22 +204,24 @@ namespace formneo.api.Controllers
         public async Task<List<MenuListDto>> AllListData()
         {
             var isGlobalAdmin = await IsCurrentUserGlobalAdminAsync();
-            var menus = _menuService.Where(e => e.IsDelete == false).Result.Data.ToList();
-
+            
             // Global moddaysa ve kullanıcı global admin ise tüm listeyi döndür
             if (isGlobalAdmin && (_tenantContext?.CurrentTenantId == null || _tenantContext.CurrentTenantId == Guid.Empty))
             {
-
-                var filtered = menus.Where(r => r.IsTenantOnly == false).ToList();
-                return filtered;
-
+                // Sadece global menüleri çek (tenant only olmayanlar)
+                var menusResponse = await _menuService.Where(e => e.IsDelete == false && e.IsTenantOnly == false);
+                var menus = menusResponse.Data.ToList();
+                // Gereksiz alanları temizle
+                return CleanMenuTree(menus);
             }
 
+            // Yetkili menüleri al (GetAuthByUser zaten cache'li ve optimize edilmiş)
             var data = await GetAuthByUser();
             var authorizedMenuIds = new HashSet<Guid>((data ?? new List<Menu>()).Select(d => d.Id));
             
-            // Yetkili menüleri al (Menu ID bazlı)
-            var authorizedMenus = menus.Where(m => authorizedMenuIds.Contains(m.Id)).ToList();
+            // Sadece yetkili menüleri çek (gereksiz veri çekimini önle)
+            var authorizedMenusResponse = await _menuService.Where(e => e.IsDelete == false && authorizedMenuIds.Contains(e.Id));
+            var authorizedMenus = authorizedMenusResponse.Data.ToList();
             
             // Parent menü kontrolü: Eğer bir alt menüye yetki varsa, parent menüsünü de ekle
             var parentMenuIds = new HashSet<Guid>();
@@ -232,8 +234,14 @@ namespace formneo.api.Controllers
             }
             
             // Parent menüleri de listeye ekle (eğer zaten listede yoksa)
-            var parentMenus = menus.Where(m => parentMenuIds.Contains(m.Id) && !authorizedMenus.Any(am => am.Id == m.Id)).ToList();
-            authorizedMenus.AddRange(parentMenus);
+            // Sadece eksik parent menüleri çek
+            var missingParentIds = parentMenuIds.Where(id => !authorizedMenus.Any(am => am.Id == id)).ToList();
+            if (missingParentIds.Count > 0)
+            {
+                var parentMenusResponse = await _menuService.Where(m => m.IsDelete == false && missingParentIds.Contains(m.Id));
+                var parentMenus = parentMenusResponse.Data.ToList();
+                authorizedMenus.AddRange(parentMenus);
+            }
 
             // Kullanıcının form rollerine göre form menülerini ekle ve her zaman üst "Formlar" menüsünü dahil et
             var tenantId = _tenantContext?.CurrentTenantId;
@@ -282,7 +290,154 @@ namespace formneo.api.Controllers
 
             // Ağaç yapısına dönüştür (kökler + SubMenus)
             var tree = BuildMenuTree(authorizedMenus);
-            return tree;
+            
+            // Gereksiz alanları temizle (performans için)
+            return CleanMenuTree(tree);
+        }
+        
+        // Gereksiz alanları temizleyen helper metod (sadece CreatedAt ve UpdatedAt exclude edilir)
+        private List<MenuListDto> CleanMenuTree(List<MenuListDto> menus)
+        {
+            return menus.Select(m => new MenuListDto
+            {
+                Id = m.Id,
+                MenuCode = m.MenuCode,
+                ParentMenuId = m.ParentMenuId,
+                Name = m.Name,
+                Route = m.Route,
+                Href = m.Href,
+                Icon = m.Icon,
+                Order = m.Order,
+                IsActive = m.IsActive,
+                ShowMenu = m.ShowMenu,
+                IsTenantOnly = m.IsTenantOnly,
+                IsGlobalOnly = m.IsGlobalOnly,
+                Description = m.Description,
+                SubMenus = m.SubMenus != null && m.SubMenus.Any() ? CleanMenuTree(m.SubMenus.ToList()) : null,
+                // Exclude edilen alanlar: CreatedAt, UpdatedAt
+            }).ToList();
+        }
+
+        /// <summary>
+        /// Sadece ana menüleri döndürür (root menus, ParentMenuId == null olanlar)
+        /// </summary>
+        [HttpGet("RootMenus")]
+        public async Task<List<MenuListDto>> GetRootMenus()
+        {
+            var isGlobalAdmin = await IsCurrentUserGlobalAdminAsync();
+            
+            // Global moddaysa ve kullanıcı global admin ise
+            if (isGlobalAdmin && (_tenantContext?.CurrentTenantId == null || _tenantContext.CurrentTenantId == Guid.Empty))
+            {
+                // Sadece global root menüleri çek
+                var menusResponse = await _menuService.Where(e => e.IsDelete == false && e.IsTenantOnly == false && e.ParentMenuId == null);
+                var menus = menusResponse.Data.ToList();
+                return CleanMenuTree(menus);
+            }
+
+            // Yetkili menüleri al
+            var data = await GetAuthByUser();
+            var authorizedMenuIds = new HashSet<Guid>((data ?? new List<Menu>()).Select(d => d.Id));
+            
+            // Sadece yetkili root menüleri çek
+            var rootMenusResponse = await _menuService.Where(e => e.IsDelete == false && e.ParentMenuId == null && authorizedMenuIds.Contains(e.Id));
+            var rootMenus = rootMenusResponse.Data.ToList();
+
+            // Kullanıcının form rollerine göre form menülerini ekle
+            var tenantId = _tenantContext?.CurrentTenantId;
+            if (tenantId.HasValue && tenantId.Value != Guid.Empty)
+            {
+                var formMenus = await GetAuthorizedFormMenusForCurrentUserAsync();
+                var formRootMenus = formMenus.Where(fm => fm.ParentMenuId == null).ToList();
+                if (formRootMenus.Count > 0)
+                {
+                    var existingIds = new HashSet<Guid>(rootMenus.Select(x => x.Id));
+                    foreach (var fm in formRootMenus)
+                    {
+                        if (!existingIds.Contains(fm.Id))
+                        {
+                            rootMenus.Add(fm);
+                            existingIds.Add(fm.Id);
+                        }
+                    }
+                }
+            }
+
+            // Tekilleştir ve sırala
+            rootMenus = rootMenus
+                .GroupBy(m => m.Id)
+                .Select(g => g.First())
+                .OrderBy(m => m.Order)
+                .ToList();
+
+            return CleanMenuTree(rootMenus);
+        }
+
+        /// <summary>
+        /// Belirli bir menü ID'sine göre o menünün submenülerini döndürür
+        /// </summary>
+        [HttpGet("SubMenus/{menuId}")]
+        public async Task<List<MenuListDto>> GetSubMenus(Guid menuId)
+        {
+            var isGlobalAdmin = await IsCurrentUserGlobalAdminAsync();
+            
+            // Yetkili menüleri al
+            var data = await GetAuthByUser();
+            var authorizedMenuIds = new HashSet<Guid>((data ?? new List<Menu>()).Select(d => d.Id));
+            
+            // Belirtilen menü ID'sine sahip menüyü kontrol et (yetkili olmalı)
+            var menuResponse = await _menuService.Where(e => e.Id == menuId && e.IsDelete == false);
+            var menu = menuResponse.Data.FirstOrDefault();
+            
+            if (menu == null)
+            {
+                return new List<MenuListDto>();
+            }
+
+            // Global admin değilse, menüye yetkisi olup olmadığını kontrol et
+            if (!isGlobalAdmin && !authorizedMenuIds.Contains(menuId))
+            {
+                return new List<MenuListDto>();
+            }
+
+            // Bu menünün submenülerini çek
+            var subMenusResponse = await _menuService.Where(e => e.IsDelete == false && e.ParentMenuId == menuId);
+            var subMenus = subMenusResponse.Data.ToList();
+
+            // Global admin değilse, sadece yetkili submenüleri filtrele
+            if (!isGlobalAdmin)
+            {
+                subMenus = subMenus.Where(m => authorizedMenuIds.Contains(m.Id)).ToList();
+            }
+
+            // Kullanıcının form rollerine göre form menülerini ekle (eğer parent menu FORMS_GENERIC_ROOT ise)
+            var tenantId = _tenantContext?.CurrentTenantId;
+            if (tenantId.HasValue && tenantId.Value != Guid.Empty && menu.MenuCode == "FORMS_GENERIC_ROOT")
+            {
+                var formMenus = await GetAuthorizedFormMenusForCurrentUserAsync();
+                var formSubMenus = formMenus.Where(fm => fm.ParentMenuId == menuId).ToList();
+                if (formSubMenus.Count > 0)
+                {
+                    var existingIds = new HashSet<Guid>(subMenus.Select(x => x.Id));
+                    foreach (var fm in formSubMenus)
+                    {
+                        if (!existingIds.Contains(fm.Id))
+                        {
+                            subMenus.Add(fm);
+                            existingIds.Add(fm.Id);
+                        }
+                    }
+                }
+            }
+
+            // Tekilleştir ve sırala
+            subMenus = subMenus
+                .GroupBy(m => m.Id)
+                .Select(g => g.First())
+                .OrderBy(m => m.Order)
+                .ToList();
+
+            return CleanMenuTree(subMenus);
         }
 
         // GET: api/Menu/all-without-auth
