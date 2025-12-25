@@ -320,6 +320,7 @@ namespace formneo.api.Controllers
 
         /// <summary>
         /// Sadece ana menüleri döndürür (root menus, ParentMenuId == null olanlar)
+        /// AllListData ile aynı yetki kontrolünü kullanır, sadece root menüleri döndürür
         /// </summary>
         [HttpGet("RootMenus")]
         public async Task<List<MenuListDto>> GetRootMenus()
@@ -332,45 +333,122 @@ namespace formneo.api.Controllers
                 // Sadece global root menüleri çek
                 var menusResponse = await _menuService.Where(e => e.IsDelete == false && e.IsTenantOnly == false && e.ParentMenuId == null);
                 var menus = menusResponse.Data.ToList();
-                return CleanMenuTree(menus);
+                // RootMenus için SubMenus'ları kaldır
+                return menus.Select(m => new MenuListDto
+                {
+                    Id = m.Id,
+                    MenuCode = m.MenuCode,
+                    ParentMenuId = m.ParentMenuId,
+                    Name = m.Name,
+                    Route = m.Route,
+                    Href = m.Href,
+                    Icon = m.Icon,
+                    Order = m.Order,
+                    IsActive = m.IsActive,
+                    ShowMenu = m.ShowMenu,
+                    IsTenantOnly = m.IsTenantOnly,
+                    IsGlobalOnly = m.IsGlobalOnly,
+                    Description = m.Description,
+                    SubMenus = null // RootMenus için SubMenus döndürülmez
+                }).ToList();
             }
 
-            // Yetkili menüleri al
+            // Yetkili menüleri al (AllListData ile aynı mantık)
             var data = await GetAuthByUser();
             var authorizedMenuIds = new HashSet<Guid>((data ?? new List<Menu>()).Select(d => d.Id));
             
-            // Sadece yetkili root menüleri çek
-            var rootMenusResponse = await _menuService.Where(e => e.IsDelete == false && e.ParentMenuId == null && authorizedMenuIds.Contains(e.Id));
-            var rootMenus = rootMenusResponse.Data.ToList();
+            // Sadece yetkili menüleri çek (AllListData ile aynı)
+            var authorizedMenusResponse = await _menuService.Where(e => e.IsDelete == false && authorizedMenuIds.Contains(e.Id));
+            var authorizedMenus = authorizedMenusResponse.Data.ToList();
+            
+            // Parent menü kontrolü: Eğer bir alt menüye yetki varsa, parent menüsünü de ekle (AllListData ile aynı)
+            var parentMenuIds = new HashSet<Guid>();
+            foreach (var menu in authorizedMenus)
+            {
+                if (menu.ParentMenuId.HasValue)
+                {
+                    parentMenuIds.Add(menu.ParentMenuId.Value);
+                }
+            }
+            
+            // Parent menüleri de listeye ekle (eğer zaten listede yoksa)
+            var missingParentIds = parentMenuIds.Where(id => !authorizedMenus.Any(am => am.Id == id)).ToList();
+            if (missingParentIds.Count > 0)
+            {
+                var parentMenusResponse = await _menuService.Where(m => m.IsDelete == false && missingParentIds.Contains(m.Id));
+                var parentMenus = parentMenusResponse.Data.ToList();
+                authorizedMenus.AddRange(parentMenus);
+            }
 
-            // Kullanıcının form rollerine göre form menülerini ekle
+            // Kullanıcının form rollerine göre form menülerini ekle (AllListData ile aynı)
             var tenantId = _tenantContext?.CurrentTenantId;
             if (tenantId.HasValue && tenantId.Value != Guid.Empty)
             {
                 var formMenus = await GetAuthorizedFormMenusForCurrentUserAsync();
-                var formRootMenus = formMenus.Where(fm => fm.ParentMenuId == null).ToList();
-                if (formRootMenus.Count > 0)
+                if (formMenus.Count > 0)
                 {
-                    var existingIds = new HashSet<Guid>(rootMenus.Select(x => x.Id));
-                    foreach (var fm in formRootMenus)
+                    var existingIds = new HashSet<Guid>(authorizedMenus.Select(x => x.Id));
+                    foreach (var fm in formMenus)
                     {
                         if (!existingIds.Contains(fm.Id))
                         {
-                            rootMenus.Add(fm);
+                            authorizedMenus.Add(fm);
                             existingIds.Add(fm.Id);
                         }
                     }
                 }
             }
 
-            // Tekilleştir ve sırala
-            rootMenus = rootMenus
+            // Tekilleştir
+            authorizedMenus = authorizedMenus
                 .GroupBy(m => m.Id)
                 .Select(g => g.First())
+                .ToList();
+
+            // FORMS_GENERIC_ROOT'u bul ve ParentMenuId'sini null yap (root yap) - AllListData ile aynı
+            var genericRootMenu = authorizedMenus.FirstOrDefault(m => m.MenuCode == "FORMS_GENERIC_ROOT");
+            if (genericRootMenu != null)
+            {
+                genericRootMenu.ParentMenuId = null;
+                
+                // FORMS_ROOT'u bul ve ona bağlı formları FORMS_GENERIC_ROOT'a taşı
+                var formsRootMenu = authorizedMenus.FirstOrDefault(m => m.MenuCode == "FORMS_ROOT");
+                if (formsRootMenu != null)
+                {
+                    // FORMS_ROOT'un altındaki tüm form menülerini FORMS_GENERIC_ROOT'un altına taşı
+                    foreach (var menu in authorizedMenus.Where(m => m.ParentMenuId == formsRootMenu.Id))
+                    {
+                        menu.ParentMenuId = genericRootMenu.Id;
+                    }
+                    // FORMS_ROOT'u listeden çıkar
+                    authorizedMenus = authorizedMenus.Where(m => m.MenuCode != "FORMS_ROOT").ToList();
+                }
+            }
+
+            // Sadece root menüleri filtrele (ParentMenuId == null)
+            var rootMenus = authorizedMenus
+                .Where(m => m.ParentMenuId == null)
                 .OrderBy(m => m.Order)
                 .ToList();
 
-            return CleanMenuTree(rootMenus);
+            // RootMenus için SubMenus'ları kaldır (sadece root menüler dönecek)
+            return rootMenus.Select(m => new MenuListDto
+            {
+                Id = m.Id,
+                MenuCode = m.MenuCode,
+                ParentMenuId = m.ParentMenuId,
+                Name = m.Name,
+                Route = m.Route,
+                Href = m.Href,
+                Icon = m.Icon,
+                Order = m.Order,
+                IsActive = m.IsActive,
+                ShowMenu = m.ShowMenu,
+                IsTenantOnly = m.IsTenantOnly,
+                IsGlobalOnly = m.IsGlobalOnly,
+                Description = m.Description,
+                SubMenus = null // RootMenus için SubMenus döndürülmez
+            }).ToList();
         }
 
         /// <summary>
